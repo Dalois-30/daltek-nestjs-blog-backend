@@ -13,6 +13,7 @@ const app_service_1 = require("./app.service");
 const auth_module_1 = require("./auth/auth.module");
 const shared_module_1 = require("./shared/shared.module");
 const features_module_1 = require("./features/features.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -20,7 +21,8 @@ AppModule = __decorate([
         imports: [
             auth_module_1.AuthModule,
             shared_module_1.SharedModule,
-            features_module_1.FeaturesModule
+            features_module_1.FeaturesModule,
+            config_1.ConfigModule.forRoot({ isGlobal: true })
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

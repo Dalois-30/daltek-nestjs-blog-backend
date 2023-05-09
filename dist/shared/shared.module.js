@@ -16,6 +16,7 @@ const passport_1 = require("@nestjs/passport");
 const typeorm_1 = require("@nestjs/typeorm");
 const constants_1 = require("../auth/constant/constants");
 const user_entity_1 = require("../auth/entities/user.entity");
+const upload_module_1 = require("./upload/upload.module");
 let SharedModule = class SharedModule {
 };
 SharedModule = __decorate([
@@ -32,6 +33,7 @@ SharedModule = __decorate([
                     expiresIn: constants_1.EXPIRES_IN,
                 },
             }),
+            upload_module_1.UploadModule,
         ],
         exports: [
             database_module_1.DatabaseModule,
@@ -45,6 +47,7 @@ SharedModule = __decorate([
                     expiresIn: constants_1.EXPIRES_IN,
                 },
             }),
+            upload_module_1.UploadModule
         ]
     })
 ], SharedModule);

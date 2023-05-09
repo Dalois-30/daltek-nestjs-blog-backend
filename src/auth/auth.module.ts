@@ -8,7 +8,6 @@ import 'dotenv/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmailVerificationEntity } from './entities/emailverification.entity';
 import { UsersModule } from 'src/features/users/users.module';
-import { SharedModule } from 'src/shared/shared.module';
 import { EXPIRES_IN } from './constant/constants';
 import { User } from './entities/user.entity';
 import { JwtPayloadService } from './jwt.payload.service';
@@ -24,7 +23,6 @@ import { JwtPayloadService } from './jwt.payload.service';
     }),
     TypeOrmModule.forFeature([EmailVerificationEntity, User]),
     UsersModule,
-    SharedModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtPayloadService],

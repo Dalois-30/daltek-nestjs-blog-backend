@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EXPIRES_IN } from 'src/auth/constant/constants';
 import { User } from 'src/auth/entities/user.entity';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { User } from 'src/auth/entities/user.entity';
             expiresIn: EXPIRES_IN,
         },
     }),
+    UploadModule,
   ],
   exports: [
     DatabaseModule, 
@@ -34,6 +36,7 @@ import { User } from 'src/auth/entities/user.entity';
             expiresIn: EXPIRES_IN,
         },
     }),
+    UploadModule
   ]
 })
 export class SharedModule {}

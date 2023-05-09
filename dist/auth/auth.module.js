@@ -17,7 +17,6 @@ require("dotenv/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const emailverification_entity_1 = require("./entities/emailverification.entity");
 const users_module_1 = require("../features/users/users.module");
-const shared_module_1 = require("../shared/shared.module");
 const constants_1 = require("./constant/constants");
 const user_entity_1 = require("./entities/user.entity");
 const jwt_payload_service_1 = require("./jwt.payload.service");
@@ -35,7 +34,6 @@ AuthModule = __decorate([
             }),
             typeorm_1.TypeOrmModule.forFeature([emailverification_entity_1.EmailVerificationEntity, user_entity_1.User]),
             users_module_1.UsersModule,
-            shared_module_1.SharedModule
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_payload_service_1.JwtPayloadService],
