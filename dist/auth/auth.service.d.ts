@@ -3,10 +3,12 @@ import { Repository } from 'typeorm';
 import { EmailVerificationEntity } from './entities/emailverification.entity';
 import 'dotenv/config';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUserDto, VerifyOtpDto } from './dto/login-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
+import { Request as RequestExpress, Response } from 'express';
+import { ApiResponse } from 'src/shared/response/api-response';
 export declare class AuthService {
     private usersService;
     private readonly jwtPayloadService;
@@ -34,6 +36,10 @@ export declare class AuthService {
         expiresIn: number;
         token: any;
     }>;
+    createOtp(res: Response): Promise<any>;
+    verifyOtp(verifyOtpDto: VerifyOtpDto, req: RequestExpress): {
+        res: ApiResponse<string>;
+    };
     createEmailToken(email: string): Promise<false | ({
         email: string;
         emailToken: string;

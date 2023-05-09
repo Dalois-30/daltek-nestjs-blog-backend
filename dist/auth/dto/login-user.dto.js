@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoginUserDto = void 0;
+exports.VerifyOtpDto = exports.LoginUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class LoginUserDto {
@@ -26,4 +26,12 @@ __decorate([
     __metadata("design:type", String)
 ], LoginUserDto.prototype, "password", void 0);
 exports.LoginUserDto = LoginUserDto;
+class VerifyOtpDto {
+}
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], VerifyOtpDto.prototype, "otp", void 0);
+exports.VerifyOtpDto = VerifyOtpDto;
 //# sourceMappingURL=login-user.dto.js.map

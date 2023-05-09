@@ -11,3 +11,10 @@ export class LoginUserDto {
     @IsNotEmpty()
     readonly password: string;
 }
+
+
+export class VerifyOtpDto {
+    @IsNotEmpty()
+    @ApiProperty()
+    otp: string;
+  }

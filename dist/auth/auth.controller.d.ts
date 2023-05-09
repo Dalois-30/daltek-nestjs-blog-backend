@@ -1,6 +1,7 @@
 import { AuthService } from './auth.service';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUserDto, VerifyOtpDto } from './dto/login-user.dto';
+import { Request as RequestExpress, Response } from 'express';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
@@ -24,4 +25,8 @@ export declare class AuthController {
     verifyEmail(token: string): Promise<{
         message: string;
     }>;
+    createOtp(res: Response): Promise<any>;
+    verifyOtp(verifyOtpDto: VerifyOtpDto, req: RequestExpress): {
+        res: import("../shared/response/api-response").ApiResponse<string>;
+    };
 }

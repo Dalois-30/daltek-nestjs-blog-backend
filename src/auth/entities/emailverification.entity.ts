@@ -20,3 +20,4 @@ export class EmailVerificationEntity {
   @Column()
   timestamp: Date;
 }
+

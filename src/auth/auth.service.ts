@@ -14,11 +14,16 @@ import 'dotenv/config';
 import { transporter } from './constant/email-constants';
 import { UserRoles } from './constant/user-roles';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUserDto, VerifyOtpDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
+import { Request as RequestExpress, Response } from 'express';
+import * as OtpGenerator from 'otp-generator';
+import { ApiResponse } from 'src/shared/response/api-response';
+
+const phoneRegex = /^6(?=[579])([0-9]{8})/;
 
 @Injectable()
 export class AuthService {
@@ -137,6 +142,49 @@ export class AuthService {
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  async createOtp(res: Response): Promise<any> {
+
+    const otp = OtpGenerator.generate(10, {
+      lowerCaseAlphabets: true,
+      upperCaseAlphabets: true,
+      specialChars: true,
+    });
+
+    // const otp = (
+    //   Math.floor(Math.random() * 9000000) + 1000000
+    // ).toString()
+    
+    res.cookie('OTP', otp, {
+      maxAge: 1 * 60 * 1000,
+      httpOnly: false,
+      secure: false,
+    });
+
+    return res.send(otp);
+  }
+
+  verifyOtp(verifyOtpDto: VerifyOtpDto, req: RequestExpress) {
+    const otp = req.cookies['OTP'];
+    if (!otp) {
+      throw new HttpException(
+        'Le délai de validité a expiré',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const res = new ApiResponse<string>()
+    console.log(otp, verifyOtpDto.otp);
+    if (otp !== verifyOtpDto.otp.toString()) {
+      throw new HttpException('Otp invalide', HttpStatus.NOT_ACCEPTABLE);
+    }
+    res.data = otp;
+    res.success = true;
+    res.message = "successfully verified OTP";
+
+    return {
+      res
+    };
   }
 
   async createEmailToken(email: string) {

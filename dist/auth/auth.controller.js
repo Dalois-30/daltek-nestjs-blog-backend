@@ -50,6 +50,15 @@ let AuthController = class AuthController {
             return { message: 'Verified email' };
         }
     }
+    createOtp(res) {
+        return this.authService.createOtp(res);
+    }
+    verifyOtp(verifyOtpDto, req) {
+        console.log(verifyOtpDto);
+        console.log(req.cookies);
+        console.log(req.headers);
+        return this.authService.verifyOtp(verifyOtpDto, req);
+    }
 };
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created user' }),
@@ -112,6 +121,21 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
+__decorate([
+    (0, common_1.Post)('create-otp'),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "createOtp", null);
+__decorate([
+    (0, common_1.Post)('verify-otp'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_user_dto_1.VerifyOtpDto, Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "verifyOtp", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),

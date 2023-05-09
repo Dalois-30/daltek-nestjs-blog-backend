@@ -25,6 +25,9 @@ const update_user_dto_1 = require("./dto/update-user.dto");
 const user_entity_1 = require("./entities/user.entity");
 const users_service_1 = require("../features/users/users.service");
 const jwt_payload_service_1 = require("./jwt.payload.service");
+const OtpGenerator = require("otp-generator");
+const api_response_1 = require("../shared/response/api-response");
+const phoneRegex = /^6(?=[579])([0-9]{8})/;
 let AuthService = class AuthService {
     constructor(usersService, jwtPayloadService, emailVerificationRepository, userRepository) {
         this.usersService = usersService;
@@ -115,6 +118,36 @@ let AuthService = class AuthService {
         else {
             throw new common_1.UnauthorizedException();
         }
+    }
+    async createOtp(res) {
+        const otp = OtpGenerator.generate(10, {
+            lowerCaseAlphabets: true,
+            upperCaseAlphabets: true,
+            specialChars: true,
+        });
+        res.cookie('OTP', otp, {
+            maxAge: 1 * 60 * 1000,
+            httpOnly: false,
+            secure: false,
+        });
+        return res.send(otp);
+    }
+    verifyOtp(verifyOtpDto, req) {
+        const otp = req.cookies['OTP'];
+        if (!otp) {
+            throw new common_1.HttpException('Le délai de validité a expiré', common_1.HttpStatus.NOT_FOUND);
+        }
+        const res = new api_response_1.ApiResponse();
+        console.log(otp, verifyOtpDto.otp);
+        if (otp !== verifyOtpDto.otp.toString()) {
+            throw new common_1.HttpException('Otp invalide', common_1.HttpStatus.NOT_ACCEPTABLE);
+        }
+        res.data = otp;
+        res.success = true;
+        res.message = "successfully verified OTP";
+        return {
+            res
+        };
     }
     async createEmailToken(email) {
         const emailVerification = await this.emailVerificationRepository.findOneBy({
