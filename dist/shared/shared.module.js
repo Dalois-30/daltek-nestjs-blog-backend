@@ -17,6 +17,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const constants_1 = require("../auth/constant/constants");
 const user_entity_1 = require("../auth/entities/user.entity");
 const upload_module_1 = require("./upload/upload.module");
+const category_model_1 = require("../features/categories/models/category.model");
+const posts_model_1 = require("../features/posts/models/posts.model");
 let SharedModule = class SharedModule {
 };
 SharedModule = __decorate([
@@ -25,6 +27,8 @@ SharedModule = __decorate([
             database_module_1.DatabaseModule,
             env_module_1.EnvModule,
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
+            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Post]),
             axios_1.HttpModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.register({
@@ -39,6 +43,8 @@ SharedModule = __decorate([
             database_module_1.DatabaseModule,
             env_module_1.EnvModule,
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
+            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Post]),
             axios_1.HttpModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.register({
