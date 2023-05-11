@@ -1,18 +1,19 @@
 
-import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/category-create-dto';
 import { CategoriesService } from './categories.service';
 import { Category } from './models/category.model';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadService } from 'src/shared/upload/upload.service';
+import { Request as RequestExpress, Response } from 'express';
+import { ApiResponseDTO } from 'src/shared/response/api-response';
+import { CategoryGetDTO } from './dto/category-get-dto';
 
 @ApiTags('categories')
 @Controller('category')
 export class CategoriesController {
   constructor(
-    private categoryService: CategoriesService,
-    private readonly uploadService: UploadService
+    private categoryService: CategoriesService
   ) { }
   /**
    * 
@@ -20,7 +21,7 @@ export class CategoriesController {
    */
   @ApiResponse({ status: 200, description: 'Fetched all category' })
   @Get()
-  async getAllCategory(): Promise<Category[]> {
+  async getAllCategory(): Promise<ApiResponseDTO<CategoryGetDTO[]>> {
     return await this.categoryService.findAll();
   }
   /**
@@ -54,8 +55,7 @@ export class CategoriesController {
       ]
     })
   ) file: Express.Multer.File, @Body() category: CreateCategoryDto) {
-    const link = await this.uploadService.upload(file.originalname, file.buffer);
-    return await this.categoryService.create(category, link);
+    return await this.categoryService.create(category, file);
   }
   /**
    * 
@@ -64,7 +64,7 @@ export class CategoriesController {
    */
   @ApiResponse({ status: 200, description: 'Fetched specific category' })
   @Get('/getOne/:categoryId')
-  async getCategoryById(@Param('categoryId') id: string): Promise<Category> {
+  async getCategoryById(@Param('categoryId') id: string): Promise<ApiResponseDTO<Category>> {
     return await this.categoryService.findOneById(id);
   }
   /**

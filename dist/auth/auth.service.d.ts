@@ -8,7 +8,7 @@ import { User } from './entities/user.entity';
 import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
 import { Request as RequestExpress, Response } from 'express';
-import { ApiResponse } from 'src/shared/response/api-response';
+import { ApiResponseDTO } from 'src/shared/response/api-response';
 export declare class AuthService {
     private usersService;
     private readonly jwtPayloadService;
@@ -38,7 +38,7 @@ export declare class AuthService {
     }>;
     createOtp(res: Response): Promise<any>;
     verifyOtp(verifyOtpDto: VerifyOtpDto, req: RequestExpress): {
-        res: ApiResponse<string>;
+        res: ApiResponseDTO<string>;
     };
     createEmailToken(email: string): Promise<false | ({
         email: string;

@@ -21,7 +21,7 @@ import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
 import { Request as RequestExpress, Response } from 'express';
 import * as OtpGenerator from 'otp-generator';
-import { ApiResponse } from 'src/shared/response/api-response';
+import { ApiResponseDTO } from 'src/shared/response/api-response';
 
 const phoneRegex = /^6(?=[579])([0-9]{8})/;
 
@@ -173,13 +173,12 @@ export class AuthService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const res = new ApiResponse<string>()
+    const res = new ApiResponseDTO<string>()
     console.log(otp, verifyOtpDto.otp);
     if (otp !== verifyOtpDto.otp.toString()) {
       throw new HttpException('Otp invalide', HttpStatus.NOT_ACCEPTABLE);
     }
     res.data = otp;
-    res.success = true;
     res.message = "successfully verified OTP";
 
     return {

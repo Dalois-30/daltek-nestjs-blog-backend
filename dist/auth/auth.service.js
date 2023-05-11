@@ -137,13 +137,12 @@ let AuthService = class AuthService {
         if (!otp) {
             throw new common_1.HttpException('Le délai de validité a expiré', common_1.HttpStatus.NOT_FOUND);
         }
-        const res = new api_response_1.ApiResponse();
+        const res = new api_response_1.ApiResponseDTO();
         console.log(otp, verifyOtpDto.otp);
         if (otp !== verifyOtpDto.otp.toString()) {
             throw new common_1.HttpException('Otp invalide', common_1.HttpStatus.NOT_ACCEPTABLE);
         }
         res.data = otp;
-        res.success = true;
         res.message = "successfully verified OTP";
         return {
             res

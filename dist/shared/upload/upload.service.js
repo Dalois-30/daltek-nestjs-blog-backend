@@ -29,7 +29,7 @@ let UploadService = class UploadService {
         }));
         const uploadedObjectUrl = `https://${this.configService.getOrThrow('AWS_BUCKET_NAME')}.s3.amazonaws.com/users/${fileName}`;
         console.log(uploadedObjectUrl);
-        return uploadedObjectUrl;
+        return `users/${fileName}`;
     }
     async getUploadedObject(key) {
         try {

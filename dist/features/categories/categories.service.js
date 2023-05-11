@@ -17,83 +17,155 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const category_model_1 = require("./models/category.model");
+const upload_service_1 = require("../../shared/upload/upload.service");
 const api_response_1 = require("../../shared/response/api-response");
+const category_get_dto_1 = require("./dto/category-get-dto");
+const get_file_dto_1 = require("../../shared/upload/get-file-dto");
 let CategoriesService = class CategoriesService {
-    constructor(categoryRepository) {
+    constructor(categoryRepository, uploadService) {
         this.categoryRepository = categoryRepository;
+        this.uploadService = uploadService;
     }
-    async create(category, image) {
-        const newCat = this.categoryRepository.create({
-            name: category.name,
-            description: category.description,
-            image: image
-        });
-        if (category.parent) {
-            const parent = await this.categoryRepository.findOneBy({
-                id: category.parent
+    async create(category, file) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const image = await this.uploadService.upload(file.originalname, file.buffer);
+            const newCat = this.categoryRepository.create({
+                name: category.name,
+                description: category.description,
+                image: image
             });
-            if (!parent) {
-                throw new common_1.HttpException("category parent not found", common_1.HttpStatus.BAD_REQUEST);
+            if (category.parent) {
+                const parent = await this.categoryRepository.findOneBy({
+                    id: category.parent
+                });
+                if (!parent) {
+                    throw new common_1.HttpException("category parent not found", common_1.HttpStatus.BAD_REQUEST);
+                }
+                newCat.parent = parent;
             }
-            newCat.parent = parent;
+            const result = await this.categoryRepository.save(newCat);
+            res.data = result;
+            res.message = "successfully created category";
+            res.statusCode = common_1.HttpStatus.CREATED;
         }
-        const result = await this.categoryRepository.save(newCat);
-        const res = new api_response_1.ApiResponse();
-        res.data = result;
-        res.message = "successfully created category";
-        res.success = true;
+        catch (error) {
+            res.message = error.message;
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+        }
         return res;
     }
     async findAll() {
-        return await this.categoryRepository.find();
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            let result = await this.categoryRepository.find({
+                relations: {
+                    parent: true,
+                    children: true,
+                },
+            });
+            result = result.filter(element => element.parent == undefined);
+            let catsGet = [];
+            for (let index = 0; index < result.length; index++) {
+                const cat = result[index];
+                let catGet = new category_get_dto_1.CategoryGetDTO();
+                let urlObj = new get_file_dto_1.GetFileDto();
+                urlObj.key = cat.image;
+                let img = await this.uploadService.getUploadedObject(urlObj);
+                catGet.cat = cat;
+                catGet.image = img;
+                catsGet.push(catGet);
+                console.log(catsGet.length);
+            }
+            res.data = catsGet;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async findOneById(id) {
-        const category = await this.categoryRepository.findOne({
-            where: {
-                id: id
-            },
-            relations: {
-                parent: true,
-                children: true,
-            },
-        });
-        if (!category) {
-            throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const category = await this.categoryRepository.findOne({
+                where: {
+                    id: id
+                },
+                relations: {
+                    parent: true,
+                    children: true,
+                },
+            });
+            if (!category) {
+                throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
+            }
+            res.data = category;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
         }
-        return category;
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async update(id, newCatDto) {
-        const catGet = await this.categoryRepository.findOneBy({ id });
-        if (!catGet) {
-            throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
-        }
-        let newCat;
-        newCat.description = newCatDto.description;
-        newCat.name = newCatDto.name;
-        if (newCatDto.parent) {
-            const parent = await this.categoryRepository.findOneBy({
-                id: newCatDto.parent
-            });
-            if (!parent) {
-                throw new common_1.HttpException("category parent not found", common_1.HttpStatus.BAD_REQUEST);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const catGet = await this.categoryRepository.findOneBy({ id });
+            if (!catGet) {
+                throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
-            newCat.parent = parent;
+            let newCat;
+            newCat.description = newCatDto.description;
+            newCat.name = newCatDto.name;
+            if (newCatDto.parent) {
+                const parent = await this.categoryRepository.findOneBy({
+                    id: newCatDto.parent
+                });
+                if (!parent) {
+                    throw new common_1.HttpException("category parent not found", common_1.HttpStatus.BAD_REQUEST);
+                }
+                newCat.parent = parent;
+            }
+            this.categoryRepository.merge(catGet, newCat);
+            const result = await this.categoryRepository.save(catGet);
+            res.data = result;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
         }
-        this.categoryRepository.merge(catGet, newCat);
-        return await this.categoryRepository.save(catGet);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async delete(id) {
-        const type = await this.categoryRepository.findOneBy({ id });
-        if (!type) {
-            throw new common_1.HttpException("Type doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const type = await this.categoryRepository.findOneBy({ id });
+            if (!type) {
+                throw new common_1.HttpException("Type doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            await this.categoryRepository.delete(id);
+            res.statusCode = common_1.HttpStatus.OK;
+            res.message = "Category deleted successfully";
         }
-        return await this.categoryRepository.delete(id);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
 };
 CategoriesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        upload_service_1.UploadService])
 ], CategoriesService);
 exports.CategoriesService = CategoriesService;
 //# sourceMappingURL=categories.service.js.map

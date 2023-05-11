@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ApiResponse = void 0;
-class ApiResponse {
+exports.ApiResponseDTO = void 0;
+class ApiResponseDTO {
 }
-exports.ApiResponse = ApiResponse;
+exports.ApiResponseDTO = ApiResponseDTO;
 //# sourceMappingURL=api-response.js.map

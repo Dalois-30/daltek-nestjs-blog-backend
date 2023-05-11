@@ -1,5 +1,5 @@
-export class ApiResponse<T> {
+export class ApiResponseDTO<T> {
     data?: T;
-    success: boolean;
     message?: any;
+    statusCode?: number;
   }

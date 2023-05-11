@@ -18,18 +18,15 @@ const swagger_1 = require("@nestjs/swagger");
 const category_create_dto_1 = require("./dto/category-create-dto");
 const categories_service_1 = require("./categories.service");
 const platform_express_1 = require("@nestjs/platform-express");
-const upload_service_1 = require("../../shared/upload/upload.service");
 let CategoriesController = class CategoriesController {
-    constructor(categoryService, uploadService) {
+    constructor(categoryService) {
         this.categoryService = categoryService;
-        this.uploadService = uploadService;
     }
     async getAllCategory() {
         return await this.categoryService.findAll();
     }
     async createCategory(file, category) {
-        const link = await this.uploadService.upload(file.originalname, file.buffer);
-        return await this.categoryService.create(category, link);
+        return await this.categoryService.create(category, file);
     }
     async getCategoryById(id) {
         return await this.categoryService.findOneById(id);
@@ -104,8 +101,7 @@ __decorate([
 CategoriesController = __decorate([
     (0, swagger_1.ApiTags)('categories'),
     (0, common_1.Controller)('category'),
-    __metadata("design:paramtypes", [categories_service_1.CategoriesService,
-        upload_service_1.UploadService])
+    __metadata("design:paramtypes", [categories_service_1.CategoriesService])
 ], CategoriesController);
 exports.CategoriesController = CategoriesController;
 //# sourceMappingURL=categories.controller.js.map

@@ -27,6 +27,6 @@ export declare class AuthController {
     }>;
     createOtp(res: Response): Promise<any>;
     verifyOtp(verifyOtpDto: VerifyOtpDto, req: RequestExpress): {
-        res: import("../shared/response/api-response").ApiResponse<string>;
+        res: import("../shared/response/api-response").ApiResponseDTO<string>;
     };
 }
