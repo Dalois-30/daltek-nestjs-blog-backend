@@ -15,6 +15,7 @@ import {
   import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
 import { User } from 'src/auth/entities/user.entity';
+import { ApiResponseDTO } from 'src/shared/response/api-response';
   
   @ApiTags('users')
   @Controller('users')
@@ -23,9 +24,9 @@ import { User } from 'src/auth/entities/user.entity';
   
     @ApiResponse({ status: 200, description: 'Fetched all users' })
     @ApiResponse({ status: 401, description: 'Unauthorized access' })
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Get()
-    async getAllUsers(@Headers() headers): Promise<User[]> {
+    async getAllUsers(@Headers() headers): Promise<ApiResponseDTO<User[]>> {
       console.log(headers);
       
       return await this.usersService.findAll(headers);
@@ -39,7 +40,7 @@ import { User } from 'src/auth/entities/user.entity';
   
     @ApiResponse({ status: 200, description: 'Fetched specific user' })
     @Get('/:id')
-    async getUserById(@Param('id') id: string): Promise<User> {
+    async getUserById(@Param('id') id: string): Promise <ApiResponseDTO<User>> {
       return await this.usersService.findOneById(id);
     }
   

@@ -19,24 +19,43 @@ const typeorm_2 = require("typeorm");
 const axios_1 = require("@nestjs/axios");
 const jwt_1 = require("@nestjs/jwt");
 const user_entity_1 = require("../../auth/entities/user.entity");
+const api_response_1 = require("../../shared/response/api-response");
+const shared_service_1 = require("../../shared/shared.service");
 let UsersService = class UsersService {
-    constructor(userRepository, httpService, jwtService) {
+    constructor(userRepository, httpService, jwtService, sharedService) {
         this.userRepository = userRepository;
         this.httpService = httpService;
         this.jwtService = jwtService;
+        this.sharedService = sharedService;
     }
     async findAll(headers) {
-        let token = headers["authorization"].split(' ');
-        console.log(token[1]);
-        const decodedJwtAccessToken = this.jwtService.decode(token[1]);
-        console.log(decodedJwtAccessToken);
-        if (decodedJwtAccessToken.role !== "Admin") {
-            throw new common_1.HttpException('Your are not admin', common_1.HttpStatus.UNAUTHORIZED);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            await this.sharedService.checkIfAdmin(headers);
+            const result = await this.userRepository.find();
+            res.data = result;
+            res.message = "Successfully get user information";
+            res.statusCode = common_1.HttpStatus.OK;
         }
-        return await this.userRepository.find();
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async findOneById(id) {
-        return await this.userRepository.findOneBy({ id });
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const result = await this.userRepository.findOneBy({ id });
+            res.data = result;
+            res.message = "Successful retrieve user";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async findOneByEmail(email) {
         return await this.userRepository.findOneBy({ email });
@@ -77,7 +96,8 @@ UsersService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         axios_1.HttpService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        shared_service_1.SharedService])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

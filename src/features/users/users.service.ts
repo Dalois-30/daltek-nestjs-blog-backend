@@ -5,6 +5,8 @@ import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
 import { User } from 'src/auth/entities/user.entity';
+import { ApiResponseDTO } from 'src/shared/response/api-response';
+import { SharedService } from 'src/shared/shared.service';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +14,8 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly httpService: HttpService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private sharedService: SharedService,
   ) { }
 
 
@@ -20,23 +23,37 @@ export class UsersService {
    * 
    * @returns the lis of all users
    */
-  async findAll(headers: string): Promise<User[]> {
-    let token = headers["authorization"].split(' ')
-    console.log(token[1]);
-    const decodedJwtAccessToken:any = this.jwtService.decode(token[1]);
-    console.log(decodedJwtAccessToken);
-    if (decodedJwtAccessToken.role !== "Admin") {
-      throw new HttpException('Your are not admin', HttpStatus.UNAUTHORIZED);
+  async findAll(headers: any): Promise<ApiResponseDTO<User[]>>  {
+    const res = new ApiResponseDTO<User[]>();
+    try {
+      await this.sharedService.checkIfAdmin(headers);
+      const result = await this.userRepository.find();
+      res.data = result;
+      res.message = "Successfully get user information";
+      res.statusCode = HttpStatus.OK;
+    } catch (error) {
+      res.statusCode = HttpStatus.BAD_REQUEST;
+      res.message = error.message 
     }
-    return await this.userRepository.find();
+    return res;
   }
   /**
    * 
    * @param id 
    * @returns returns the specified user by its email
    */
-  async findOneById(id: string): Promise<User> {
-    return await this.userRepository.findOneBy({ id });
+  async findOneById(id: string): Promise <ApiResponseDTO<User>> {
+    const res = new ApiResponseDTO<User>();
+    try {
+      const result = await this.userRepository.findOneBy({ id }); 
+      res.data = result;
+      res.message = "Successful retrieve user"  
+      res.statusCode = HttpStatus.OK;
+    } catch (error) {
+      res.statusCode = HttpStatus.BAD_REQUEST;
+      res.message = error.message  
+    }
+    return res
   }
   /**
    * 

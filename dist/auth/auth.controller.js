@@ -22,51 +22,39 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async createUser(user) {
-        const response = await this.authService.create(user);
-        await this.authService.createEmailToken(user.email);
-        const state = await this.authService.sendEmailVerification(user.email);
-        return Object.assign(Object.assign({}, response), state);
+    async createUser(user, res) {
+        const response = await this.authService.create(user, res);
+        return Object.assign({}, response);
     }
-    async createAdmin(user) {
-        const response = await this.authService.createAdmin(user);
-        await this.authService.createEmailToken(user.email);
-        const state = await this.authService.sendEmailVerification(user.email);
-        return Object.assign(Object.assign({}, response), state);
+    async createAdmin(user, res) {
+        const response = await this.authService.createAdmin(user, res);
+        return Object.assign({}, response);
     }
     async login(loginUserDto) {
         return await this.authService.validateUserByPassword(loginUserDto);
     }
-    async sendEmailVerification(email) {
-        await this.authService.createEmailToken(email);
-        return await this.authService.sendEmailVerification(email);
+    async sendEmailVerification(email, res) {
+        const result = await this.authService.createEmailToken(email, res);
+        res.send(result);
     }
-    async resetPassword(id, resetPassDto) {
-        return await this.authService.resetPassword(id, resetPassDto);
+    async resetPassword(email, resetPassDto) {
+        return await this.authService.resetPassword(email, resetPassDto);
     }
-    async verifyEmail(token) {
-        const verified = await this.authService.verifyEmail(token);
+    async verifyEmail(token, email, req) {
+        const verified = await this.authService.verifyEmail(token, email, req);
         if (verified) {
             return { message: 'Verified email' };
         }
-    }
-    createOtp(res) {
-        return this.authService.createOtp(res);
-    }
-    verifyOtp(verifyOtpDto, req) {
-        console.log(verifyOtpDto);
-        console.log(req.cookies);
-        console.log(req.headers);
-        return this.authService.verifyOtp(verifyOtpDto, req);
     }
 };
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created user' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
-    (0, common_1.Post)('/email/register'),
+    (0, common_1.Post)('/register'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "createUser", null);
 __decorate([
@@ -74,14 +62,15 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Post)('/admin/create'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "createAdmin", null);
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Successfully logged in' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Wrong credentials' }),
-    (0, common_1.Post)('/email/login'),
+    (0, common_1.Post)('/login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_user_dto_1.LoginUserDto]),
@@ -93,10 +82,11 @@ __decorate([
         description: 'Successfully send verification code',
     }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'User not found' }),
-    (0, common_1.Post)('email/resend-verification/'),
+    (0, common_1.Post)('/resend-verification/'),
     __param(0, (0, common_1.Query)('email')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "sendEmailVerification", null);
 __decorate([
@@ -105,8 +95,8 @@ __decorate([
         description: 'Successfully change password',
     }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'User not found' }),
-    (0, common_1.Post)('/reset-password/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Post)('/reset-password'),
+    __param(0, (0, common_1.Query)('email')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, create_user_dto_1.ResetPassWordDto]),
@@ -115,27 +105,14 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Successfully verified email' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
-    (0, common_1.Post)('email/verify/:token'),
-    __param(0, (0, common_1.Param)('token')),
+    (0, common_1.Post)('email/verify'),
+    __param(0, (0, common_1.Query)('token')),
+    __param(1, (0, common_1.Query)('email')),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
-__decorate([
-    (0, common_1.Post)('create-otp'),
-    __param(0, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "createOtp", null);
-__decorate([
-    (0, common_1.Post)('verify-otp'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_user_dto_1.VerifyOtpDto, Object]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "verifyOtp", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),

@@ -19,6 +19,7 @@ const user_entity_1 = require("../auth/entities/user.entity");
 const upload_module_1 = require("./upload/upload.module");
 const category_model_1 = require("../features/categories/models/category.model");
 const posts_model_1 = require("../features/posts/models/posts.model");
+const shared_service_1 = require("./shared.service");
 let SharedModule = class SharedModule {
 };
 SharedModule = __decorate([
@@ -54,7 +55,8 @@ SharedModule = __decorate([
                 },
             }),
             upload_module_1.UploadModule
-        ]
+        ],
+        providers: [shared_service_1.SharedService]
     })
 ], SharedModule);
 exports.SharedModule = SharedModule;

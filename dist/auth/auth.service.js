@@ -35,70 +35,110 @@ let AuthService = class AuthService {
         this.emailVerificationRepository = emailVerificationRepository;
         this.userRepository = userRepository;
     }
-    async create(createMarchandDto) {
-        const user = await this.usersService.findOneByEmail(createMarchandDto.email);
-        if (user) {
-            throw new common_1.HttpException('User already exists', common_1.HttpStatus.BAD_REQUEST);
+    async create(createUserDto, response) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.usersService.findOneByEmail(createUserDto.email);
+            if (user) {
+                throw new common_1.HttpException('User already exists', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const newUser = new user_entity_1.User();
+            newUser.email = createUserDto.email;
+            newUser.password = createUserDto.password;
+            newUser.role = user_roles_1.UserRoles.USER;
+            const userResponse = await this.userRepository.save(newUser);
+            await this.createEmailToken(newUser.email, response);
+            res.data = userResponse;
+            res.statusCode = common_1.HttpStatus.CREATED;
+            res.message = "user created successfully";
         }
-        const newUser = new user_entity_1.User();
-        newUser.email = createMarchandDto.email;
-        newUser.password = createMarchandDto.password;
-        newUser.role = user_roles_1.UserRoles.USER;
-        const userResponse = await this.userRepository.save(newUser);
-        const token = await this.jwtPayloadService.createJwtPayload(newUser);
-        return { userResponse, token };
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return response.send(res);
     }
-    async createAdmin(createUserDto) {
-        const user = await this.usersService.findOneByEmail(createUserDto.email);
-        if (user) {
-            throw new common_1.HttpException('User already exists', common_1.HttpStatus.BAD_REQUEST);
+    async createAdmin(createUserDto, response) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.usersService.findOneByEmail(createUserDto.email);
+            if (user) {
+                throw new common_1.HttpException('User already exists', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const newUser = new user_entity_1.User();
+            newUser.email = createUserDto.email;
+            newUser.password = createUserDto.password;
+            newUser.role = user_roles_1.UserRoles.ADMIN;
+            const userResponse = await this.userRepository.save(newUser);
+            await this.createEmailToken(newUser.email, response);
+            res.data = userResponse;
+            res.statusCode = common_1.HttpStatus.CREATED;
+            res.message = "user created successfully";
         }
-        const newUser = new user_entity_1.User();
-        newUser.email = createUserDto.email;
-        newUser.password = createUserDto.password;
-        newUser.role = user_roles_1.UserRoles.ADMIN;
-        const userResponse = await this.userRepository.save(newUser);
-        const token = await this.jwtPayloadService.createJwtPayload(newUser);
-        return { userResponse, token };
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return response.send(res);
     }
-    async resetPassword(userId, resetPassWord) {
-        const user = await this.userRepository.findOneBy({
-            id: userId,
-        });
-        if (!user) {
-            throw new common_1.UnauthorizedException('User does not exist');
-        }
-        const state = await this.checkPassword(resetPassWord.actualPassword, user);
-        if (state) {
-            const newUser = new update_user_dto_1.UpdateUserDto();
-            newUser.password = resetPassWord.newPassword;
-            await this.userRepository.merge(user, newUser);
-            return await this.userRepository.save(user);
-        }
-        else {
-            throw new common_1.HttpException('Wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
-        }
-    }
-    async validateUserByPassword(loginUserDto) {
-        const user = await this.usersService.findOneByEmail(loginUserDto.email);
-        if (!user) {
-            throw new common_1.UnauthorizedException('User does not exist');
-        }
-        const promise = await new Promise(async (resolve) => {
-            const state = await this.checkPassword(loginUserDto.password, user);
+    async resetPassword(email, resetPassWord) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.userRepository.findOneBy({
+                email: email,
+            });
+            if (!user) {
+                throw new common_1.UnauthorizedException('User does not exist');
+            }
+            const state = await this.checkPassword(resetPassWord.actualPassword, user);
             if (state) {
-                resolve(this.jwtPayloadService.createJwtPayload(user));
+                const newUser = new update_user_dto_1.UpdateUserDto();
+                newUser.password = resetPassWord.newPassword;
+                this.userRepository.merge(user, newUser);
+                await this.userRepository.save(user);
+                res.message = "Successful Updated";
+                res.statusCode = common_1.HttpStatus.OK;
             }
             else {
-                resolve({ status: 401 });
+                throw new common_1.HttpException('Wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
             }
-        });
-        if (promise.status !== 401) {
-            return promise;
         }
-        else {
-            throw new common_1.HttpException('Wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
         }
+        return res;
+    }
+    async validateUserByPassword(loginUserDto) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.usersService.findOneByEmail(loginUserDto.email);
+            if (!user) {
+                throw new common_1.UnauthorizedException('User does not exist');
+            }
+            const promise = await new Promise(async (resolve) => {
+                const state = await this.checkPassword(loginUserDto.password, user);
+                if (state) {
+                    resolve(this.jwtPayloadService.createJwtPayload(user));
+                }
+                else {
+                    resolve({ status: 401 });
+                }
+            });
+            if (promise.status !== 401) {
+                res.data = promise;
+                res.message = "Success";
+                res.statusCode = common_1.HttpStatus.OK;
+            }
+            else {
+                throw new common_1.HttpException('Wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async checkPassword(password, user) {
         return new Promise(async (resolve) => {
@@ -119,85 +159,52 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException();
         }
     }
-    async createOtp(res) {
+    async createEmailToken(email, res) {
         const otp = OtpGenerator.generate(10, {
             lowerCaseAlphabets: true,
             upperCaseAlphabets: true,
             specialChars: true,
         });
         res.cookie('OTP', otp, {
-            maxAge: 1 * 60 * 1000,
+            maxAge: 5 * 60 * 1000,
             httpOnly: false,
             secure: false,
         });
-        return res.send(otp);
+        const user = await this.usersService.findOneByEmail(email);
+        if (!user) {
+            throw new common_1.UnauthorizedException('User does not exist');
+        }
+        const mailOptions = {
+            from: '"Mendo Cash" <' + process.env.EMAIL_USER + '>',
+            to: email,
+            subject: 'Verify Email',
+            text: 'Verify your Email',
+            html: `Hi! <br><br> Thanks for your registration<br><br>
+         <p>This is your verification code <a href=#> '${otp}' </a></p>`,
+        };
+        return await this.sendEmail(mailOptions);
     }
-    verifyOtp(verifyOtpDto, req) {
+    async verifyEmail(token, email, req) {
         const otp = req.cookies['OTP'];
         if (!otp) {
-            throw new common_1.HttpException('Le délai de validité a expiré', common_1.HttpStatus.NOT_FOUND);
+            throw new common_1.HttpException('token expired', common_1.HttpStatus.NOT_FOUND);
         }
         const res = new api_response_1.ApiResponseDTO();
-        console.log(otp, verifyOtpDto.otp);
-        if (otp !== verifyOtpDto.otp.toString()) {
+        console.log(otp, token);
+        if (otp !== token) {
             throw new common_1.HttpException('Otp invalide', common_1.HttpStatus.NOT_ACCEPTABLE);
+        }
+        const userFromDb = await this.usersService.findOneByEmail(email);
+        if (userFromDb) {
+            await this.usersService.update(userFromDb.id, {
+                verified: true,
+            });
         }
         res.data = otp;
         res.message = "successfully verified OTP";
         return {
             res
         };
-    }
-    async createEmailToken(email) {
-        const emailVerification = await this.emailVerificationRepository.findOneBy({
-            email,
-        });
-        if (!emailVerification) {
-            const emailVerificationToken = await this.emailVerificationRepository.save({
-                email,
-                emailToken: (Math.floor(Math.random() * 9000000) + 1000000).toString(),
-                timestamp: new Date(),
-            });
-            return emailVerificationToken;
-        }
-        return false;
-    }
-    async verifyEmail(token) {
-        const emailVerif = await this.emailVerificationRepository.findOneBy({
-            emailToken: token,
-        });
-        if (emailVerif && emailVerif.email) {
-            const userFromDb = await this.usersService.findOneByEmail(emailVerif.email);
-            if (userFromDb) {
-                await this.usersService.update(userFromDb.id, {
-                    verified: true,
-                });
-                await this.emailVerificationRepository.delete({ emailToken: token });
-                return true;
-            }
-        }
-        else {
-            throw new common_1.HttpException('Invalid token', common_1.HttpStatus.FORBIDDEN);
-        }
-    }
-    async sendEmailVerification(email) {
-        const repository = await this.emailVerificationRepository.findOneBy({
-            email,
-        });
-        if (repository && repository.emailToken) {
-            const mailOptions = {
-                from: '"Mendo Cash" <' + process.env.EMAIL_USER + '>',
-                to: email,
-                subject: 'Verify Email',
-                text: 'Verify your Email',
-                html: `Hi! <br><br> Thanks for your registration<br><br>
-         <p>This is your verification code <a href=#> '${repository.emailToken}' </a></p>`,
-            };
-            return await this.sendEmail(mailOptions);
-        }
-        else {
-            throw new common_1.HttpException('User not found', common_1.HttpStatus.FORBIDDEN);
-        }
     }
     async sendEmail(mailOptions) {
         return await new Promise(async (resolve, reject) => {

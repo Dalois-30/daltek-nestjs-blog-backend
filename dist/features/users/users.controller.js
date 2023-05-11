@@ -48,7 +48,6 @@ let UsersController = class UsersController {
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all users' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Headers)()),
     __metadata("design:type", Function),

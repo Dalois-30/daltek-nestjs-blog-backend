@@ -12,33 +12,27 @@ export class AuthController {
 
   @ApiResponse({ status: 201, description: 'Successfully created user' })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  @Post('/email/register')
-  async createUser(@Body() user: CreateUserDto) {
-    const response = await this.authService.create(user);
-    await this.authService.createEmailToken(user.email);
-    const state = await this.authService.sendEmailVerification(user.email);
+  @Post('/register')
+  async createUser(@Body() user: CreateUserDto, @Res() res: Response) {
+    const response = await this.authService.create(user, res);
     return {
       ...response,
-      ...state,
     };
   }
 
   @ApiResponse({ status: 201, description: 'Successfully created admin' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @Post('/admin/create')
-  async createAdmin(@Body() user: CreateUserDto) {
-    const response = await this.authService.createAdmin(user);
-    await this.authService.createEmailToken(user.email);
-    const state = await this.authService.sendEmailVerification(user.email);
+  async createAdmin(@Body() user: CreateUserDto, @Res() res: Response) {
+    const response = await this.authService.createAdmin(user, res);
     return {
       ...response,
-      ...state,
     };
   }
 
   @ApiResponse({ status: 200, description: 'Successfully logged in' })
   @ApiResponse({ status: 401, description: 'Wrong credentials' })
-  @Post('/email/login')
+  @Post('/login')
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.validateUserByPassword(loginUserDto);
   }
@@ -48,10 +42,11 @@ export class AuthController {
     description: 'Successfully send verification code',
   })
   @ApiResponse({ status: 403, description: 'User not found' })
-  @Post('email/resend-verification/')
-  async sendEmailVerification(@Query('email') email: string) {
-    await this.authService.createEmailToken(email);
-    return await this.authService.sendEmailVerification(email);
+  @Post('/resend-verification/')
+  async sendEmailVerification(@Query('email') email: string, @Res() res: Response) {
+    const result = await this.authService.createEmailToken(email, res);
+    res.send(result);
+    // return await this.authService.sendEmailVerification(email);
   }
 
   @ApiResponse({
@@ -59,33 +54,21 @@ export class AuthController {
     description: 'Successfully change password',
   })
   @ApiResponse({ status: 403, description: 'User not found' })
-  @Post('/reset-password/:id')
-  async resetPassword(@Param('id') id: string, @Body() resetPassDto: ResetPassWordDto) {
-    return await this.authService.resetPassword(id, resetPassDto);
+  @Post('/reset-password')
+  async resetPassword(@Query('email') email: string, @Body() resetPassDto: ResetPassWordDto) {
+    return await this.authService.resetPassword(email, resetPassDto);
   }
 
   @ApiResponse({ status: 200, description: 'Successfully verified email' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
-  @Post('email/verify/:token')
+  @Post('email/verify')
   async verifyEmail(
-    @Param('token') token: string,
+    @Query('token') token: string, @Query('email') email: string, @Req() req: RequestExpress
   ) {
-    const verified = await this.authService.verifyEmail(token);
+    const verified = await this.authService.verifyEmail(token, email, req);
     if (verified) {
       return {message: 'Verified email'};
     }
   }
 
-  @Post('create-otp')
-  createOtp(@Res() res: Response) {
-    return this.authService.createOtp(res);
-  }
-
-  @Post('verify-otp')
-  verifyOtp(@Body() verifyOtpDto: VerifyOtpDto, @Req() req: RequestExpress) {
-    console.log(verifyOtpDto);
-    console.log(req.cookies);
-    console.log(req.headers);
-    return this.authService.verifyOtp(verifyOtpDto, req);
-  }
 }

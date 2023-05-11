@@ -10,6 +10,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { UploadModule } from './upload/upload.module';
 import { Category } from 'src/features/categories/models/category.model';
 import { Posts } from 'src/features/posts/models/posts.model';
+import { SharedService } from './shared.service';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { Posts } from 'src/features/posts/models/posts.model';
         },
     }),
     UploadModule
-  ]
+  ],
+  providers: [SharedService]
 })
 export class SharedModule {}

@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { EmailVerificationEntity } from './entities/emailverification.entity';
 import 'dotenv/config';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
-import { LoginUserDto, VerifyOtpDto } from './dto/login-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
@@ -15,37 +15,18 @@ export declare class AuthService {
     private readonly emailVerificationRepository;
     private readonly userRepository;
     constructor(usersService: UsersService, jwtPayloadService: JwtPayloadService, emailVerificationRepository: Repository<EmailVerificationEntity>, userRepository: Repository<User>);
-    create(createMarchandDto: CreateUserDto): Promise<{
-        userResponse: User;
-        token: {
-            expiresIn: number;
-            token: any;
-        };
-    }>;
-    createAdmin(createUserDto: CreateUserDto): Promise<{
-        userResponse: User;
-        token: {
-            expiresIn: number;
-            token: any;
-        };
-    }>;
-    resetPassword(userId: string, resetPassWord: ResetPassWordDto): Promise<User>;
-    validateUserByPassword(loginUserDto: LoginUserDto): Promise<any>;
-    checkPassword(password: string, user: any): Promise<boolean>;
+    create(createUserDto: CreateUserDto, response: Response): Promise<Response<any, Record<string, any>>>;
+    createAdmin(createUserDto: CreateUserDto, response: Response): Promise<Response<any, Record<string, any>>>;
+    resetPassword(email: string, resetPassWord: ResetPassWordDto): Promise<ApiResponseDTO<User>>;
+    validateUserByPassword(loginUserDto: LoginUserDto): Promise<ApiResponseDTO<any>>;
+    checkPassword(password: string, user: User): Promise<boolean>;
     validateUserByJwt(payload: JwtPayload): Promise<{
         expiresIn: number;
         token: any;
     }>;
-    createOtp(res: Response): Promise<any>;
-    verifyOtp(verifyOtpDto: VerifyOtpDto, req: RequestExpress): {
+    createEmailToken(email: string, res: Response): Promise<{}>;
+    verifyEmail(token: string, email: string, req: RequestExpress): Promise<{
         res: ApiResponseDTO<string>;
-    };
-    createEmailToken(email: string): Promise<false | ({
-        email: string;
-        emailToken: string;
-        timestamp: Date;
-    } & EmailVerificationEntity)>;
-    verifyEmail(token: string): Promise<boolean>;
-    sendEmailVerification(email: string): Promise<{}>;
+    }>;
     sendEmail(mailOptions: any): Promise<{}>;
 }
