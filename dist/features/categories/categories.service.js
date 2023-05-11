@@ -55,15 +55,17 @@ let CategoriesService = class CategoriesService {
         }
         return res;
     }
-    async findAll() {
+    async findAll(page, limit) {
         const res = new api_response_1.ApiResponseDTO();
+        let totalGet = 0;
         try {
-            let result = await this.categoryRepository.find({
-                relations: {
-                    parent: true,
-                    children: true,
-                },
-            });
+            let [result, total] = await this.categoryRepository.createQueryBuilder('category')
+                .leftJoinAndSelect('category.parent', 'parent')
+                .leftJoinAndSelect('category.children', 'children')
+                .skip(page * limit)
+                .take(limit)
+                .getManyAndCount();
+            totalGet = total;
             result = result.filter(element => element.parent == undefined);
             let catsGet = [];
             for (let index = 0; index < result.length; index++) {
@@ -85,7 +87,7 @@ let CategoriesService = class CategoriesService {
             res.statusCode = common_1.HttpStatus.BAD_REQUEST;
             res.message = error.message;
         }
-        return res;
+        return Object.assign(Object.assign({}, res), { totalItems: totalGet, currentPage: page, pageCount: Math.ceil(totalGet / limit) });
     }
     async findOneById(id) {
         const res = new api_response_1.ApiResponseDTO();

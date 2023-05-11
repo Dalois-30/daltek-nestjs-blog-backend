@@ -1,5 +1,5 @@
 
-import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/category-create-dto';
 import { CategoriesService } from './categories.service';
@@ -21,11 +21,14 @@ export class CategoriesController {
    */
   @ApiResponse({ status: 200, description: 'Fetched all category' })
   @Get()
-  async getAllCategory(): Promise<ApiResponseDTO<CategoryGetDTO[]>> {
-    return await this.categoryService.findAll();
+  async getAllCategory(@Query('page') page: number = 0, @Query('limit') limit: number = 10) {
+    return await this.categoryService.findAll(page, limit);
   }
+
+
+
   /**
-   * 
+   * create a new category
    * @param category 
    * @returns the newly created category
    */

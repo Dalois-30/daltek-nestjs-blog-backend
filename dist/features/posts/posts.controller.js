@@ -24,12 +24,11 @@ let PostsController = class PostsController {
         this.postService = postService;
         this.uploadService = uploadService;
     }
-    async getAllpost() {
-        return await this.postService.findAll();
+    async getAllpost(page = 0, limit = 10) {
+        return await this.postService.findAll(page, limit);
     }
     async createpost(file, post) {
-        const link = await this.uploadService.upload(file.originalname, file.buffer);
-        return await this.postService.create(post, link);
+        return await this.postService.create(post, file);
     }
     async getpostById(id) {
         return await this.postService.findOneById(id);
@@ -41,8 +40,10 @@ let PostsController = class PostsController {
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getAllpost", null);
 __decorate([

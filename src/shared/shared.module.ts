@@ -11,6 +11,7 @@ import { UploadModule } from './upload/upload.module';
 import { Category } from 'src/features/categories/models/category.model';
 import { Posts } from 'src/features/posts/models/posts.model';
 import { SharedService } from './shared.service';
+import { Comments } from 'src/features/comments/models/comments.model';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SharedService } from './shared.service';
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([Category]),
     TypeOrmModule.forFeature([Posts]),
+    TypeOrmModule.forFeature([Comments]),
     HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
@@ -35,6 +37,7 @@ import { SharedService } from './shared.service';
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([Category]),
     TypeOrmModule.forFeature([Posts]),
+    TypeOrmModule.forFeature([Comments]),
     HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({

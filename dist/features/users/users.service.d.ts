@@ -14,7 +14,7 @@ export declare class UsersService {
     findAll(headers: any): Promise<ApiResponseDTO<User[]>>;
     findOneById(id: string): Promise<ApiResponseDTO<User>>;
     findOneByEmail(email: string): Promise<User>;
-    update(id: string, newUser: UpdateUserDto): Promise<User>;
-    deleteUserById(id: string): Promise<import("typeorm").DeleteResult>;
+    update(id: string, newUser: UpdateUserDto): Promise<ApiResponseDTO<User>>;
+    deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
     deleteAll(): Promise<void>;
 }

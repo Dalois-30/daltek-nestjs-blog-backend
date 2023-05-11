@@ -64,19 +64,22 @@ export class CategoriesService {
      * 
      * @returns the list of all types
      */
-    async findAll(): Promise<ApiResponseDTO<CategoryGetDTO[]>> {
+    async findAll(page?: number, limit?: number) {
         const res = new ApiResponseDTO<CategoryGetDTO[]>();
+        let totalGet = 0;
         try {
-            let result = await this.categoryRepository.find({
-                relations: {
-                    parent: true,
-                    children: true,
-                },
-            });
+            let [result, total] = await this.categoryRepository.createQueryBuilder('category')
+                .leftJoinAndSelect('category.parent', 'parent')
+                .leftJoinAndSelect('category.children', 'children')
+                .skip(page * limit)
+                .take(limit)
+                .getManyAndCount();
+            totalGet = total;
+
             // return only the parent category
             result = result.filter(element => element.parent == undefined);
             // create an object of the type catget to retria
-            let catsGet: CategoryGetDTO [] = [];
+            let catsGet: CategoryGetDTO[] = [];
 
             for (let index = 0; index < result.length; index++) {
                 const cat = result[index];
@@ -92,7 +95,7 @@ export class CategoriesService {
                 catsGet.push(catGet);
                 console.log(catsGet.length);
             }
-            
+
             res.data = catsGet
             res.message = "success";
             res.statusCode = HttpStatus.OK;
@@ -100,7 +103,12 @@ export class CategoriesService {
             res.statusCode = HttpStatus.BAD_REQUEST;
             res.message = error.message
         }
-        return res
+        return {
+            ...res,
+            totalItems: totalGet,
+            currentPage: page,
+            pageCount: Math.ceil(totalGet / limit),
+        }
     }
     /**
      * 

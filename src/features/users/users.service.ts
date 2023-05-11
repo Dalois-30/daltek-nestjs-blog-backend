@@ -23,17 +23,17 @@ export class UsersService {
    * 
    * @returns the lis of all users
    */
-  async findAll(headers: any): Promise<ApiResponseDTO<User[]>>  {
+  async findAll(headers: any): Promise<ApiResponseDTO<User[]>> {
     const res = new ApiResponseDTO<User[]>();
     try {
       await this.sharedService.checkIfAdmin(headers);
       const result = await this.userRepository.find();
       res.data = result;
-      res.message = "Successfully get user information";
+      res.message = "Successfully get users information";
       res.statusCode = HttpStatus.OK;
     } catch (error) {
       res.statusCode = HttpStatus.BAD_REQUEST;
-      res.message = error.message 
+      res.message = error.message
     }
     return res;
   }
@@ -42,18 +42,18 @@ export class UsersService {
    * @param id 
    * @returns returns the specified user by its email
    */
-  async findOneById(id: string): Promise <ApiResponseDTO<User>> {
+  async findOneById(id: string): Promise<ApiResponseDTO<User>> {
     const res = new ApiResponseDTO<User>();
     try {
-      const result = await this.userRepository.findOneBy({ id }); 
+      const result = await this.userRepository.findOneBy({ id });
       res.data = result;
-      res.message = "Successful retrieve user"  
+      res.message = "Successful retrieve user"
       res.statusCode = HttpStatus.OK;
     } catch (error) {
       res.statusCode = HttpStatus.BAD_REQUEST;
-      res.message = error.message  
+      res.message = error.message
     }
-    return res
+    return res;
   }
   /**
    * 
@@ -70,28 +70,38 @@ export class UsersService {
    * @returns updates user information
    */
   async update(id: string, newUser: UpdateUserDto) {
-    const user = await this.userRepository.findOneBy({
-      id: id,
-    });
-    if (newUser.email) {
-      const userWithEmail = await this.userRepository.findOneBy({
-        email: newUser.email,
+    const res = new ApiResponseDTO<User>();
+    try {
+      const user = await this.userRepository.findOneBy({
+        id: id,
       });
-      if (
-        userWithEmail !== null &&
-        userWithEmail !== undefined &&
-        newUser.email !== user.email
-      ) {
-        throw new HttpException('Email is already used', HttpStatus.BAD_REQUEST);
+      if (newUser.email) {
+        const userWithEmail = await this.userRepository.findOneBy({
+          email: newUser.email,
+        });
+        if (
+          userWithEmail !== null &&
+          userWithEmail !== undefined &&
+          newUser.email !== user.email
+        ) {
+          throw new HttpException('Email is already used', HttpStatus.BAD_REQUEST);
+        }
       }
+      // check if user doesn't exist or have already an email
+      if (user === undefined || user === null) {
+        throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
+      }
+      // merge and save the modified user
+      await this.userRepository.merge(user, newUser);
+      const result = await this.userRepository.save(user);
+      res.data = result;
+      res.message = "Successfully updated"
+      res.statusCode = HttpStatus.OK;
+    } catch (error) {
+      res.statusCode = HttpStatus.BAD_REQUEST;
+      res.message = error.message
     }
-    // check if user doesn't exist or have already an email
-    if (user === undefined || user === null) {
-      throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
-    }
-    // merge and save the modified user
-    await this.userRepository.merge(user, newUser);
-    return await this.userRepository.save(user);
+    return res;
   }
   /**
    * 
@@ -99,14 +109,22 @@ export class UsersService {
    * @returns delete user from database based on it's id
    */
   async deleteUserById(id: string) {
-    // first get the user
-    const user = await this.userRepository.findOneBy({ id: id });
-    // then check if it exists
-    if (user === undefined || user === null) {
-      throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
+    const res = new ApiResponseDTO<User>();
+    try {
+      // first get the user
+      const user = await this.userRepository.findOneBy({ id: id });
+      // then check if it exists
+      if (user === undefined || user === null) {
+        throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
+      }
+      await this.userRepository.delete(id)
+      res.statusCode = HttpStatus.OK;
+      res.message = "User deleted successfully"
+    } catch (error) {
+      res.statusCode = HttpStatus.BAD_REQUEST;
+      res.message = error.message
     }
-
-    return await this.userRepository.delete(id);
+    return res;
   }
   /**
    * 

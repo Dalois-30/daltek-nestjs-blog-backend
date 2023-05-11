@@ -34,7 +34,7 @@ let UsersService = class UsersService {
             await this.sharedService.checkIfAdmin(headers);
             const result = await this.userRepository.find();
             res.data = result;
-            res.message = "Successfully get user information";
+            res.message = "Successfully get users information";
             res.statusCode = common_1.HttpStatus.OK;
         }
         catch (error) {
@@ -61,31 +61,52 @@ let UsersService = class UsersService {
         return await this.userRepository.findOneBy({ email });
     }
     async update(id, newUser) {
-        const user = await this.userRepository.findOneBy({
-            id: id,
-        });
-        if (newUser.email) {
-            const userWithEmail = await this.userRepository.findOneBy({
-                email: newUser.email,
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.userRepository.findOneBy({
+                id: id,
             });
-            if (userWithEmail !== null &&
-                userWithEmail !== undefined &&
-                newUser.email !== user.email) {
-                throw new common_1.HttpException('Email is already used', common_1.HttpStatus.BAD_REQUEST);
+            if (newUser.email) {
+                const userWithEmail = await this.userRepository.findOneBy({
+                    email: newUser.email,
+                });
+                if (userWithEmail !== null &&
+                    userWithEmail !== undefined &&
+                    newUser.email !== user.email) {
+                    throw new common_1.HttpException('Email is already used', common_1.HttpStatus.BAD_REQUEST);
+                }
             }
+            if (user === undefined || user === null) {
+                throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            await this.userRepository.merge(user, newUser);
+            const result = await this.userRepository.save(user);
+            res.data = result;
+            res.message = "Successfully updated";
+            res.statusCode = common_1.HttpStatus.OK;
         }
-        if (user === undefined || user === null) {
-            throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
         }
-        await this.userRepository.merge(user, newUser);
-        return await this.userRepository.save(user);
+        return res;
     }
     async deleteUserById(id) {
-        const user = await this.userRepository.findOneBy({ id: id });
-        if (user === undefined || user === null) {
-            throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.userRepository.findOneBy({ id: id });
+            if (user === undefined || user === null) {
+                throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            await this.userRepository.delete(id);
+            res.statusCode = common_1.HttpStatus.OK;
+            res.message = "User deleted successfully";
         }
-        return await this.userRepository.delete(id);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async deleteAll() {
         return await this.userRepository.clear();

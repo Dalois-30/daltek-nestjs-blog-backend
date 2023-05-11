@@ -9,8 +9,8 @@ export declare class UsersController {
     getUserByEmail(email: string): Promise<User>;
     getUserById(id: string): Promise<ApiResponseDTO<User>>;
     deleteAllUsers(): Promise<void>;
-    deleteUserById(id: string): Promise<import("typeorm").DeleteResult>;
-    updateUser(id: string, user: UpdateUserDto): Promise<User>;
+    deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
+    updateUser(id: string, user: UpdateUserDto): Promise<ApiResponseDTO<User>>;
     testAuthRoute(): {
         message: string;
     };

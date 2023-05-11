@@ -7,7 +7,14 @@ import { CategoryGetDTO } from './dto/category-get-dto';
 export declare class CategoriesController {
     private categoryService;
     constructor(categoryService: CategoriesService);
-    getAllCategory(): Promise<ApiResponseDTO<CategoryGetDTO[]>>;
+    getAllCategory(page?: number, limit?: number): Promise<{
+        totalItems: number;
+        currentPage: number;
+        pageCount: number;
+        data?: CategoryGetDTO[];
+        message?: any;
+        statusCode?: number;
+    }>;
     createCategory(file: Express.Multer.File, category: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
     getCategoryById(id: string): Promise<ApiResponseDTO<Category>>;
     deleteCategoryById(id: string): Promise<ApiResponseDTO<Category>>;

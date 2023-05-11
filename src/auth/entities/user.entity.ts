@@ -8,10 +8,13 @@ import {
   OneToOne,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 import { UserRoles } from '../constant/user-roles';
+import { Comments } from 'src/features/comments/models/comments.model';
+import { Posts } from 'src/features/posts/models/posts.model';
 
 @Entity('user')
 export class User {
@@ -26,6 +29,12 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany((type) => Comments, (comment) => comment.user)
+  comments: Comments[]
+
+  @OneToMany((type) => Posts, (post) => post.user)
+  posts: Posts[]
 
   @Column()
   verified: boolean = false;

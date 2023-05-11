@@ -20,53 +20,137 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const posts_model_1 = require("./models/posts.model");
 const category_model_1 = require("../categories/models/category.model");
+const api_response_1 = require("../../shared/response/api-response");
+const upload_service_1 = require("../../shared/upload/upload.service");
+const get_file_dto_1 = require("../../shared/upload/get-file-dto");
+const post_get_dto_1 = require("./dto/post-get-dto");
 let PostsService = class PostsService {
-    constructor(postRepository, httpService, jwtService, categoryRepository) {
+    constructor(postRepository, httpService, jwtService, categoryRepository, uploadService) {
         this.postRepository = postRepository;
         this.httpService = httpService;
         this.jwtService = jwtService;
         this.categoryRepository = categoryRepository;
+        this.uploadService = uploadService;
     }
-    async create(post, image) {
-        const category = await this.categoryRepository.findOneBy({
-            id: post.category
-        });
-        if (!category) {
-            throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
+    async create(post, file) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const category = await this.categoryRepository.findOneBy({
+                id: post.category
+            });
+            if (!category) {
+                throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
+            }
+            const image = await this.uploadService.upload(file.originalname, file.buffer);
+            const newPost = this.postRepository.create({
+                title: post.title,
+                content: post.content,
+                image: image,
+                status: post.status,
+                tags: post.tags
+            });
+            newPost.category = category;
+            const result = await this.postRepository.save(newPost);
+            res.data = result;
+            res.message = "successfully created category";
+            res.statusCode = common_1.HttpStatus.CREATED;
         }
-        const newPost = this.postRepository.create({
-            title: post.title,
-            content: post.content,
-            image: image,
-            status: post.status,
-            tags: post.tags
-        });
-        newPost.category = category;
-        await this.postRepository.save(newPost);
-        return newPost;
+        catch (error) {
+            res.message = error.message;
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+        }
+        return res;
     }
-    async findAll() {
-        return await this.postRepository.find();
+    async findAll(page, limit) {
+        const res = new api_response_1.ApiResponseDTO();
+        let totalGet = 0;
+        try {
+            let [result, total] = await this.postRepository.createQueryBuilder('post')
+                .skip(page * limit)
+                .take(limit)
+                .getManyAndCount();
+            totalGet = total;
+            let postsGet = [];
+            for (let index = 0; index < result.length; index++) {
+                const post = result[index];
+                let postGet = new post_get_dto_1.PostGetDTO();
+                let urlObj = new get_file_dto_1.GetFileDto();
+                urlObj.key = post.image;
+                let img = await this.uploadService.getUploadedObject(urlObj);
+                postGet.cat = post;
+                postGet.image = img;
+                postsGet.push(postGet);
+                console.log(postsGet.length);
+            }
+            res.data = postsGet;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return Object.assign(Object.assign({}, res), { totalItems: totalGet, currentPage: page, pageCount: Math.ceil(totalGet / limit) });
     }
     async findOneById(id) {
-        return await this.postRepository.findOneBy({ id });
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const post = await this.postRepository.findOne({
+                where: {
+                    id
+                },
+                relations: {
+                    user: true,
+                    comments: true
+                }
+            });
+            res.data = post;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async update(id, newpost) {
-        const post = await this.postRepository.findOneBy({
-            id: id,
-        });
-        if (post === undefined || post === null) {
-            throw new common_1.HttpException("post doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const post = await this.postRepository.findOneBy({
+                id: id,
+            });
+            if (post === undefined || post === null) {
+                throw new common_1.HttpException("post doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            await this.postRepository.merge(post, newpost);
+            const result = await this.postRepository.save(post);
+            res.data = result;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
         }
-        await this.postRepository.merge(post, newpost);
-        return await this.postRepository.save(post);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async deletepostById(id) {
-        const post = await this.postRepository.findOneBy({ id: id });
-        if (post === undefined || post === null) {
-            throw new common_1.HttpException("post doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const post = await this.postRepository.findOneBy({ id: id });
+            if (post === undefined || post === null) {
+                throw new common_1.HttpException("post doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            await this.postRepository.delete(id);
+            res.statusCode = common_1.HttpStatus.OK;
+            res.message = "Post deleted successfully";
         }
-        return await this.postRepository.delete(id);
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
     }
     async deleteAll(headers) {
         let token = headers["authorization"].split(' ');
@@ -86,7 +170,8 @@ PostsService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         axios_1.HttpService,
         jwt_1.JwtService,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        upload_service_1.UploadService])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

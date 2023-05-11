@@ -22,8 +22,8 @@ let CategoriesController = class CategoriesController {
     constructor(categoryService) {
         this.categoryService = categoryService;
     }
-    async getAllCategory() {
-        return await this.categoryService.findAll();
+    async getAllCategory(page = 0, limit = 10) {
+        return await this.categoryService.findAll(page, limit);
     }
     async createCategory(file, category) {
         return await this.categoryService.create(category, file);
@@ -41,8 +41,10 @@ let CategoriesController = class CategoriesController {
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all category' }),
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], CategoriesController.prototype, "getAllCategory", null);
 __decorate([

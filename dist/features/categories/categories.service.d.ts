@@ -10,7 +10,14 @@ export declare class CategoriesService {
     private readonly uploadService;
     constructor(categoryRepository: Repository<Category>, uploadService: UploadService);
     create(category: CreateCategoryDto, file: Express.Multer.File): Promise<ApiResponseDTO<Category>>;
-    findAll(): Promise<ApiResponseDTO<CategoryGetDTO[]>>;
+    findAll(page?: number, limit?: number): Promise<{
+        totalItems: number;
+        currentPage: number;
+        pageCount: number;
+        data?: CategoryGetDTO[];
+        message?: any;
+        statusCode?: number;
+    }>;
     findOneById(id: string): Promise<ApiResponseDTO<Category>>;
     update(id: string, newCatDto: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
     delete(id: string): Promise<ApiResponseDTO<Category>>;

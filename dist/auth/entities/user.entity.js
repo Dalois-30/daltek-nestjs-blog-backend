@@ -14,6 +14,8 @@ const typeorm_1 = require("typeorm");
 const class_validator_1 = require("class-validator");
 const bcrypt = require("bcrypt");
 const user_roles_1 = require("../constant/user-roles");
+const comments_model_1 = require("../../features/comments/models/comments.model");
+const posts_model_1 = require("../../features/posts/models/posts.model");
 let User = class User {
     constructor() {
         this.verified = false;
@@ -45,6 +47,14 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)((type) => comments_model_1.Comments, (comment) => comment.user),
+    __metadata("design:type", Array)
+], User.prototype, "comments", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)((type) => posts_model_1.Posts, (post) => post.user),
+    __metadata("design:type", Array)
+], User.prototype, "posts", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Boolean)

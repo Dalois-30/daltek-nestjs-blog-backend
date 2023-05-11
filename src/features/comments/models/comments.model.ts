@@ -1,39 +1,36 @@
 import { User } from "src/auth/entities/user.entity";
-import { Category } from "src/features/categories/models/category.model";
+import { Posts } from "src/features/posts/models/posts.model";
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm"
 
 // import { Token } from "./token.model";
 
 @Entity()
-export class Posts { 
+export class Comments { 
     @PrimaryGeneratedColumn("uuid")
     public id: string;
 
     @Column({
         unique: true
     })
-    public title: string;
+    public name: string;
 
     @Column()
-    public content: string;
+    public description: string;
 
     @Column()
     public image: string;
 
-    @Column()
-    public status: boolean;
+    @ManyToOne((type) => User, (user) => user.comments)
+    user: User
 
-    @Column()
-    public tags?: string;
+    @ManyToOne(() => Posts, (post) => post.comments)
+    public post: Posts[];
 
-    @ManyToOne(() => Category, (category) => category.posts)
-    public category: Category;
+    @ManyToOne((type) => Comments, (category) => category.children)
+    parent: Comments
 
-    @ManyToOne(() => User, (category) => category.posts)
-    public user: User;
-
-    @OneToMany(() => Posts, (post) => post.category)
-    public comments: Comment[];
+    @OneToMany((type) => Comments, (category) => category.parent)
+    children: Comments[]
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;
