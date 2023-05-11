@@ -1,7 +1,8 @@
-import { Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { GetFileDto } from './get-file-dto';
 
 @Controller('upload')
 export class UploadController {
@@ -32,5 +33,10 @@ export class UploadController {
         })
     ) file: Express.Multer.File){
         return await this.uploadService.upload(file.originalname, file.buffer)
+    }
+
+    @Post("get-file")
+    async getFile(@Body() getFile: GetFileDto){
+        return await this.uploadService.getUploadedObject(getFile)
     }
 }

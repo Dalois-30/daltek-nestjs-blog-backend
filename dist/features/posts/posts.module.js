@@ -11,15 +11,18 @@ const common_1 = require("@nestjs/common");
 const posts_controller_1 = require("./posts.controller");
 const posts_service_1 = require("./posts.service");
 const shared_module_1 = require("../../shared/shared.module");
+const upload_module_1 = require("../../shared/upload/upload.module");
+const upload_service_1 = require("../../shared/upload/upload.service");
 let PostsModule = class PostsModule {
 };
 PostsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            shared_module_1.SharedModule
+            shared_module_1.SharedModule,
+            upload_module_1.UploadModule
         ],
         controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService]
+        providers: [posts_service_1.PostsService, upload_service_1.UploadService]
     })
 ], PostsModule);
 exports.PostsModule = PostsModule;

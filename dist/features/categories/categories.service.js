@@ -17,14 +17,16 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const category_model_1 = require("./models/category.model");
+const api_response_1 = require("../../shared/response/api-response");
 let CategoriesService = class CategoriesService {
     constructor(categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
-    async create(category) {
+    async create(category, image) {
         const newCat = this.categoryRepository.create({
             name: category.name,
-            description: category.description
+            description: category.description,
+            image: image
         });
         if (category.parent) {
             const parent = await this.categoryRepository.findOneBy({
@@ -35,8 +37,12 @@ let CategoriesService = class CategoriesService {
             }
             newCat.parent = parent;
         }
-        await this.categoryRepository.save(newCat);
-        return newCat;
+        const result = await this.categoryRepository.save(newCat);
+        const res = new api_response_1.ApiResponse();
+        res.data = result;
+        res.message = "successfully created category";
+        res.success = true;
+        return res;
     }
     async findAll() {
         return await this.categoryRepository.find();

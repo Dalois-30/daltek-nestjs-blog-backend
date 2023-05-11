@@ -1,4 +1,4 @@
-import { Post } from "src/features/posts/models/posts.model";
+import { Posts } from "src/features/posts/models/posts.model";
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm"
 
 // import { Token } from "./token.model";
@@ -25,8 +25,8 @@ export class Category {
     @OneToMany((type) => Category, (category) => category.parent)
     children: Category[]
 
-    @OneToMany(() => Post, (post) => post.category)
-    public posts: Post[];
+    @OneToMany(() => Posts, (post) => post.category)
+    public posts: Posts[];
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;

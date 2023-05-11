@@ -3,24 +3,56 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './models/posts.model';
-import { UpdatePostDto } from './dto/create-post-dto';
+import { Posts } from './models/posts.model';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
+import { generateRandomString } from 'src/auth/constant/constants';
+import { Category } from '../categories/models/category.model';
 
 @Injectable()
 export class PostsService {
 
     constructor(
-        @InjectRepository(Post)
-        private readonly postRepository: Repository<Post>,
+        @InjectRepository(Posts)
+        private readonly postRepository: Repository<Posts>,
         private readonly httpService: HttpService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        @InjectRepository(Category)
+        private readonly categoryRepository: Repository<Category>,
     ) { }
 
+        /**
+     * 
+     * @param post post dta 
+     * @returns the post object newly created
+     */
+        async create(post: CreatePostDto, image: string) {
+            // get the corresponding category 
+            const category = await this.categoryRepository.findOneBy({
+                id: post.category
+            });
+            if (!category) {
+                throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
+            }
+            // create new post from the dto and the category
+            const newPost = this.postRepository.create({
+                title: post.title,
+                content: post.content,
+                image: image,
+                status: post.status,
+                tags: post.tags
+            });
+    
+            newPost.category = category;
+            // save category on database
+            await this.postRepository.save(newPost);
+            return newPost;
+        }
+
     /**
- * 
- * @returns the lis of all posts
- */
-    async findAll(): Promise<Post[]> {
+    * 
+    * @returns the lis of all posts
+    */
+    async findAll(): Promise<Posts[]> {
 
         return await this.postRepository.find();
     }
@@ -29,7 +61,7 @@ export class PostsService {
      * @param id 
      * @returns returns the specified post by its email
      */
-    async findOneById(id: string): Promise<Post> {
+    async findOneById(id: string): Promise<Posts> {
         return await this.postRepository.findOneBy({ id });
     }
     /**
@@ -56,7 +88,7 @@ export class PostsService {
      * @returns delete post from database based on it's id
      */
     async deletepostById(id: string) {
-        
+
         // first get the post
         const post = await this.postRepository.findOneBy({ id: id });
         // then check if it exists

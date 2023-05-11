@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 // import { Token } from "./token.model";
 
 @Entity()
-export class Post { 
+export class Posts { 
     @PrimaryGeneratedColumn("uuid")
     public id: string;
 
@@ -17,13 +17,13 @@ export class Post {
     public content: string;
 
     @Column()
-    public images: string;
+    public image: string;
 
     @Column()
-    public stattus: boolean;
+    public status: boolean;
 
     @Column()
-    public tags: string;
+    public tags?: string;
 
     @ManyToOne(() => Category, (category) => category.posts)
     public category: Category;

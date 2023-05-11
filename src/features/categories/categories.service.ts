@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CategoryWithParent, CreateCategoryDto } from './dto/category-create-dto';
 import { Category } from './models/category.model';
+import { ApiResponse } from 'src/shared/response/api-response';
 
 @Injectable()
 export class CategoriesService {
@@ -17,10 +18,11 @@ export class CategoriesService {
      * @param type type dta 
      * @returns the type object newly created
      */
-    async create(category: CreateCategoryDto) {
+    async create(category: CreateCategoryDto, image: string) {
         const newCat = this.categoryRepository.create({
             name: category.name,
-            description: category.description
+            description: category.description,
+            image: image
         });
         if (category.parent) {
             // get the parent category
@@ -33,8 +35,12 @@ export class CategoriesService {
             }
             newCat.parent = parent;
         }
-        await this.categoryRepository.save(newCat);
-        return newCat;
+        const result = await this.categoryRepository.save(newCat);
+        const res = new ApiResponse<Category>();
+        res.data = result;
+        res.message = "successfully created category"
+        res.success = true;
+        return res;
     }
     /**
      * 

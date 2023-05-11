@@ -19,11 +19,31 @@ const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const posts_model_1 = require("./models/posts.model");
+const category_model_1 = require("../categories/models/category.model");
 let PostsService = class PostsService {
-    constructor(postRepository, httpService, jwtService) {
+    constructor(postRepository, httpService, jwtService, categoryRepository) {
         this.postRepository = postRepository;
         this.httpService = httpService;
         this.jwtService = jwtService;
+        this.categoryRepository = categoryRepository;
+    }
+    async create(post, image) {
+        const category = await this.categoryRepository.findOneBy({
+            id: post.category
+        });
+        if (!category) {
+            throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
+        }
+        const newPost = this.postRepository.create({
+            title: post.title,
+            content: post.content,
+            image: image,
+            status: post.status,
+            tags: post.tags
+        });
+        newPost.category = category;
+        await this.postRepository.save(newPost);
+        return newPost;
     }
     async findAll() {
         return await this.postRepository.find();
@@ -61,10 +81,12 @@ let PostsService = class PostsService {
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(posts_model_1.Post)),
+    __param(0, (0, typeorm_1.InjectRepository)(posts_model_1.Posts)),
+    __param(3, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         axios_1.HttpService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        typeorm_2.Repository])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

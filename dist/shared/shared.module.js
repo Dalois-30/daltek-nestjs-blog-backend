@@ -28,7 +28,7 @@ SharedModule = __decorate([
             env_module_1.EnvModule,
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
-            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Post]),
+            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Posts]),
             axios_1.HttpModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.register({
@@ -44,7 +44,7 @@ SharedModule = __decorate([
             env_module_1.EnvModule,
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
-            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Post]),
+            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Posts]),
             axios_1.HttpModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.register({

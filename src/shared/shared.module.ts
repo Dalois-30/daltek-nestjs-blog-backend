@@ -9,7 +9,7 @@ import { EXPIRES_IN } from 'src/auth/constant/constants';
 import { User } from 'src/auth/entities/user.entity';
 import { UploadModule } from './upload/upload.module';
 import { Category } from 'src/features/categories/models/category.model';
-import { Post } from 'src/features/posts/models/posts.model';
+import { Posts } from 'src/features/posts/models/posts.model';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { Post } from 'src/features/posts/models/posts.model';
     EnvModule,
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([Category]),
-    TypeOrmModule.forFeature([Post]),
+    TypeOrmModule.forFeature([Posts]),
     HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
@@ -33,7 +33,7 @@ import { Post } from 'src/features/posts/models/posts.model';
     EnvModule,
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([Category]),
-    TypeOrmModule.forFeature([Post]),
+    TypeOrmModule.forFeature([Posts]),
     HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({

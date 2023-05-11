@@ -4,9 +4,8 @@ import { IsString, IsNotEmpty } from 'class-validator';
 export class CreatePostDto {
     title: string;
     content: string;
-    image: string;
     status: boolean;
-    tags: string;
+    tags?: string;
     category: string;
 } 
 

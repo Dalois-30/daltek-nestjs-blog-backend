@@ -13,6 +13,7 @@ exports.UploadService = void 0;
 const common_1 = require("@nestjs/common");
 const client_s3_1 = require("@aws-sdk/client-s3");
 const config_1 = require("@nestjs/config");
+const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
 let UploadService = class UploadService {
     constructor(configService) {
         this.configService = configService;
@@ -29,6 +30,22 @@ let UploadService = class UploadService {
         const uploadedObjectUrl = `https://${this.configService.getOrThrow('AWS_BUCKET_NAME')}.s3.amazonaws.com/users/${fileName}`;
         console.log(uploadedObjectUrl);
         return uploadedObjectUrl;
+    }
+    async getUploadedObject(key) {
+        try {
+            const command = new client_s3_1.GetObjectCommand({
+                Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
+                Key: key.key
+            });
+            const url = await (0, s3_request_presigner_1.getSignedUrl)(this.s3Client, command, {
+                expiresIn: 15 * 60
+            });
+            return url;
+        }
+        catch (err) {
+            console.log(err);
+            throw new Error('Impossible de récupérer l\'image.');
+        }
     }
 };
 UploadService = __decorate([

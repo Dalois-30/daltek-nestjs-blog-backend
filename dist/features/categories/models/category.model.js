@@ -42,7 +42,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Category.prototype, "children", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => posts_model_1.Post, (post) => post.category),
+    (0, typeorm_1.OneToMany)(() => posts_model_1.Posts, (post) => post.category),
     __metadata("design:type", Array)
 ], Category.prototype, "posts", void 0);
 __decorate([

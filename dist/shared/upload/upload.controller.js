@@ -17,12 +17,16 @@ const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const upload_service_1 = require("./upload.service");
 const swagger_1 = require("@nestjs/swagger");
+const get_file_dto_1 = require("./get-file-dto");
 let UploadController = class UploadController {
     constructor(uploadService) {
         this.uploadService = uploadService;
     }
     async uploadFile(file) {
         return await this.uploadService.upload(file.originalname, file.buffer);
+    }
+    async getFile(getFile) {
+        return await this.uploadService.getUploadedObject(getFile);
     }
 };
 __decorate([
@@ -48,6 +52,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UploadController.prototype, "uploadFile", null);
+__decorate([
+    (0, common_1.Post)("get-file"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [get_file_dto_1.GetFileDto]),
+    __metadata("design:returntype", Promise)
+], UploadController.prototype, "getFile", null);
 UploadController = __decorate([
     (0, common_1.Controller)('upload'),
     __metadata("design:paramtypes", [upload_service_1.UploadService])
