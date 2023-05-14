@@ -18,7 +18,7 @@ export declare class CategoriesService {
         message?: any;
         statusCode?: number;
     }>;
-    findOneById(id: string): Promise<ApiResponseDTO<Category>>;
+    findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>>;
     update(id: string, newCatDto: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
     delete(id: string): Promise<ApiResponseDTO<Category>>;
 }

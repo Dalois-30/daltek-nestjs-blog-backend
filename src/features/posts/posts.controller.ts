@@ -6,6 +6,7 @@ import { UploadService } from 'src/shared/upload/upload.service';
 import { PostsService } from './posts.service';
 import { Posts } from './models/posts.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
+import { PostGetDTO } from './dto/post-get-dto';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -73,7 +74,7 @@ export class PostsController {
    */
   @ApiResponse({ status: 200, description: 'Fetched specific post' })
   @Get('/getOne/:postId')
-  async getpostById(@Param('postId') id: string): Promise<ApiResponseDTO<Posts>> {
+  async getpostById(@Param('postId') id: string): Promise<ApiResponseDTO<PostGetDTO>> {
     return await this.postService.findOneById(id);
   }
 

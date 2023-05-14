@@ -115,8 +115,8 @@ export class CategoriesService {
      * @param id the id of the type
      * @returns the type object based on the id
      */
-    async findOneById(id: string): Promise<ApiResponseDTO<Category>> {
-        const res = new ApiResponseDTO<Category>();
+    async findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>> {
+        const res = new ApiResponseDTO<CategoryGetDTO>();
         try {
             // get the category
             const category = await this.categoryRepository.findOne({
@@ -133,7 +133,15 @@ export class CategoriesService {
             if (!category) {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
-            res.data = category
+            let catGet = new CategoryGetDTO();
+                let urlObj = new GetFileDto();
+                urlObj.key = category.image;
+                // get the signed link of the file
+                let img = await this.uploadService.getUploadedObject(urlObj)
+                // set the object 
+                catGet.cat = category;
+                catGet.image = img;
+            res.data = catGet
             res.message = "success";
             res.statusCode = HttpStatus.OK;
         } catch (error) {

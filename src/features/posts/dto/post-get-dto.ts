@@ -3,6 +3,6 @@ import { IsString, IsNotEmpty } from 'class-validator';
 import { Posts } from '../models/posts.model';
 
 export class PostGetDTO {
-    cat: Posts;
+    post: Posts;
     image?: string;
 }

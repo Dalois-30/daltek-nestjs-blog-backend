@@ -16,7 +16,7 @@ export declare class CategoriesController {
         statusCode?: number;
     }>;
     createCategory(file: Express.Multer.File, category: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
-    getCategoryById(id: string): Promise<ApiResponseDTO<Category>>;
+    getCategoryById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>>;
     deleteCategoryById(id: string): Promise<ApiResponseDTO<Category>>;
     updateCategory(id: string, category: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
 }

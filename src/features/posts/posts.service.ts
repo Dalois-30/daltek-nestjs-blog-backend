@@ -84,6 +84,8 @@ export class PostsService {
         let totalGet = 0;
         try {
             let [result, total] = await this.postRepository.createQueryBuilder('post')
+                .leftJoinAndSelect('post.user', 'user')
+                // .leftJoinAndSelect('post.children', 'children')
                 .skip(page * limit)
                 .take(limit)
                 .getManyAndCount();
@@ -99,7 +101,7 @@ export class PostsService {
                 // get the signed link of the file
                 let img = await this.uploadService.getUploadedObject(urlObj)
                 // set the object 
-                postGet.cat = post;
+                postGet.post = post;
                 postGet.image = img;
                 // updatte the table of cat with the signed link
                 postsGet.push(postGet);
@@ -125,8 +127,9 @@ export class PostsService {
      * @param id 
      * @returns returns the specified post by its email
      */
-    async findOneById(id: string): Promise<ApiResponseDTO<Posts>> {
-        const res = new ApiResponseDTO<Posts>();
+    async findOneById(id: string): Promise<ApiResponseDTO<PostGetDTO>> {
+        const res = new ApiResponseDTO<PostGetDTO>();
+
         try {
             // get posts with comments and user
             const post = await this.postRepository.findOne({
@@ -142,7 +145,16 @@ export class PostsService {
             if (!post) {
                 throw new HttpException("post not found", HttpStatus.NOT_FOUND);
             }
-            res.data = post;
+            let postGet = new PostGetDTO();
+            let urlObj = new GetFileDto();
+            urlObj.key = post.image;
+            // get the signed link of the file
+            let img = await this.uploadService.getUploadedObject(urlObj)
+            // set the object 
+            postGet.post = post;
+            postGet.image = img;
+
+            res.data = postGet;
             res.message = "success";
             res.statusCode = HttpStatus.OK;
         } catch (error) {

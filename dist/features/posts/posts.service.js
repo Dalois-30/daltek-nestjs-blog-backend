@@ -75,6 +75,7 @@ let PostsService = class PostsService {
         let totalGet = 0;
         try {
             let [result, total] = await this.postRepository.createQueryBuilder('post')
+                .leftJoinAndSelect('post.user', 'user')
                 .skip(page * limit)
                 .take(limit)
                 .getManyAndCount();
@@ -86,7 +87,7 @@ let PostsService = class PostsService {
                 let urlObj = new get_file_dto_1.GetFileDto();
                 urlObj.key = post.image;
                 let img = await this.uploadService.getUploadedObject(urlObj);
-                postGet.cat = post;
+                postGet.post = post;
                 postGet.image = img;
                 postsGet.push(postGet);
                 console.log(postsGet.length);
@@ -116,7 +117,13 @@ let PostsService = class PostsService {
             if (!post) {
                 throw new common_1.HttpException("post not found", common_1.HttpStatus.NOT_FOUND);
             }
-            res.data = post;
+            let postGet = new post_get_dto_1.PostGetDTO();
+            let urlObj = new get_file_dto_1.GetFileDto();
+            urlObj.key = post.image;
+            let img = await this.uploadService.getUploadedObject(urlObj);
+            postGet.post = post;
+            postGet.image = img;
+            res.data = postGet;
             res.message = "success";
             res.statusCode = common_1.HttpStatus.OK;
         }

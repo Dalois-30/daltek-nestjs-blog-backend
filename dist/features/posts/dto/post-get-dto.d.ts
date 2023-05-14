@@ -1,5 +1,5 @@
 import { Posts } from '../models/posts.model';
 export declare class PostGetDTO {
-    cat: Posts;
+    post: Posts;
     image?: string;
 }

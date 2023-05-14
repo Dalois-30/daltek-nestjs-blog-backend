@@ -26,7 +26,7 @@ export declare class PostsService {
         message?: any;
         statusCode?: number;
     }>;
-    findOneById(id: string): Promise<ApiResponseDTO<Posts>>;
+    findOneById(id: string): Promise<ApiResponseDTO<PostGetDTO>>;
     update(id: string, newpost: UpdatePostDto): Promise<ApiResponseDTO<Posts>>;
     deletepostById(id: string): Promise<ApiResponseDTO<Category>>;
     deleteAll(headers: string): Promise<void>;

@@ -105,7 +105,13 @@ let CategoriesService = class CategoriesService {
             if (!category) {
                 throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
-            res.data = category;
+            let catGet = new category_get_dto_1.CategoryGetDTO();
+            let urlObj = new get_file_dto_1.GetFileDto();
+            urlObj.key = category.image;
+            let img = await this.uploadService.getUploadedObject(urlObj);
+            catGet.cat = category;
+            catGet.image = img;
+            res.data = catGet;
             res.message = "success";
             res.statusCode = common_1.HttpStatus.OK;
         }
