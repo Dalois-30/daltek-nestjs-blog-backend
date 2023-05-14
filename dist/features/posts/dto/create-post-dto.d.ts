@@ -4,6 +4,7 @@ export declare class CreatePostDto {
     status: boolean;
     tags?: string;
     category: string;
+    author: string;
 }
 export declare class UpdatePostDto {
     title?: string;

@@ -8,13 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var Posts_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Posts = void 0;
 const user_entity_1 = require("../../../auth/entities/user.entity");
 const category_model_1 = require("../../categories/models/category.model");
+const comments_model_1 = require("../../comments/models/comments.model");
 const typeorm_1 = require("typeorm");
-let Posts = Posts_1 = class Posts {
+let Posts = class Posts {
+    constructor() {
+        this.status = false;
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
@@ -51,7 +54,7 @@ __decorate([
     __metadata("design:type", user_entity_1.User)
 ], Posts.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Posts_1, (post) => post.category),
+    (0, typeorm_1.OneToMany)(() => comments_model_1.Comments, (comment) => comment.post),
     __metadata("design:type", Array)
 ], Posts.prototype, "comments", void 0);
 __decorate([
@@ -62,7 +65,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" }),
     __metadata("design:type", Date)
 ], Posts.prototype, "updated_at", void 0);
-Posts = Posts_1 = __decorate([
+Posts = __decorate([
     (0, typeorm_1.Entity)()
 ], Posts);
 exports.Posts = Posts;

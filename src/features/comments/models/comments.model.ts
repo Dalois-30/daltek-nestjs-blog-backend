@@ -12,24 +12,18 @@ export class Comments {
     @Column({
         unique: true
     })
-    public name: string;
-
-    @Column()
-    public description: string;
-
-    @Column()
-    public image: string;
+    public content: string;
 
     @ManyToOne((type) => User, (user) => user.comments)
     user: User
 
     @ManyToOne(() => Posts, (post) => post.comments)
-    public post: Posts[];
+    public post: Posts;
 
-    @ManyToOne((type) => Comments, (category) => category.children)
+    @ManyToOne((type) => Comments, (comment) => comment.children)
     parent: Comments
 
-    @OneToMany((type) => Comments, (category) => category.parent)
+    @OneToMany((type) => Comments, (comment) => comment.parent)
     children: Comments[]
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })

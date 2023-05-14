@@ -25,29 +25,21 @@ __decorate([
         unique: true
     }),
     __metadata("design:type", String)
-], Comments.prototype, "name", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Comments.prototype, "description", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Comments.prototype, "image", void 0);
+], Comments.prototype, "content", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)((type) => user_entity_1.User, (user) => user.comments),
     __metadata("design:type", user_entity_1.User)
 ], Comments.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => posts_model_1.Posts, (post) => post.comments),
-    __metadata("design:type", Array)
+    __metadata("design:type", posts_model_1.Posts)
 ], Comments.prototype, "post", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)((type) => Comments_1, (category) => category.children),
+    (0, typeorm_1.ManyToOne)((type) => Comments_1, (comment) => comment.children),
     __metadata("design:type", Comments)
 ], Comments.prototype, "parent", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)((type) => Comments_1, (category) => category.parent),
+    (0, typeorm_1.OneToMany)((type) => Comments_1, (comment) => comment.parent),
     __metadata("design:type", Array)
 ], Comments.prototype, "children", void 0);
 __decorate([

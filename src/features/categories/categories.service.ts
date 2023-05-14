@@ -126,6 +126,7 @@ export class CategoriesService {
                 relations: {
                     parent: true,
                     children: true,
+                    posts: true
                 },
             });
             // check if the category exists

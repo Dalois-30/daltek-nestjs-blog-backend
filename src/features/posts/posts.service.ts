@@ -11,6 +11,7 @@ import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { GetFileDto } from 'src/shared/upload/get-file-dto';
 import { PostGetDTO } from './dto/post-get-dto';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class PostsService {
@@ -22,14 +23,16 @@ export class PostsService {
         private readonly jwtService: JwtService,
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
         private readonly uploadService: UploadService
     ) { }
 
     /**
- * 
- * @param post post dta 
- * @returns the post object newly created
- */
+    * 
+    * @param post post dta 
+    * @returns the post object newly created
+    */
     async create(post: CreatePostDto, file: Express.Multer.File) {
         const res = new ApiResponseDTO<Posts>();
         try {
@@ -39,6 +42,12 @@ export class PostsService {
             if (!category) {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
+            const author = await this.userRepository.findOneBy({
+                id: post.author
+            })
+            if (!author) {
+                throw new HttpException("user not found", HttpStatus.NO_CONTENT);
+            }
             // upload image file and get key
             const image = await this.uploadService.upload(file.originalname, file.buffer);
             // create new post from the dto and the category
@@ -47,10 +56,11 @@ export class PostsService {
                 content: post.content,
                 image: image,
                 status: post.status,
+                user: author,
+                category: category,
                 tags: post.tags
             });
 
-            newPost.category = category;
             // save post on database
             const result = await this.postRepository.save(newPost);
             // format response
@@ -121,13 +131,17 @@ export class PostsService {
             // get posts with comments and user
             const post = await this.postRepository.findOne({
                 where: {
-                    id
+                    id: id
                 },
                 relations: {
                     user: true,
                     comments: true
                 }
             });
+            // check if the category exists
+            if (!post) {
+                throw new HttpException("post not found", HttpStatus.NOT_FOUND);
+            }
             res.data = post;
             res.message = "success";
             res.statusCode = HttpStatus.OK;

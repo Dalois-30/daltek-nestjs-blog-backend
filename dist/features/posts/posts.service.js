@@ -24,12 +24,14 @@ const api_response_1 = require("../../shared/response/api-response");
 const upload_service_1 = require("../../shared/upload/upload.service");
 const get_file_dto_1 = require("../../shared/upload/get-file-dto");
 const post_get_dto_1 = require("./dto/post-get-dto");
+const user_entity_1 = require("../../auth/entities/user.entity");
 let PostsService = class PostsService {
-    constructor(postRepository, httpService, jwtService, categoryRepository, uploadService) {
+    constructor(postRepository, httpService, jwtService, categoryRepository, userRepository, uploadService) {
         this.postRepository = postRepository;
         this.httpService = httpService;
         this.jwtService = jwtService;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
         this.uploadService = uploadService;
     }
     async create(post, file) {
@@ -41,15 +43,22 @@ let PostsService = class PostsService {
             if (!category) {
                 throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
+            const author = await this.userRepository.findOneBy({
+                id: post.author
+            });
+            if (!author) {
+                throw new common_1.HttpException("user not found", common_1.HttpStatus.NO_CONTENT);
+            }
             const image = await this.uploadService.upload(file.originalname, file.buffer);
             const newPost = this.postRepository.create({
                 title: post.title,
                 content: post.content,
                 image: image,
                 status: post.status,
+                user: author,
+                category: category,
                 tags: post.tags
             });
-            newPost.category = category;
             const result = await this.postRepository.save(newPost);
             res.data = result;
             res.message = "successfully created category";
@@ -97,13 +106,16 @@ let PostsService = class PostsService {
         try {
             const post = await this.postRepository.findOne({
                 where: {
-                    id
+                    id: id
                 },
                 relations: {
                     user: true,
                     comments: true
                 }
             });
+            if (!post) {
+                throw new common_1.HttpException("post not found", common_1.HttpStatus.NOT_FOUND);
+            }
             res.data = post;
             res.message = "success";
             res.statusCode = common_1.HttpStatus.OK;
@@ -167,9 +179,11 @@ PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(posts_model_1.Posts)),
     __param(3, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
+    __param(4, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         axios_1.HttpService,
         jwt_1.JwtService,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         upload_service_1.UploadService])
 ], PostsService);

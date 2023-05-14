@@ -31,7 +31,6 @@ let UsersService = class UsersService {
     async findAll(headers) {
         const res = new api_response_1.ApiResponseDTO();
         try {
-            await this.sharedService.checkIfAdmin(headers);
             const result = await this.userRepository.find();
             res.data = result;
             res.message = "Successfully get users information";
@@ -46,7 +45,15 @@ let UsersService = class UsersService {
     async findOneById(id) {
         const res = new api_response_1.ApiResponseDTO();
         try {
-            const result = await this.userRepository.findOneBy({ id });
+            const result = await this.userRepository.findOne({
+                where: {
+                    id: id
+                },
+                relations: {
+                    posts: true,
+                    comments: true
+                }
+            });
             res.data = result;
             res.message = "Successful retrieve user";
             res.statusCode = common_1.HttpStatus.OK;

@@ -8,13 +8,15 @@ import { Category } from '../categories/models/category.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { PostGetDTO } from './dto/post-get-dto';
+import { User } from 'src/auth/entities/user.entity';
 export declare class PostsService {
     private readonly postRepository;
     private readonly httpService;
     private readonly jwtService;
     private readonly categoryRepository;
+    private readonly userRepository;
     private readonly uploadService;
-    constructor(postRepository: Repository<Posts>, httpService: HttpService, jwtService: JwtService, categoryRepository: Repository<Category>, uploadService: UploadService);
+    constructor(postRepository: Repository<Posts>, httpService: HttpService, jwtService: JwtService, categoryRepository: Repository<Category>, userRepository: Repository<User>, uploadService: UploadService);
     create(post: CreatePostDto, file: Express.Multer.File): Promise<ApiResponseDTO<Posts>>;
     findAll(page?: number, limit?: number): Promise<{
         totalItems: number;

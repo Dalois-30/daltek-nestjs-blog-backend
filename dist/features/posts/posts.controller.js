@@ -52,9 +52,12 @@ __decorate([
         schema: {
             type: 'object',
             properties: {
-                name: { type: 'string' },
-                description: { type: 'string' },
+                title: { type: 'string' },
+                content: { type: 'string' },
                 parent: { type: 'string' },
+                tags: { type: 'string' },
+                author: { type: 'string' },
+                category: { type: 'string' },
                 file: {
                     type: 'string',
                     format: 'binary',

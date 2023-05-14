@@ -26,7 +26,7 @@ export class UsersService {
   async findAll(headers: any): Promise<ApiResponseDTO<User[]>> {
     const res = new ApiResponseDTO<User[]>();
     try {
-      await this.sharedService.checkIfAdmin(headers);
+      // await this.sharedService.checkIfAdmin(headers);
       const result = await this.userRepository.find();
       res.data = result;
       res.message = "Successfully get users information";
@@ -45,7 +45,15 @@ export class UsersService {
   async findOneById(id: string): Promise<ApiResponseDTO<User>> {
     const res = new ApiResponseDTO<User>();
     try {
-      const result = await this.userRepository.findOneBy({ id });
+      const result = await this.userRepository.findOne({
+        where: {
+          id: id
+        },
+        relations: {
+          posts: true,
+          comments: true
+        }
+      });
       res.data = result;
       res.message = "Successful retrieve user"
       res.statusCode = HttpStatus.OK;

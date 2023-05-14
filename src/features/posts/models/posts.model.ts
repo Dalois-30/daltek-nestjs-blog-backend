@@ -1,5 +1,6 @@
 import { User } from "src/auth/entities/user.entity";
 import { Category } from "src/features/categories/models/category.model";
+import { Comments } from "src/features/comments/models/comments.model";
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm"
 
 // import { Token } from "./token.model";
@@ -21,7 +22,7 @@ export class Posts {
     public image: string;
 
     @Column()
-    public status: boolean;
+    public status: boolean = false;
 
     @Column()
     public tags?: string;
@@ -32,8 +33,8 @@ export class Posts {
     @ManyToOne(() => User, (category) => category.posts)
     public user: User;
 
-    @OneToMany(() => Posts, (post) => post.category)
-    public comments: Comment[];
+    @OneToMany(() => Comments, (comment) => comment.post)
+    public comments: Comments[];
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;

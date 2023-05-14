@@ -99,6 +99,7 @@ let CategoriesService = class CategoriesService {
                 relations: {
                     parent: true,
                     children: true,
+                    posts: true
                 },
             });
             if (!category) {
