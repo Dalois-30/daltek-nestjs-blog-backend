@@ -2,7 +2,7 @@ import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, ParseFi
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { GetFileDto } from './get-file-dto';
+import { GetFileDto, GetFileListDto } from './get-file-dto';
 
 @Controller('upload')
 export class UploadController {
@@ -38,5 +38,10 @@ export class UploadController {
     @Post("get-file")
     async getFile(@Body() getFile: GetFileDto){
         return await this.uploadService.getUploadedObject(getFile)
+    }
+
+    @Post("get-file-list")
+    async getFileList(@Body() getFile?: GetFileListDto){
+        return await this.uploadService.getSignedImageUrls(getFile.prefix)
     }
 }

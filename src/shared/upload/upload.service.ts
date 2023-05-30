@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
-import { GetFileDto } from './get-file-dto'; 
+import { GetFileDto } from './get-file-dto';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 @Injectable()
@@ -44,15 +44,59 @@ export class UploadService {
                 Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
                 Key: key.key
             })
-            
+
             const url = await getSignedUrl(this.s3Client, command, {
                 expiresIn: 15 * 60
             })
             return url;
-          } catch (err) {
+        } catch (err) {
             console.log(err);
             throw new Error('Impossible de récupérer l\'image.');
-          }
+        }
+    }
+
+    /**
+     * 
+     * @param prefix the prefix of the object in bucket
+     * @returns the 
+     */
+    async getSignedImageUrls(prefix?: string) {
+
+        try {
+            // Retrieve list of all objects/images in your folder.
+            // by default get all objects in the buckeck if no prefix found
+            let command = new ListObjectsCommand({ Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME') })
+            if (prefix) {
+                // if prefix, get a spécific folder
+                command = new ListObjectsCommand({ Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'), Prefix: prefix });
+            }
+            const listObjectsCommand = command
+            const listObjectsResult = await this.s3Client.send(listObjectsCommand);
+
+            // Get prefixes for each object
+            const contents = listObjectsResult.Contents || [];
+
+            // Create a list of signed URLs for each object
+            const presignedUrls = await Promise.all(contents.map(async (object) => {
+                // Get URL parameters for object
+                const urlParams = {
+                    Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
+                    Key: object.Key
+                };
+
+                // Get a signed URL for the object
+                const getCommand = new GetObjectCommand(urlParams);
+                const presignedUrl = await getSignedUrl(this.s3Client, getCommand, { expiresIn: 3600 });
+
+                return presignedUrl;
+            }));
+
+            console.log(presignedUrls);
+            return presignedUrls;
+        } catch (err) {
+            console.log('Error', err);
+            return [];
+        }
     }
 }
 

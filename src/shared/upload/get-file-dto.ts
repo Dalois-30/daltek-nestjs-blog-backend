@@ -7,4 +7,10 @@ export class GetFileDto {
     @IsNotEmpty()
     key: string;
 }
+export class GetFileListDto {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    prefix: string;
+}
 
