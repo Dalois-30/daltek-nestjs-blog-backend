@@ -14,7 +14,7 @@ async function bootstrap() {
 
   const PORT = configService.get<number>('APP_PORT');
 
-  const options = new DocumentBuilder() 
+  const options = new DocumentBuilder()
     .setTitle('Backend')
     .setDescription(
       'Full api pay management system of the mendo enterprise',
@@ -26,7 +26,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
   await app.listen(3000, () =>
-  console.log(`Application bootstrap on port ${PORT} 💆😇️ `),
-);
+    console.log(`Application bootstrap on port ${PORT} 💆😇️ `),
+  );
 }
 bootstrap();
