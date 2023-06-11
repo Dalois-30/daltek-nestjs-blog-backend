@@ -66,6 +66,31 @@ let CommentsService = class CommentsService {
         }
         return res;
     }
+    async getPostComment(postUuid) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const post = await this.postsRepository.findOneBy({
+                id: postUuid
+            });
+            if (!post) {
+                throw new common_1.HttpException("post does'nt exist", common_1.HttpStatus.NOT_FOUND);
+            }
+            const comments = await this.commentsRepository.createQueryBuilder('comment')
+                .leftJoinAndSelect('comment.user', 'user')
+                .addSelect(['user.role', 'user.email'])
+                .leftJoin('comment.post', 'post')
+                .where('post.id = :id', { id: postUuid })
+                .getMany();
+            res.data = comments;
+            res.message = "successfully get comments";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.message = error.message;
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+        }
+        return res;
+    }
 };
 CommentsService = __decorate([
     (0, common_1.Injectable)(),

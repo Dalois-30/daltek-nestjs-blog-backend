@@ -69,4 +69,38 @@ export class CommentsService {
         }
         return res;
     }
+    /**
+     * 
+     * @param postUuid the post identifier
+     * @returns the list of comments of the post
+     */
+    async getPostComment(postUuid: string){
+        const res = new ApiResponseDTO<Comments[]>();
+        try {
+            // get the corresponding post
+            const post = await this.postsRepository.findOneBy({
+                id: postUuid
+            });
+            if (!post) {
+                throw new HttpException("post does'nt exist", HttpStatus.NOT_FOUND);
+            }
+            // get all the comments of the post
+            const comments = await this.commentsRepository.createQueryBuilder('comment')
+                .leftJoinAndSelect('comment.user', 'user')
+                .addSelect(['user.role', 'user.email'])
+                .leftJoin('comment.post', 'post')
+                .where('post.id = :id', {id: postUuid})
+                .getMany();
+
+            // return the new comment
+            res.data = comments;
+            res.message = "successfully get comments";
+            res.statusCode = HttpStatus.OK;
+            
+        } catch (error) {
+            res.message = error.message;
+            res.statusCode = HttpStatus.BAD_REQUEST;
+        }
+        return res;
+    }
 }

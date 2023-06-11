@@ -8,4 +8,9 @@ export declare class CommentsController {
         message?: any;
         statusCode?: number;
     }>;
+    getPostComment(postUiid: string): Promise<{
+        data?: import("./models/comments.model").Comments[];
+        message?: any;
+        statusCode?: number;
+    }>;
 }

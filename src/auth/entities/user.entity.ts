@@ -27,6 +27,12 @@ export class User {
   @IsEmail()
   email: string;
 
+  @Column({
+    unique: true,
+  })
+  @IsEmail()
+  username: string;
+
   @Column()
   password: string;
 

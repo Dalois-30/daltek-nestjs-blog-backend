@@ -42,9 +42,14 @@ let AuthService = class AuthService {
             if (user) {
                 throw new common_1.HttpException('User already exists', common_1.HttpStatus.BAD_REQUEST);
             }
+            const userName = await this.userRepository.findOneBy({ username: createUserDto.username });
+            if (userName) {
+                throw new common_1.HttpException('username already exists', common_1.HttpStatus.CONFLICT);
+            }
             const newUser = new user_entity_1.User();
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
+            newUser.username = createUserDto.username;
             newUser.role = user_roles_1.UserRoles.USER;
             const userResponse = await this.userRepository.save(newUser);
             await this.createEmailToken(newUser.email, response);
@@ -63,11 +68,16 @@ let AuthService = class AuthService {
         try {
             const user = await this.usersService.findOneByEmail(createUserDto.email);
             if (user) {
-                throw new common_1.HttpException('User already exists', common_1.HttpStatus.BAD_REQUEST);
+                throw new common_1.HttpException('User already exists', common_1.HttpStatus.CONFLICT);
+            }
+            const userName = await this.userRepository.findOneBy({ username: createUserDto.username });
+            if (userName) {
+                throw new common_1.HttpException('username already exists', common_1.HttpStatus.CONFLICT);
             }
             const newUser = new user_entity_1.User();
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
+            newUser.username = createUserDto.username;
             newUser.role = user_roles_1.UserRoles.ADMIN;
             const userResponse = await this.userRepository.save(newUser);
             await this.createEmailToken(newUser.email, response);

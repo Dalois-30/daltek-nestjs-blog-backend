@@ -111,7 +111,8 @@ let PostsService = class PostsService {
                 },
                 relations: {
                     user: true,
-                    comments: true
+                    comments: true,
+                    category: true
                 }
             });
             if (!post) {

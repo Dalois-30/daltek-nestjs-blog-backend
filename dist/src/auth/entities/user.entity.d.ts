@@ -4,6 +4,7 @@ import { Posts } from 'src/features/posts/models/posts.model';
 export declare class User {
     id: string;
     email: string;
+    username: string;
     password: string;
     comments: Comments[];
     posts: Posts[];

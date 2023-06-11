@@ -25,6 +25,10 @@ let CommentsController = class CommentsController {
         const response = await this.commentsService.create(comment);
         return Object.assign({}, response);
     }
+    async getPostComment(postUiid) {
+        const response = await this.commentsService.getPostComment(postUiid);
+        return Object.assign({}, response);
+    }
 };
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully add comment' }),
@@ -35,6 +39,15 @@ __decorate([
     __metadata("design:paramtypes", [comment_add_dto_1.CommentsAddDto]),
     __metadata("design:returntype", Promise)
 ], CommentsController.prototype, "createUser", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully add comment' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    (0, common_1.Get)('/'),
+    __param(0, (0, common_1.Query)('postId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "getPostComment", null);
 CommentsController = __decorate([
     (0, swagger_1.ApiTags)('comments'),
     (0, common_1.Controller)('comments'),

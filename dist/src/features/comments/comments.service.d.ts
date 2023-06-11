@@ -10,4 +10,5 @@ export declare class CommentsService {
     private readonly userRepository;
     constructor(commentsRepository: Repository<Comments>, postsRepository: Repository<Posts>, userRepository: Repository<User>);
     create(comment: CommentsAddDto): Promise<ApiResponseDTO<Comments>>;
+    getPostComment(postUuid: string): Promise<ApiResponseDTO<Comments[]>>;
 }

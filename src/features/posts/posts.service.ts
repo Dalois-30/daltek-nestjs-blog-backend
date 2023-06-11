@@ -138,7 +138,8 @@ export class PostsService {
                 },
                 relations: {
                     user: true,
-                    comments: true
+                    comments: true,
+                    category: true
                 }
             });
             // check if the category exists
