@@ -185,7 +185,7 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('User does not exist');
         }
         const mailOptions = {
-            from: '"Mendo Cash" <' + process.env.EMAIL_USER + '>',
+            from: '"DalTek" <' + process.env.EMAIL_USER + '>',
             to: email,
             subject: 'Verify Email',
             text: 'Verify your Email',

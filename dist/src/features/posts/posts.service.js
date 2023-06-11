@@ -76,6 +76,7 @@ let PostsService = class PostsService {
         try {
             let [result, total] = await this.postRepository.createQueryBuilder('post')
                 .leftJoinAndSelect('post.user', 'user')
+                .leftJoinAndSelect('post.comments', 'comments')
                 .skip(page * limit)
                 .take(limit)
                 .getManyAndCount();

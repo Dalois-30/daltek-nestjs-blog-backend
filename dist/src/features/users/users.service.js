@@ -83,6 +83,16 @@ let UsersService = class UsersService {
                     throw new common_1.HttpException('Email is already used', common_1.HttpStatus.BAD_REQUEST);
                 }
             }
+            if (newUser.username) {
+                const userWithEmail = await this.userRepository.findOneBy({
+                    username: newUser.username,
+                });
+                if (userWithEmail !== null &&
+                    userWithEmail !== undefined &&
+                    newUser.username !== user.username) {
+                    throw new common_1.HttpException('Username is already used', common_1.HttpStatus.BAD_REQUEST);
+                }
+            }
             if (user === undefined || user === null) {
                 throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
             }

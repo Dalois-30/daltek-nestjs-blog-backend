@@ -71,6 +71,7 @@ export class CategoriesService {
             let [result, total] = await this.categoryRepository.createQueryBuilder('category')
                 .leftJoinAndSelect('category.parent', 'parent')
                 .leftJoinAndSelect('category.children', 'children')
+                .leftJoinAndSelect('category.posts', 'posts.id')
                 .skip(page * limit)
                 .take(limit)
                 .getManyAndCount();

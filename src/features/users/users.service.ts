@@ -83,6 +83,7 @@ export class UsersService {
       const user = await this.userRepository.findOneBy({
         id: id,
       });
+
       if (newUser.email) {
         const userWithEmail = await this.userRepository.findOneBy({
           email: newUser.email,
@@ -93,6 +94,19 @@ export class UsersService {
           newUser.email !== user.email
         ) {
           throw new HttpException('Email is already used', HttpStatus.BAD_REQUEST);
+        }
+      }
+      
+      if (newUser.username) {
+        const userWithEmail = await this.userRepository.findOneBy({
+          username: newUser.username,
+        });
+        if (
+          userWithEmail !== null &&
+          userWithEmail !== undefined &&
+          newUser.username !== user.username
+        ) {
+          throw new HttpException('Username is already used', HttpStatus.BAD_REQUEST);
         }
       }
       // check if user doesn't exist or have already an email
