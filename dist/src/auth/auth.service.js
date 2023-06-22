@@ -50,7 +50,12 @@ let AuthService = class AuthService {
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
             newUser.username = createUserDto.username;
-            newUser.role = user_roles_1.UserRoles.USER;
+            if (createUserDto.role == user_roles_1.UserRoles.BLOGGER || createUserDto.role == user_roles_1.UserRoles.USER) {
+                newUser.role = createUserDto.role;
+            }
+            else {
+                throw new common_1.HttpException('Invalid user role', common_1.HttpStatus.BAD_REQUEST);
+            }
             const userResponse = await this.userRepository.save(newUser);
             await this.createEmailToken(newUser.email, response);
             res.data = userResponse;
@@ -102,7 +107,7 @@ let AuthService = class AuthService {
             }
             const state = await this.checkPassword(resetPassWord.actualPassword, user);
             if (state) {
-                const newUser = new update_user_dto_1.UpdateUserDto();
+                const newUser = new update_user_dto_1.UpdateUserDtoPassword();
                 newUser.password = resetPassWord.newPassword;
                 this.userRepository.merge(user, newUser);
                 await this.userRepository.save(user);

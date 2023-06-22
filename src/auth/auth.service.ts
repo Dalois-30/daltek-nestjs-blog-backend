@@ -15,7 +15,7 @@ import { transporter } from './constant/email-constants';
 import { UserRoles } from './constant/user-roles';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
 import { LoginUserDto, VerifyOtpDto } from './dto/login-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, UpdateUserDtoPassword } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
@@ -60,8 +60,12 @@ export class AuthService {
       newUser.email = createUserDto.email;
       newUser.password = createUserDto.password;
       newUser.username = createUserDto.username;
-      newUser.role = UserRoles.USER;
-
+      if (createUserDto.role == UserRoles.BLOGGER || createUserDto.role == UserRoles.USER){
+        newUser.role = createUserDto.role;
+      }else {
+        throw new HttpException('Invalid user role', HttpStatus.BAD_REQUEST);
+      }
+      
       const userResponse = await this.userRepository.save(newUser);
       await this.createEmailToken(newUser.email, response)
       // set the response object
@@ -132,7 +136,7 @@ export class AuthService {
       }
       const state = await this.checkPassword(resetPassWord.actualPassword, user);
       if (state) {
-        const newUser = new UpdateUserDto();
+        const newUser = new UpdateUserDtoPassword();
         newUser.password = resetPassWord.newPassword;
         this.userRepository.merge(user, newUser);
         await this.userRepository.save(user);

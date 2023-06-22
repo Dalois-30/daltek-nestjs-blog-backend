@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
+import { UserRoles } from '../constant/user-roles';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -15,6 +16,11 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   readonly username: string;
+
+  @IsNotEmpty()
+  @IsEnum(UserRoles)
+  @IsOptional()
+  readonly role: UserRoles;
 }
 
 export class ResetPassWordDto {
