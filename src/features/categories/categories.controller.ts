@@ -7,7 +7,7 @@ import { Category } from './models/category.model';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request as RequestExpress, Response } from 'express';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
-import { CategoryGetDTO } from './dto/category-get-dto';
+import { CategoryGetDTO, CategoryGetDetailDTO } from './dto/category-get-dto';
 
 @ApiTags('categories')
 @Controller('category')
@@ -67,7 +67,7 @@ export class CategoriesController {
    */
   @ApiResponse({ status: 200, description: 'Fetched specific category' })
   @Get('/getOne/:categoryId')
-  async getCategoryById(@Param('categoryId') id: string): Promise<ApiResponseDTO<CategoryGetDTO>> {
+  async getCategoryById(@Param('categoryId') id: string): Promise<ApiResponseDTO<CategoryGetDetailDTO>> {
     return await this.categoryService.findOneById(id);
   }
   /**

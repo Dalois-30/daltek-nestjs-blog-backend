@@ -75,7 +75,16 @@ let CategoriesService = class CategoriesService {
                 let urlObj = new get_file_dto_1.GetFileDto();
                 urlObj.key = cat.image;
                 let img = await this.uploadService.getUploadedObject(urlObj);
-                catGet.cat = cat;
+                let catDto = new category_get_dto_1.CategoryDto();
+                catDto.id = cat.id;
+                catDto.name = cat.name;
+                catDto.parent = cat.parent;
+                catDto.children = cat.children;
+                catDto.created_at = cat.created_at;
+                catDto.description = cat.description;
+                catDto.posts = cat.posts.length;
+                catDto.updated_at = cat.updated_at;
+                catGet.cat = catDto;
                 catGet.image = img;
                 catsGet.push(catGet);
                 console.log(catsGet.length);
@@ -106,7 +115,7 @@ let CategoriesService = class CategoriesService {
             if (!category) {
                 throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
-            let catGet = new category_get_dto_1.CategoryGetDTO();
+            let catGet = new category_get_dto_1.CategoryGetDetailDTO();
             let urlObj = new get_file_dto_1.GetFileDto();
             urlObj.key = category.image;
             let img = await this.uploadService.getUploadedObject(urlObj);

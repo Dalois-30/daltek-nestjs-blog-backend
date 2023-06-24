@@ -6,7 +6,7 @@ import { Category } from './models/category.model';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { Request as RequestExpress, Response } from 'express';
-import { CategoryGetDTO } from './dto/category-get-dto';
+import { CategoryDto, CategoryGetDTO, CategoryGetDetailDTO } from './dto/category-get-dto';
 import { GetFileDto } from 'src/shared/upload/get-file-dto';
 
 @Injectable()
@@ -90,7 +90,17 @@ export class CategoriesService {
                 // get the signed link of the file
                 let img = await this.uploadService.getUploadedObject(urlObj)
                 // set the object 
-                catGet.cat = cat;
+                let catDto = new CategoryDto();
+                catDto.id = cat.id;
+                catDto.name = cat.name;
+                catDto.parent = cat.parent;
+                catDto.children = cat.children;
+                catDto.created_at = cat.created_at;
+                catDto.description = cat.description;
+                catDto.posts = cat.posts.length;
+                catDto.updated_at = cat.updated_at;
+
+                catGet.cat = catDto;
                 catGet.image = img;
                 // updatte the table of cat with the signed link
                 catsGet.push(catGet);
@@ -116,8 +126,8 @@ export class CategoriesService {
      * @param id the id of the type
      * @returns the type object based on the id
      */
-    async findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>> {
-        const res = new ApiResponseDTO<CategoryGetDTO>();
+    async findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDetailDTO>> {
+        const res = new ApiResponseDTO<CategoryGetDetailDTO>();
         try {
             // get the category
             const category = await this.categoryRepository.findOne({
@@ -134,7 +144,7 @@ export class CategoriesService {
             if (!category) {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
-            let catGet = new CategoryGetDTO();
+            let catGet = new CategoryGetDetailDTO();
                 let urlObj = new GetFileDto();
                 urlObj.key = category.image;
                 // get the signed link of the file
