@@ -78,7 +78,7 @@ export class CategoriesService {
             totalGet = total;
 
             // return only the parent category
-            result = result.filter(element => element.parent == undefined);
+            // result = result.filter(element => element.parent == undefined);
             // create an object of the type catget to retria
             let catsGet: CategoryGetDTO[] = [];
 
@@ -126,8 +126,8 @@ export class CategoriesService {
      * @param id the id of the type
      * @returns the type object based on the id
      */
-    async findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDetailDTO>> {
-        const res = new ApiResponseDTO<CategoryGetDetailDTO>();
+    async findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>> {
+        const res = new ApiResponseDTO<CategoryGetDTO>();
         try {
             // get the category
             const category = await this.categoryRepository.findOne({
@@ -144,13 +144,24 @@ export class CategoriesService {
             if (!category) {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
-            let catGet = new CategoryGetDetailDTO();
+            let catGet = new CategoryGetDTO();
                 let urlObj = new GetFileDto();
                 urlObj.key = category.image;
                 // get the signed link of the file
                 let img = await this.uploadService.getUploadedObject(urlObj)
                 // set the object 
-                catGet.cat = category;
+                let catDto = new CategoryDto();
+                catDto.id = category.id;
+                catDto.name = category.name;
+                catDto.parent = category.parent;
+                catDto.children = category.children;
+                catDto.created_at = category.created_at;
+                catDto.description = category.description;
+                catDto.posts = category.posts.length;
+                catDto.updated_at = category.updated_at;
+
+                catGet.cat = catDto;
+                catGet.image = img;
                 catGet.image = img;
             res.data = catGet
             res.message = "success";
@@ -177,7 +188,7 @@ export class CategoriesService {
             if (!catGet) {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
-            let newCat!: CategoryWithParent;
+            let newCat = new CategoryWithParent();
             newCat.description = newCatDto.description;
             newCat.name = newCatDto.name;
             // check if the parent category is present

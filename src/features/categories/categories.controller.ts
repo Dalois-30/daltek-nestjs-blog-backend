@@ -67,7 +67,7 @@ export class CategoriesController {
    */
   @ApiResponse({ status: 200, description: 'Fetched specific category' })
   @Get('/getOne/:categoryId')
-  async getCategoryById(@Param('categoryId') id: string): Promise<ApiResponseDTO<CategoryGetDetailDTO>> {
+  async getCategoryById(@Param('categoryId') id: string){
     return await this.categoryService.findOneById(id);
   }
   /**

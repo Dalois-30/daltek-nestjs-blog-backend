@@ -4,7 +4,7 @@ import { CreateCategoryDto } from './dto/category-create-dto';
 import { Category } from './models/category.model';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
-import { CategoryGetDTO, CategoryGetDetailDTO } from './dto/category-get-dto';
+import { CategoryGetDTO } from './dto/category-get-dto';
 export declare class CategoriesService {
     private readonly categoryRepository;
     private readonly uploadService;
@@ -18,7 +18,7 @@ export declare class CategoriesService {
         message?: any;
         statusCode?: number;
     }>;
-    findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDetailDTO>>;
+    findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>>;
     update(id: string, newCatDto: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
     delete(id: string): Promise<ApiResponseDTO<Category>>;
 }

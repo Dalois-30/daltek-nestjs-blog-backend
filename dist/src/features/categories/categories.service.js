@@ -16,6 +16,7 @@ exports.CategoriesService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
+const category_create_dto_1 = require("./dto/category-create-dto");
 const category_model_1 = require("./models/category.model");
 const upload_service_1 = require("../../shared/upload/upload.service");
 const api_response_1 = require("../../shared/response/api-response");
@@ -67,7 +68,6 @@ let CategoriesService = class CategoriesService {
                 .take(limit)
                 .getManyAndCount();
             totalGet = total;
-            result = result.filter(element => element.parent == undefined);
             let catsGet = [];
             for (let index = 0; index < result.length; index++) {
                 const cat = result[index];
@@ -115,11 +115,21 @@ let CategoriesService = class CategoriesService {
             if (!category) {
                 throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
-            let catGet = new category_get_dto_1.CategoryGetDetailDTO();
+            let catGet = new category_get_dto_1.CategoryGetDTO();
             let urlObj = new get_file_dto_1.GetFileDto();
             urlObj.key = category.image;
             let img = await this.uploadService.getUploadedObject(urlObj);
-            catGet.cat = category;
+            let catDto = new category_get_dto_1.CategoryDto();
+            catDto.id = category.id;
+            catDto.name = category.name;
+            catDto.parent = category.parent;
+            catDto.children = category.children;
+            catDto.created_at = category.created_at;
+            catDto.description = category.description;
+            catDto.posts = category.posts.length;
+            catDto.updated_at = category.updated_at;
+            catGet.cat = catDto;
+            catGet.image = img;
             catGet.image = img;
             res.data = catGet;
             res.message = "success";
@@ -138,7 +148,7 @@ let CategoriesService = class CategoriesService {
             if (!catGet) {
                 throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
-            let newCat;
+            let newCat = new category_create_dto_1.CategoryWithParent();
             newCat.description = newCatDto.description;
             newCat.name = newCatDto.name;
             if (newCatDto.parent) {

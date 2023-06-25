@@ -4,7 +4,7 @@ export declare class CreateCategoryDto {
     description: string;
     parent?: string;
 }
-export interface CategoryWithParent {
+export declare class CategoryWithParent {
     name: string;
     description: string;
     parent?: Category;
