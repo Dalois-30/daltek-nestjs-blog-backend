@@ -11,9 +11,22 @@ export class CreatePostDto {
 } 
 
 export class UpdatePostDto {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     title?: string;
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     content?: string;
-    image?: string;
+    // @ApiProperty()
+    // @IsString()
+    // @IsNotEmpty()
+    // image?: string;
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     status?: boolean;
+    @ApiProperty()
     tags?: string;
 } 

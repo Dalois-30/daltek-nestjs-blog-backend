@@ -87,7 +87,6 @@ let CategoriesService = class CategoriesService {
                 catGet.cat = catDto;
                 catGet.image = img;
                 catsGet.push(catGet);
-                console.log(catsGet.length);
             }
             res.data = catsGet;
             res.message = "success";

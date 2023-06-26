@@ -91,7 +91,7 @@ __decorate([
     __param(0, (0, common_1.Param)('postId')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, create_post_dto_1.CreatePostDto]),
+    __metadata("design:paramtypes", [String, create_post_dto_1.UpdatePostDto]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "updatepost", null);
 PostsController = __decorate([

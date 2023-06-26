@@ -84,14 +84,23 @@ let PostsService = class PostsService {
             let postsGet = [];
             for (let index = 0; index < result.length; index++) {
                 const post = result[index];
-                let postGet = new post_get_dto_1.PostGetDTO();
+                let postGet = new post_get_dto_1.PostObjectToSendWithImage();
                 let urlObj = new get_file_dto_1.GetFileDto();
                 urlObj.key = post.image;
                 let img = await this.uploadService.getUploadedObject(urlObj);
-                postGet.post = post;
+                let postDto = new post_get_dto_1.PostObjectToSendDTO();
+                postDto.id = post.id;
+                postDto.title = post.title;
+                postDto.category = post.category;
+                postDto.content = post.content;
+                postDto.user = post.user.username;
+                postDto.status = post.status;
+                postDto.comments = post.comments.length;
+                postDto.created_at = post.created_at;
+                postDto.updated_at = post.updated_at;
+                postGet.post = postDto;
                 postGet.image = img;
                 postsGet.push(postGet);
-                console.log(postsGet.length);
             }
             res.data = postsGet;
             res.message = "success";

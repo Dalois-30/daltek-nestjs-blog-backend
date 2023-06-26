@@ -9,7 +9,6 @@ export declare class CreatePostDto {
 export declare class UpdatePostDto {
     title?: string;
     content?: string;
-    image?: string;
     status?: boolean;
     tags?: string;
 }

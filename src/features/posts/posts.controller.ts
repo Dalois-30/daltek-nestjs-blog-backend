@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post-dto';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
 import { UploadService } from 'src/shared/upload/upload.service';
@@ -99,7 +99,7 @@ export class PostsController {
   @ApiResponse({ status: 200, description: 'Fetched all post' })
   @ApiResponse({ status: 400, description: 'post not found' })
   @Put('/update/:postId')
-  async updatepost(@Param('postId') id: string, @Body() post: CreatePostDto) {
+  async updatepost(@Param('postId') id: string, @Body() post: UpdatePostDto) {
     return await this.postService.update(id, post);
   }
 }

@@ -84,13 +84,17 @@ export class CategoriesService {
 
             for (let index = 0; index < result.length; index++) {
                 const cat = result[index];
+                //category objects with signed url
                 let catGet = new CategoryGetDTO();
+                // get the key url
                 let urlObj = new GetFileDto();
                 urlObj.key = cat.image;
                 // get the signed link of the file
                 let img = await this.uploadService.getUploadedObject(urlObj)
                 // set the object 
+                // catDto: object with the posts number not the posts object
                 let catDto = new CategoryDto();
+                // set the value of this object with the category get to the database
                 catDto.id = cat.id;
                 catDto.name = cat.name;
                 catDto.parent = cat.parent;
@@ -99,12 +103,11 @@ export class CategoriesService {
                 catDto.description = cat.description;
                 catDto.posts = cat.posts.length;
                 catDto.updated_at = cat.updated_at;
-
+                // set the cat value of the data to retrieve
                 catGet.cat = catDto;
                 catGet.image = img;
                 // updatte the table of cat with the signed link
                 catsGet.push(catGet);
-                console.log(catsGet.length);
             }
 
             res.data = catsGet

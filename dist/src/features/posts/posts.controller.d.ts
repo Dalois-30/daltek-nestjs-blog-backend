@@ -1,5 +1,5 @@
 /// <reference types="multer" />
-import { CreatePostDto } from './dto/create-post-dto';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { PostsService } from './posts.service';
 import { Posts } from './models/posts.model';
@@ -13,11 +13,11 @@ export declare class PostsController {
         totalItems: number;
         currentPage: number;
         pageCount: number;
-        data?: PostGetDTO[];
+        data?: import("./dto/post-get-dto").PostObjectToSendWithImage[];
         message?: any;
         statusCode?: number;
     }>;
     createpost(file: Express.Multer.File, post: CreatePostDto): Promise<ApiResponseDTO<Posts>>;
     getpostById(id: string): Promise<ApiResponseDTO<PostGetDTO>>;
-    updatepost(id: string, post: CreatePostDto): Promise<ApiResponseDTO<Posts>>;
+    updatepost(id: string, post: UpdatePostDto): Promise<ApiResponseDTO<Posts>>;
 }

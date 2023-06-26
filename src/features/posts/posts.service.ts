@@ -10,7 +10,7 @@ import { Category } from '../categories/models/category.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { GetFileDto } from 'src/shared/upload/get-file-dto';
-import { PostGetDTO } from './dto/post-get-dto';
+import { PostObjectToSendWithImage, PostGetDTO, PostObjectToSendDTO } from './dto/post-get-dto';
 import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
@@ -80,7 +80,7 @@ export class PostsService {
     * @returns the lis of all posts
     */
     async findAll(page?: number, limit?: number) {
-        const res = new ApiResponseDTO<PostGetDTO[]>();
+        const res = new ApiResponseDTO<PostObjectToSendWithImage[]>();
         let totalGet = 0;
         try {
             let [result, total] = await this.postRepository.createQueryBuilder('post')
@@ -92,21 +92,34 @@ export class PostsService {
                 .getManyAndCount();
             totalGet = total;
             // create an object of the type catget to retria
-            let postsGet: PostGetDTO[] = [];
+            let postsGet: PostObjectToSendWithImage[] = [];
 
             for (let index = 0; index < result.length; index++) {
                 const post = result[index];
-                let postGet = new PostGetDTO();
+                //post objects with signed url
+                let postGet = new PostObjectToSendWithImage();
                 let urlObj = new GetFileDto();
                 urlObj.key = post.image;
                 // get the signed link of the file
                 let img = await this.uploadService.getUploadedObject(urlObj)
                 // set the object 
-                postGet.post = post;
+                // catDto: object with the comments number not the comments object
+                let postDto = new PostObjectToSendDTO();
+                // set the value of this object with the post get to the database
+                postDto.id = post.id;
+                postDto.title = post.title;
+                postDto.category = post.category;
+                postDto.content = post.content;
+                postDto.user = post.user.username;
+                postDto.status = post.status;
+                postDto.comments = post.comments.length;
+                postDto.created_at = post.created_at;
+                postDto.updated_at = post.updated_at;
+                // set the post value of the data to retrieve
+                postGet.post = postDto;
                 postGet.image = img;
                 // updatte the table of cat with the signed link
                 postsGet.push(postGet);
-                console.log(postsGet.length);
             }
 
             res.data = postsGet

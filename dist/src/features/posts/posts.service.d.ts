@@ -7,7 +7,7 @@ import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 import { Category } from '../categories/models/category.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { UploadService } from 'src/shared/upload/upload.service';
-import { PostGetDTO } from './dto/post-get-dto';
+import { PostObjectToSendWithImage, PostGetDTO } from './dto/post-get-dto';
 import { User } from 'src/auth/entities/user.entity';
 export declare class PostsService {
     private readonly postRepository;
@@ -22,7 +22,7 @@ export declare class PostsService {
         totalItems: number;
         currentPage: number;
         pageCount: number;
-        data?: PostGetDTO[];
+        data?: PostObjectToSendWithImage[];
         message?: any;
         statusCode?: number;
     }>;
