@@ -57,8 +57,7 @@ export class PostsService {
                 image: image,
                 status: post.status,
                 user: author,
-                category: category,
-                tags: post.tags
+                category: category
             });
 
             // save post on database

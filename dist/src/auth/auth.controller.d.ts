@@ -1,5 +1,3 @@
-/// <reference types="qs" />
-/// <reference types="node" />
 import { AuthService } from './auth.service';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';

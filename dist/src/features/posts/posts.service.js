@@ -56,8 +56,7 @@ let PostsService = class PostsService {
                 image: image,
                 status: post.status,
                 user: author,
-                category: category,
-                tags: post.tags
+                category: category
             });
             const result = await this.postRepository.save(newPost);
             res.data = result;

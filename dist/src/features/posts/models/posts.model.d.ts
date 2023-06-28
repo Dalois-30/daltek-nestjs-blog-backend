@@ -7,7 +7,6 @@ export declare class Posts {
     content: string;
     image: string;
     status: boolean;
-    tags?: string;
     category: Category;
     user: User;
     comments: Comments[];

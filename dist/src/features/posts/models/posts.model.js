@@ -42,10 +42,6 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Posts.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Posts.prototype, "tags", void 0);
-__decorate([
     (0, typeorm_1.ManyToOne)(() => category_model_1.Category, (category) => category.posts),
     __metadata("design:type", category_model_1.Category)
 ], Posts.prototype, "category", void 0);

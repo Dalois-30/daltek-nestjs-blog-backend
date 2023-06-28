@@ -24,8 +24,8 @@ export class Posts {
     @Column()
     public status: boolean = false;
 
-    @Column()
-    public tags?: string;
+    // @Column()
+    // public tags?: string;
 
     @ManyToOne(() => Category, (category) => category.posts)
     public category: Category;
