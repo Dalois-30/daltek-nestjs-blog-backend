@@ -14,6 +14,8 @@ const auth_module_1 = require("./auth/auth.module");
 const shared_module_1 = require("./shared/shared.module");
 const features_module_1 = require("./features/features.module");
 const config_1 = require("@nestjs/config");
+const core_1 = require("@nestjs/core");
+const logging_interceptor_1 = require("./shared/interceptors/logging.interceptor");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -25,7 +27,13 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot({ isGlobal: true })
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            {
+                provide: core_1.APP_INTERCEPTOR,
+                useClass: logging_interceptor_1.LoggingInterceptor,
+            }
+        ],
     })
 ], AppModule);
 exports.AppModule = AppModule;

@@ -1,31 +1,28 @@
-import { Module, Global, DynamicModule } from '@nestjs/common';
-import { join } from 'path';
-import { EnvService } from '../env/env.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module, Global } from '@nestjs/common';
 import { EnvModule } from '../env/env.module';
+import { DatabaseOrmModule } from './constant/dbconfig';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/auth/entities/user.entity';
+import { Category } from 'src/features/categories/models/category.model';
+import { Comments } from 'src/features/comments/models/comments.model';
+import { Posts } from 'src/features/posts/models/posts.model';
 
-// database configuration settings 
-function DatabaseOrmModule(): DynamicModule {
-  const config = new EnvService().read();
 
-  return TypeOrmModule.forRoot({
-    type: config.DB_TYPE,
-    host: config.DB_HOST,
-    port: config.DB_PORT,
-    username: config.DB_USER,
-    password: config.DB_PASSWORD,
-    database: config.DB_NAME,
-    entities: [join(__dirname, '/../**/**.entity{.ts,.js}')],
-    autoLoadEntities: true,
-    synchronize: true,
-  });
-}
 
 @Global()
 @Module({
   imports: [
     EnvModule,
     DatabaseOrmModule(),
+    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Category]),
+    TypeOrmModule.forFeature([Posts]),
+    TypeOrmModule.forFeature([Comments]),
   ],
+  exports: [
+    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Category]),
+    TypeOrmModule.forFeature([Posts]),
+    TypeOrmModule.forFeature([Comments]),]
 })
 export class DatabaseModule { }

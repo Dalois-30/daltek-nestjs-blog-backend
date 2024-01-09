@@ -8,24 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseModule = void 0;
 const common_1 = require("@nestjs/common");
-const path_1 = require("path");
-const env_service_1 = require("../env/env.service");
-const typeorm_1 = require("@nestjs/typeorm");
 const env_module_1 = require("../env/env.module");
-function DatabaseOrmModule() {
-    const config = new env_service_1.EnvService().read();
-    return typeorm_1.TypeOrmModule.forRoot({
-        type: config.DB_TYPE,
-        host: config.DB_HOST,
-        port: config.DB_PORT,
-        username: config.DB_USER,
-        password: config.DB_PASSWORD,
-        database: config.DB_NAME,
-        entities: [(0, path_1.join)(__dirname, '/../**/**.entity{.ts,.js}')],
-        autoLoadEntities: true,
-        synchronize: true,
-    });
-}
+const dbconfig_1 = require("./constant/dbconfig");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("../../auth/entities/user.entity");
+const category_model_1 = require("../../features/categories/models/category.model");
+const comments_model_1 = require("../../features/comments/models/comments.model");
+const posts_model_1 = require("../../features/posts/models/posts.model");
 let DatabaseModule = class DatabaseModule {
 };
 DatabaseModule = __decorate([
@@ -33,8 +22,18 @@ DatabaseModule = __decorate([
     (0, common_1.Module)({
         imports: [
             env_module_1.EnvModule,
-            DatabaseOrmModule(),
+            (0, dbconfig_1.DatabaseOrmModule)(),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
+            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Posts]),
+            typeorm_1.TypeOrmModule.forFeature([comments_model_1.Comments]),
         ],
+        exports: [
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
+            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Posts]),
+            typeorm_1.TypeOrmModule.forFeature([comments_model_1.Comments]),
+        ]
     })
 ], DatabaseModule);
 exports.DatabaseModule = DatabaseModule;

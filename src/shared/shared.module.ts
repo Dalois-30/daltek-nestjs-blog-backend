@@ -4,23 +4,15 @@ import { EnvModule } from './env/env.module';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { EXPIRES_IN } from 'src/auth/constant/constants';
-import { User } from 'src/auth/entities/user.entity';
 import { UploadModule } from './upload/upload.module';
-import { Category } from 'src/features/categories/models/category.model';
-import { Posts } from 'src/features/posts/models/posts.model';
-import { SharedService } from './shared.service';
-import { Comments } from 'src/features/comments/models/comments.model';
+import { SharedService } from './services/shared.service';
+import { UsersService } from 'src/features/users/services/users.service';
 
 @Module({
   imports: [
     DatabaseModule, 
     EnvModule,
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Category]),
-    TypeOrmModule.forFeature([Posts]),
-    TypeOrmModule.forFeature([Comments]),
     HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
@@ -34,10 +26,6 @@ import { Comments } from 'src/features/comments/models/comments.model';
   exports: [
     DatabaseModule, 
     EnvModule,
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Category]),
-    TypeOrmModule.forFeature([Posts]),
-    TypeOrmModule.forFeature([Comments]),
     HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
@@ -48,6 +36,9 @@ import { Comments } from 'src/features/comments/models/comments.model';
     }),
     UploadModule
   ],
-  providers: [SharedService]
+  providers: [
+    SharedService,
+    UsersService
+  ]
 })
 export class SharedModule {}

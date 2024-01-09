@@ -11,7 +11,7 @@ export declare class UsersController {
     deleteAllUsers(): Promise<void>;
     deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
     updateUser(id: string, user: UpdateUserDto): Promise<ApiResponseDTO<User>>;
-    testAuthRoute(): {
+    testAuthRoute(headers: any): {
         message: string;
     };
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PostsController } from './posts.controller';
-import { PostsService } from './posts.service';
+import { PostsController } from './controllers/posts.controller';
+import { PostsService } from './services/posts.service';
 import { SharedModule } from 'src/shared/shared.module';
 import { UploadModule } from 'src/shared/upload/upload.module';
 import { UploadService } from 'src/shared/upload/upload.service';

@@ -41,7 +41,8 @@ let UsersController = class UsersController {
     async updateUser(id, user) {
         return await this.usersService.update(id, user);
     }
-    testAuthRoute() {
+    testAuthRoute(headers) {
+        console.log(headers);
         return { message: 'authenticated' };
     }
 };
@@ -102,10 +103,10 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Successfully authenticated user' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
-    (0, common_1.Get)('authstate'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('/test/authstate'),
+    __param(0, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "testAuthRoute", null);
 UsersController = __decorate([

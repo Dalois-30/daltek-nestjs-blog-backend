@@ -16,7 +16,7 @@ exports.CategoriesController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const category_create_dto_1 = require("./dto/category-create-dto");
-const categories_service_1 = require("./categories.service");
+const categories_service_1 = require("./services/categories.service");
 const platform_express_1 = require("@nestjs/platform-express");
 let CategoriesController = class CategoriesController {
     constructor(categoryService) {

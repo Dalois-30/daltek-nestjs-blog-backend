@@ -10,32 +10,55 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SharedService = void 0;
-const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
+const OtpGenerator = require("otp-generator");
+const email_constants_1 = require("../auth/constant/email-constants");
+const users_service_1 = require("../features/users/services/users.service");
 let SharedService = class SharedService {
-    constructor(httpService, jwtService) {
-        this.httpService = httpService;
-        this.jwtService = jwtService;
+    constructor(usersService) {
+        this.usersService = usersService;
     }
-    async checkIfAdmin(headers) {
-        const decodedJwtAccessToken = await this.decodeToken(headers);
-        if (decodedJwtAccessToken.role !== "Admin") {
-            throw new common_1.HttpException('Your are not admin', common_1.HttpStatus.UNAUTHORIZED);
+    async createEmailToken(email, res) {
+        const otp = OtpGenerator.generate(10, {
+            lowerCaseAlphabets: true,
+            upperCaseAlphabets: true,
+            specialChars: true,
+        });
+        res.cookie('OTP', otp, {
+            maxAge: 5 * 60 * 1000,
+            httpOnly: false,
+            secure: false,
+        });
+        const user = await this.usersService.findOneByEmail(email);
+        if (!user) {
+            throw new common_1.UnauthorizedException('User does not exist');
         }
+        const mailOptions = {
+            from: '"DalTek" <' + process.env.EMAIL_USER + '>',
+            to: email,
+            subject: 'Verify Email',
+            text: 'Verify your Email',
+            html: `Hi! <br><br> Thanks for your registration<br><br>
+         <p>This is your verification code <a href=#> '${otp}' </a></p>`,
+        };
+        return await this.sendEmail(mailOptions);
     }
-    async decodeToken(headers) {
-        let token = headers["authorization"].split(' ');
-        console.log(token[1]);
-        const decodedJwtAccessToken = this.jwtService.decode(token[1]);
-        console.log(decodedJwtAccessToken);
-        return decodedJwtAccessToken;
+    async sendEmail(mailOptions) {
+        return await new Promise(async (resolve, reject) => {
+            return await email_constants_1.transporter.sendMail(mailOptions, async (error, info) => {
+                if (error) {
+                    common_1.Logger.log(`Error while sending message: ${error}`, 'sendEmailVerification');
+                    return reject(error);
+                }
+                common_1.Logger.log(`Send message: ${info.messageId}`, 'sendEmailVerification');
+                resolve({ message: 'Successfully send email' });
+            });
+        });
     }
 };
 SharedService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [axios_1.HttpService,
-        jwt_1.JwtService])
+    __metadata("design:paramtypes", [users_service_1.UsersService])
 ], SharedService);
 exports.SharedService = SharedService;
 //# sourceMappingURL=shared.service.js.map

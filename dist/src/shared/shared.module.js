@@ -13,14 +13,10 @@ const env_module_1 = require("./env/env.module");
 const axios_1 = require("@nestjs/axios");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
-const typeorm_1 = require("@nestjs/typeorm");
 const constants_1 = require("../auth/constant/constants");
-const user_entity_1 = require("../auth/entities/user.entity");
 const upload_module_1 = require("./upload/upload.module");
-const category_model_1 = require("../features/categories/models/category.model");
-const posts_model_1 = require("../features/posts/models/posts.model");
-const shared_service_1 = require("./shared.service");
-const comments_model_1 = require("../features/comments/models/comments.model");
+const shared_service_1 = require("./services/shared.service");
+const users_service_1 = require("../features/users/services/users.service");
 let SharedModule = class SharedModule {
 };
 SharedModule = __decorate([
@@ -28,10 +24,6 @@ SharedModule = __decorate([
         imports: [
             database_module_1.DatabaseModule,
             env_module_1.EnvModule,
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
-            typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
-            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Posts]),
-            typeorm_1.TypeOrmModule.forFeature([comments_model_1.Comments]),
             axios_1.HttpModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.register({
@@ -45,10 +37,6 @@ SharedModule = __decorate([
         exports: [
             database_module_1.DatabaseModule,
             env_module_1.EnvModule,
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
-            typeorm_1.TypeOrmModule.forFeature([category_model_1.Category]),
-            typeorm_1.TypeOrmModule.forFeature([posts_model_1.Posts]),
-            typeorm_1.TypeOrmModule.forFeature([comments_model_1.Comments]),
             axios_1.HttpModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.register({
@@ -59,7 +47,10 @@ SharedModule = __decorate([
             }),
             upload_module_1.UploadModule
         ],
-        providers: [shared_service_1.SharedService]
+        providers: [
+            shared_service_1.SharedService,
+            users_service_1.UsersService
+        ]
     })
 ], SharedModule);
 exports.SharedModule = SharedModule;

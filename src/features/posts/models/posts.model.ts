@@ -15,7 +15,9 @@ export class Posts {
     })
     public title: string;
 
-    @Column()
+    @Column({
+        type: "longtext" // Update the column type to "text"
+    })
     public content: string;
 
     @Column()

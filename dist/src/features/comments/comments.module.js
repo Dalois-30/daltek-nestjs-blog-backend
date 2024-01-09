@@ -8,8 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsModule = void 0;
 const common_1 = require("@nestjs/common");
-const comments_service_1 = require("./comments.service");
-const comments_controller_1 = require("./comments.controller");
+const comments_service_1 = require("./services/comments.service");
+const comments_controller_1 = require("./controllers/comments.controller");
 const shared_module_1 = require("../../shared/shared.module");
 let CommentsModule = class CommentsModule {
 };

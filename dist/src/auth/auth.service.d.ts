@@ -1,6 +1,5 @@
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { Repository } from 'typeorm';
-import { EmailVerificationEntity } from './entities/emailverification.entity';
 import 'dotenv/config';
 import { CreateUserDto, ResetPassWordDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -9,14 +8,14 @@ import { UsersService } from 'src/features/users/users.service';
 import { JwtPayloadService } from './jwt.payload.service';
 import { Request as RequestExpress, Response } from 'express';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
+import { SharedService } from 'src/shared/shared.service';
 export declare class AuthService {
     private usersService;
     private readonly jwtPayloadService;
-    private readonly emailVerificationRepository;
     private readonly userRepository;
-    constructor(usersService: UsersService, jwtPayloadService: JwtPayloadService, emailVerificationRepository: Repository<EmailVerificationEntity>, userRepository: Repository<User>);
+    private readonly sharedService;
+    constructor(usersService: UsersService, jwtPayloadService: JwtPayloadService, userRepository: Repository<User>, sharedService: SharedService);
     create(createUserDto: CreateUserDto, response: Response): Promise<Response<any, Record<string, any>>>;
-    createAdmin(createUserDto: CreateUserDto, response: Response): Promise<Response<any, Record<string, any>>>;
     resetPassword(email: string, resetPassWord: ResetPassWordDto): Promise<ApiResponseDTO<User>>;
     validateUserByPassword(loginUserDto: LoginUserDto): Promise<ApiResponseDTO<any>>;
     checkPassword(password: string, user: User): Promise<boolean>;
@@ -24,9 +23,5 @@ export declare class AuthService {
         expiresIn: number;
         token: any;
     }>;
-    createEmailToken(email: string, res: Response): Promise<{}>;
-    verifyEmail(token: string, email: string, req: RequestExpress): Promise<{
-        res: ApiResponseDTO<string>;
-    }>;
-    sendEmail(mailOptions: any): Promise<{}>;
+    verifyEmail(token: string, email: string, req: RequestExpress): Promise<ApiResponseDTO<string>>;
 }

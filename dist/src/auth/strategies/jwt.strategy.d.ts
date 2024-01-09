@@ -1,4 +1,4 @@
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import 'dotenv/config';
 declare const JwtStrategy_base: new (...args: any[]) => any;

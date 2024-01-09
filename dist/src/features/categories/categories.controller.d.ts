@@ -1,6 +1,6 @@
 /// <reference types="multer" />
 import { CreateCategoryDto } from './dto/category-create-dto';
-import { CategoriesService } from './categories.service';
+import { CategoriesService } from './services/categories.service';
 import { Category } from './models/category.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { CategoryGetDTO } from './dto/category-get-dto';

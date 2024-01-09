@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CommentsService } from './comments.service';
-import { CommentsController } from './comments.controller';
+import { CommentsService } from './services/comments.service';
+import { CommentsController } from './controllers/comments.controller';
 import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
