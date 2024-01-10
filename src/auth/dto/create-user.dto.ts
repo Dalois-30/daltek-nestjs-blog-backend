@@ -17,10 +17,10 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly username: string;
 
-  @IsNotEmpty()
-  @IsEnum(UserRoles)
-  @IsOptional()
-  readonly role: UserRoles;
+  // @IsNotEmpty()
+  // @IsEnum(UserRoles)
+  // @IsOptional()
+  // readonly role: UserRoles;
 }
 
 export class ResetPassWordDto {

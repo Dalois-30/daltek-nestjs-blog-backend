@@ -51,6 +51,7 @@ export declare class AuthController {
         req: import("express-serve-static-core").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
         statusCode: number;
         statusMessage: string;
+        strictContentLength: boolean;
         chunkedEncoding: boolean;
         shouldKeepAlive: boolean;
         useChunkedEncodingByDefault: boolean;
@@ -75,7 +76,7 @@ export declare class AuthController {
         getMaxListeners(): number;
         listeners(eventName: string | symbol): Function[];
         rawListeners(eventName: string | symbol): Function[];
-        listenerCount(eventName: string | symbol): number;
+        listenerCount(eventName: string | symbol, listener?: Function): number;
         eventNames(): (string | symbol)[];
     }>;
     login(loginUserDto: LoginUserDto): Promise<import("../../shared/response/api-response").ApiResponseDTO<any>>;

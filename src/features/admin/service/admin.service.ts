@@ -2,14 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRoles } from 'src/auth/constant/user-roles';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { EmailVerificationEntity } from 'src/auth/entities/emailverification.entity';
 import { User } from 'src/auth/entities/user.entity';
-import { JwtPayloadService } from 'src/auth/services/jwt.payload.service';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Request as RequestExpress, Response } from 'express';
 import { SharedService } from 'src/shared/services/shared.service';
 import { UsersService } from 'src/features/users/services/users.service';
+import { Role } from 'src/features/role/entities/role.entity';
 
 @Injectable()
 export class AdminService {
@@ -18,6 +17,8 @@ export class AdminService {
         private usersService: UsersService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        @InjectRepository(User)
+        private readonly roleRepository: Repository<Role>,
         private readonly sharedService: SharedService
     ) { }
 
@@ -43,7 +44,12 @@ export class AdminService {
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
             newUser.username = createUserDto.username;
-            newUser.role = UserRoles.ADMIN;
+            let roleNames: string[]
+            // Trouver les rôles à partir des noms
+            const roles = await this.roleRepository.find({ where: { roleName: In(roleNames) } });
+
+            // Assigner les rôles à l'utilisateur
+            newUser.userRoles = roles;
 
             const userResponse = await this.userRepository.save(newUser);
             await this.sharedService.createEmailToken(newUser.email, response)
@@ -57,5 +63,55 @@ export class AdminService {
         }
         // return response
         return response.send(res);
+    }
+
+    /**
+    * 
+    * @returns the lis of all users
+    */
+    async findAll(headers: any): Promise<ApiResponseDTO<User[]>> {
+        const res = new ApiResponseDTO<User[]>();
+        try {
+            // await this.sharedService.checkIfAdmin(headers);
+            const result = await this.userRepository.find();
+            res.data = result;
+            res.message = "Successfully get users information";
+            res.statusCode = HttpStatus.OK;
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message
+        }
+        return res;
+    }
+
+    /**
+    * 
+    * @param id 
+    * @returns delete user from database based on it's id
+    */
+    async deleteUserById(id: string) {
+        const res = new ApiResponseDTO<User>();
+        try {
+            // first get the user
+            const user = await this.userRepository.findOneBy({ id: id });
+            // then check if it exists
+            if (user === undefined || user === null) {
+                throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
+            }
+            await this.userRepository.delete(id)
+            res.statusCode = HttpStatus.OK;
+            res.message = "User deleted successfully"
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message
+        }
+        return res;
+    }
+    /**
+     * 
+     * @returns delete all users from the database
+     */
+    async deleteAll() {
+        return await this.userRepository.clear();
     }
 }

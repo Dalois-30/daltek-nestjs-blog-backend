@@ -22,16 +22,6 @@ import { ApiResponseDTO } from 'src/shared/response/api-response';
   export class UsersController {
     constructor(private readonly usersService: UsersService) {}
   
-    @ApiResponse({ status: 200, description: 'Fetched all users' })
-    @ApiResponse({ status: 401, description: 'Unauthorized access' })
-    // @UseGuards(AuthGuard('jwt'))
-    @Get()
-    async getAllUsers(@Headers() headers): Promise<ApiResponseDTO<User[]>> {
-      console.log(headers);
-      
-      return await this.usersService.findAll(headers);
-    }
-  
     @ApiResponse({ status: 200, description: 'Fetched specific user' })
     @Get('email')
     async getUserByEmail(@Query('email') email: string): Promise<User> {
@@ -42,22 +32,6 @@ import { ApiResponseDTO } from 'src/shared/response/api-response';
     @Get('/:id')
     async getUserById(@Param('id') id: string): Promise <ApiResponseDTO<User>> {
       return await this.usersService.findOneById(id);
-    }
-  
-    @ApiResponse({ status: 200, description: 'Deleted all users' })
-    @ApiResponse({ status: 401, description: 'Unauthorized access' })
-    @UseGuards(AuthGuard('jwt'))
-    @Delete()
-    async deleteAllUsers() {
-      return await this.usersService.deleteAll();
-    }
-  
-    @ApiResponse({ status: 200, description: 'Deleted specific user' })
-    @ApiResponse({ status: 401, description: 'Unauthorized access' })
-    @UseGuards(AuthGuard('jwt'))
-    @Delete(':id')
-    async deleteUserById(@Param('id') id: string) {
-      return await this.usersService.deleteUserById(id);
     }
   
     @ApiResponse({ status: 200, description: 'Update specific user' })

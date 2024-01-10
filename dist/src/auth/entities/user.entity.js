@@ -13,9 +13,9 @@ exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const class_validator_1 = require("class-validator");
 const bcrypt = require("bcrypt");
-const user_roles_1 = require("../constant/user-roles");
 const comments_model_1 = require("../../features/comments/models/comments.model");
 const posts_model_1 = require("../../features/posts/models/posts.model");
+const role_entity_1 = require("../../features/role/entities/role.entity");
 let User = class User {
     constructor() {
         this.verified = false;
@@ -67,9 +67,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "verified", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "role", void 0);
+    (0, typeorm_1.ManyToMany)(() => role_entity_1.Role, role => role.userRoles, { cascade: true }),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], User.prototype, "userRoles", void 0);
 __decorate([
     (0, typeorm_1.BeforeInsert)(),
     (0, typeorm_1.BeforeUpdate)(),

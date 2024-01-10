@@ -58,11 +58,11 @@ export class AuthService {
       newUser.email = createUserDto.email;
       newUser.password = createUserDto.password;
       newUser.username = createUserDto.username;
-      if (createUserDto.role == UserRoles.BLOGGER || createUserDto.role == UserRoles.USER) {
-        newUser.role = createUserDto.role;
-      } else {
-        throw new HttpException('Invalid user role', HttpStatus.BAD_REQUEST);
-      }
+      // if (createUserDto.role == UserRoles.BLOGGER || createUserDto.role == UserRoles.USER) {
+      //   newUser.role = createUserDto.role;
+      // } else {
+      //   throw new HttpException('Invalid user role', HttpStatus.BAD_REQUEST);
+      // }
 
       const userResponse = await this.userRepository.save(newUser);
       await this.sharedService.createEmailToken(newUser.email, response)

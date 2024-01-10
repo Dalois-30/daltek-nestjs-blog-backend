@@ -6,6 +6,8 @@ import { User } from 'src/auth/entities/user.entity';
 import { Category } from 'src/features/categories/models/category.model';
 import { Comments } from 'src/features/comments/models/comments.model';
 import { Posts } from 'src/features/posts/models/posts.model';
+import { UserRole } from 'src/auth/entities/userRole.entity';
+import { Role } from 'src/features/role/entities/role.entity';
 
 
 
@@ -18,11 +20,16 @@ import { Posts } from 'src/features/posts/models/posts.model';
     TypeOrmModule.forFeature([Category]),
     TypeOrmModule.forFeature([Posts]),
     TypeOrmModule.forFeature([Comments]),
+    TypeOrmModule.forFeature([UserRole]),
+    TypeOrmModule.forFeature([Role]),
   ],
   exports: [
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([Category]),
     TypeOrmModule.forFeature([Posts]),
-    TypeOrmModule.forFeature([Comments]),]
+    TypeOrmModule.forFeature([Comments]),
+    TypeOrmModule.forFeature([UserRole]),
+    TypeOrmModule.forFeature([Role]),
+  ]
 })
 export class DatabaseModule { }

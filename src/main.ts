@@ -17,7 +17,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('Backend')
     .setDescription(
-      'Full api pay management system of the mendo enterprise',
+      'Full api management system of the daltek enterprise',
     )
     .setVersion('1.0')
     .addBearerAuth()

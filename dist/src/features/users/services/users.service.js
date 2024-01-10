@@ -22,20 +22,6 @@ let UsersService = class UsersService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    async findAll(headers) {
-        const res = new api_response_1.ApiResponseDTO();
-        try {
-            const result = await this.userRepository.find();
-            res.data = result;
-            res.message = "Successfully get users information";
-            res.statusCode = common_1.HttpStatus.OK;
-        }
-        catch (error) {
-            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
-            res.message = error.message;
-        }
-        return res;
-    }
     async findOneById(id) {
         const res = new api_response_1.ApiResponseDTO();
         try {
@@ -101,26 +87,6 @@ let UsersService = class UsersService {
             res.message = error.message;
         }
         return res;
-    }
-    async deleteUserById(id) {
-        const res = new api_response_1.ApiResponseDTO();
-        try {
-            const user = await this.userRepository.findOneBy({ id: id });
-            if (user === undefined || user === null) {
-                throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
-            }
-            await this.userRepository.delete(id);
-            res.statusCode = common_1.HttpStatus.OK;
-            res.message = "User deleted successfully";
-        }
-        catch (error) {
-            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
-            res.message = error.message;
-        }
-        return res;
-    }
-    async deleteAll() {
-        return await this.userRepository.clear();
     }
 };
 UsersService = __decorate([

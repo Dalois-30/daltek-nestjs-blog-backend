@@ -18,7 +18,6 @@ const bcrypt = require("bcrypt");
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
 require("dotenv/config");
-const user_roles_1 = require("../constant/user-roles");
 const update_user_dto_1 = require("../dto/update-user.dto");
 const user_entity_1 = require("../entities/user.entity");
 const jwt_payload_service_1 = require("./jwt.payload.service");
@@ -48,12 +47,6 @@ let AuthService = class AuthService {
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
             newUser.username = createUserDto.username;
-            if (createUserDto.role == user_roles_1.UserRoles.BLOGGER || createUserDto.role == user_roles_1.UserRoles.USER) {
-                newUser.role = createUserDto.role;
-            }
-            else {
-                throw new common_1.HttpException('Invalid user role', common_1.HttpStatus.BAD_REQUEST);
-            }
             const userResponse = await this.userRepository.save(newUser);
             await this.sharedService.createEmailToken(newUser.email, response);
             res.data = userResponse;

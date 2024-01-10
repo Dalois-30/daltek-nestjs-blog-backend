@@ -1,6 +1,8 @@
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { AdminService } from '../service/admin.service';
 import { Response } from 'express';
+import { User } from 'src/auth/entities/user.entity';
+import { ApiResponseDTO } from 'src/shared/response/api-response';
 export declare class AdminController {
     private adminService;
     constructor(adminService: AdminService);
@@ -48,6 +50,7 @@ export declare class AdminController {
         req: import("express-serve-static-core").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
         statusCode: number;
         statusMessage: string;
+        strictContentLength: boolean;
         chunkedEncoding: boolean;
         shouldKeepAlive: boolean;
         useChunkedEncodingByDefault: boolean;
@@ -72,7 +75,9 @@ export declare class AdminController {
         getMaxListeners(): number;
         listeners(eventName: string | symbol): Function[];
         rawListeners(eventName: string | symbol): Function[];
-        listenerCount(eventName: string | symbol): number;
+        listenerCount(eventName: string | symbol, listener?: Function): number;
         eventNames(): (string | symbol)[];
     }>;
+    getAllUsers(headers: any): Promise<ApiResponseDTO<User[]>>;
+    deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
 }

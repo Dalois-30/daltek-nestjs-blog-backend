@@ -5,10 +5,7 @@ import { ApiResponseDTO } from 'src/shared/response/api-response';
 export declare class UsersService {
     private readonly userRepository;
     constructor(userRepository: Repository<User>);
-    findAll(headers: any): Promise<ApiResponseDTO<User[]>>;
     findOneById(id: string): Promise<ApiResponseDTO<User>>;
     findOneByEmail(email: string): Promise<User>;
     update(id: string, newUser: UpdateUserDto): Promise<ApiResponseDTO<User>>;
-    deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
-    deleteAll(): Promise<void>;
 }

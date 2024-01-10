@@ -15,16 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const user_roles_1 = require("../../../auth/constant/user-roles");
 const user_entity_1 = require("../../../auth/entities/user.entity");
 const api_response_1 = require("../../../shared/response/api-response");
 const typeorm_2 = require("typeorm");
 const shared_service_1 = require("../../../shared/services/shared.service");
 const users_service_1 = require("../../users/services/users.service");
 let AdminService = class AdminService {
-    constructor(usersService, userRepository, sharedService) {
+    constructor(usersService, userRepository, roleRepository, sharedService) {
         this.usersService = usersService;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.sharedService = sharedService;
     }
     async createAdmin(createUserDto, response) {
@@ -42,7 +42,9 @@ let AdminService = class AdminService {
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
             newUser.username = createUserDto.username;
-            newUser.role = user_roles_1.UserRoles.ADMIN;
+            let roleNames;
+            const roles = await this.roleRepository.find({ where: { roleName: (0, typeorm_2.In)(roleNames) } });
+            newUser.userRoles = roles;
             const userResponse = await this.userRepository.save(newUser);
             await this.sharedService.createEmailToken(newUser.email, response);
             res.data = userResponse;
@@ -55,11 +57,47 @@ let AdminService = class AdminService {
         }
         return response.send(res);
     }
+    async findAll(headers) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const result = await this.userRepository.find();
+            res.data = result;
+            res.message = "Successfully get users information";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+    async deleteUserById(id) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const user = await this.userRepository.findOneBy({ id: id });
+            if (user === undefined || user === null) {
+                throw new common_1.HttpException("User doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            await this.userRepository.delete(id);
+            res.statusCode = common_1.HttpStatus.OK;
+            res.message = "User deleted successfully";
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+    async deleteAll() {
+        return await this.userRepository.clear();
+    }
 };
 AdminService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [users_service_1.UsersService,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         shared_service_1.SharedService])
 ], AdminService);

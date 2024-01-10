@@ -1,6 +1,6 @@
-import { UserRoles } from '../constant/user-roles';
 import { Comments } from 'src/features/comments/models/comments.model';
 import { Posts } from 'src/features/posts/models/posts.model';
+import { Role } from 'src/features/role/entities/role.entity';
 export declare class User {
     id: string;
     email: string;
@@ -9,7 +9,7 @@ export declare class User {
     comments: Comments[];
     posts: Posts[];
     verified: boolean;
-    role: UserRoles;
+    userRoles: Role[];
     hashPassword(): Promise<void>;
     created_at: Date;
     updated_at: Date;

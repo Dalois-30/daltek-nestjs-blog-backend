@@ -13,7 +13,7 @@ async function bootstrap() {
     const PORT = configService.get('APP_PORT');
     const options = new swagger_1.DocumentBuilder()
         .setTitle('Backend')
-        .setDescription('Full api pay management system of the mendo enterprise')
+        .setDescription('Full api management system of the daltek enterprise')
         .setVersion('1.0')
         .addBearerAuth()
         .build();

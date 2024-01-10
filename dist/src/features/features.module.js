@@ -13,6 +13,7 @@ const categories_module_1 = require("./categories/categories.module");
 const posts_module_1 = require("./posts/posts.module");
 const comments_module_1 = require("./comments/comments.module");
 const admin_module_1 = require("./admin/admin.module");
+const role_module_1 = require("./role/role.module");
 let FeaturesModule = class FeaturesModule {
 };
 FeaturesModule = __decorate([
@@ -23,6 +24,7 @@ FeaturesModule = __decorate([
             posts_module_1.PostsModule,
             comments_module_1.CommentsModule,
             admin_module_1.AdminModule,
+            role_module_1.RoleModule,
         ]
     })
 ], FeaturesModule);

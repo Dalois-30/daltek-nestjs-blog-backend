@@ -9,12 +9,15 @@ import {
   BeforeInsert,
   BeforeUpdate,
   OneToMany,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 import { UserRoles } from '../constant/user-roles';
 import { Comments } from 'src/features/comments/models/comments.model';
 import { Posts } from 'src/features/posts/models/posts.model';
+import { Role } from 'src/features/role/entities/role.entity';
 
 @Entity('user')
 export class User {
@@ -45,8 +48,12 @@ export class User {
   @Column()
   verified: boolean = false;
 
-  @Column()
-  role: UserRoles;
+  @ManyToMany(() => Role, role => role.userRoles, { cascade: true })
+  @JoinTable()
+  userRoles: Role[];
+
+  // @Column()
+  // role: UserRoles;
 
   @BeforeInsert()
   @BeforeUpdate()

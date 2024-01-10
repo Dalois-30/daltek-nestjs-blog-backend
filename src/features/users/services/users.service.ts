@@ -16,24 +16,7 @@ export class UsersService {
   ) { }
 
 
-  /**
-   * 
-   * @returns the lis of all users
-   */
-  async findAll(headers: any): Promise<ApiResponseDTO<User[]>> {
-    const res = new ApiResponseDTO<User[]>();
-    try {
-      // await this.sharedService.checkIfAdmin(headers);
-      const result = await this.userRepository.find();
-      res.data = result;
-      res.message = "Successfully get users information";
-      res.statusCode = HttpStatus.OK;
-    } catch (error) {
-      res.statusCode = HttpStatus.BAD_REQUEST;
-      res.message = error.message
-    }
-    return res;
-  }
+
   /**
    * 
    * @param id 
@@ -122,37 +105,5 @@ export class UsersService {
     }
     return res;
   }
-  /**
-   * 
-   * @param id 
-   * @returns delete user from database based on it's id
-   */
-  async deleteUserById(id: string) {
-    const res = new ApiResponseDTO<User>();
-    try {
-      // first get the user
-      const user = await this.userRepository.findOneBy({ id: id });
-      // then check if it exists
-      if (user === undefined || user === null) {
-        throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
-      }
-      await this.userRepository.delete(id)
-      res.statusCode = HttpStatus.OK;
-      res.message = "User deleted successfully"
-    } catch (error) {
-      res.statusCode = HttpStatus.BAD_REQUEST;
-      res.message = error.message
-    }
-    return res;
-  }
-  /**
-   * 
-   * @returns delete all users from the database
-   */
-  async deleteAll() {
-    return await this.userRepository.clear();
-  }
-
-
 
 }
