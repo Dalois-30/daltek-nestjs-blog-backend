@@ -35,6 +35,16 @@ export class AdminController {
             ...response,
         };
     }
+
+    @ApiResponse({ status: 201, description: 'Successfully created role' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @Post('/user/by-role/:roleId')
+    async getUsersByRoleId(@Param('roleId', new ParseUUIDPipe({ version: '4' })) roleId: string) {
+        const response = await this.adminService.userByRoleId(roleId);
+        return {
+            ...response,
+        };
+    }
     
     @ApiResponse({ status: 200, description: 'Fetched all users' })
     @ApiResponse({ status: 401, description: 'Unauthorized access' })
@@ -44,6 +54,17 @@ export class AdminController {
       console.log(headers);
       
       return await this.adminService.findAll(headers);
+    }
+
+
+    @ApiResponse({ status: 200, description: 'Update user role' })
+    @ApiResponse({ status: 401, description: 'Unauthorized access' })
+    @Post('/user/:userId/update-roles')
+    async updateRolesForUser(
+      @Param('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+      @Body() roleIds: string[],
+    ){
+      return await this.adminService.updateUserRole(userId, roleIds);
     }
 
       

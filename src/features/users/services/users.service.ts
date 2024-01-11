@@ -35,6 +35,9 @@ export class UsersService {
           userRoles: true
         }
       });
+      if (!result) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
       res.data = result;
       res.message = "Successful retrieve user"
       res.statusCode = HttpStatus.OK;

@@ -10,6 +10,7 @@ import { UsersService } from 'src/features/users/services/users.service';
 import { Role } from 'src/features/role/entities/role.entity';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { UserRolesEnum } from 'src/auth/enums/user-roles';
+import { log } from 'console';
 
 @Injectable()
 export class AdminService {
@@ -143,6 +144,63 @@ export class AdminService {
         }
         return res;
     }
+
+    /**
+    * 
+    * @param roleId 
+    * @returns get all users with the given role
+    */
+    async userByRoleId(roleId: string) {
+        const res = new ApiResponseDTO<User[]>();
+        try {
+            // Rechercher les utilisateurs en fonction du rôle
+            const users = await this.userRepository
+                .createQueryBuilder('user')
+                .innerJoin('user.userRoles', 'userRole')
+                // .innerJoinAndSelect('user.userRoles', 'userRole')
+                .where('userRole.id = :roleId', { roleId })
+                .getMany();
+
+            if (!users || users.length === 0) {
+                throw new HttpException('No users found for the specified role', HttpStatus.NOT_FOUND);
+            }
+
+            res.data = users;
+            res.statusCode = HttpStatus.OK;
+            res.message = 'Users retrieved successfully';
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+    /**
+    * 
+    * @param roleId 
+    * @returns get all users with the given role
+    */
+    async updateUserRole(userId: string, roleIds: string[]) {
+
+        const res = new ApiResponseDTO<User>();
+        try {
+            const roles = await this.roleRepository.find({ where: { id: In(roleIds) } });
+            const result = await this.usersService.findOneById(userId);
+            const user = result.data;
+            log(roles)
+            // Mettre à jour les rôles de l'utilisateur
+            user.userRoles = roles;
+            await this.userRepository.save(user);
+
+            res.statusCode = HttpStatus.OK;
+            res.message = 'Roles updated successfully';
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+
+
     /**
      * 
      * @returns delete all users from the database

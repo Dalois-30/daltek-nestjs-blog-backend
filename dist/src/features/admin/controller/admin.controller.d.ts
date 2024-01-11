@@ -153,6 +153,12 @@ export declare class AdminController {
         listenerCount(eventName: string | symbol, listener?: Function): number;
         eventNames(): (string | symbol)[];
     }>;
+    getUsersByRoleId(roleId: string): Promise<{
+        data?: User[];
+        message?: any;
+        statusCode?: number;
+    }>;
     getAllUsers(headers: any): Promise<ApiResponseDTO<User[]>>;
+    updateRolesForUser(userId: string, roleIds: string[]): Promise<ApiResponseDTO<User>>;
     deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
 }

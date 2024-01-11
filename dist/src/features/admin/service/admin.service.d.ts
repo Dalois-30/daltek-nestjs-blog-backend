@@ -17,5 +17,7 @@ export declare class AdminService {
     createRole(createRoleDto: CreateRoleDto, response: Response): Promise<Response<any, Record<string, any>>>;
     findAll(headers: any): Promise<ApiResponseDTO<User[]>>;
     deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
+    userByRoleId(roleId: string): Promise<ApiResponseDTO<User[]>>;
+    updateUserRole(userId: string, roleIds: string[]): Promise<ApiResponseDTO<User>>;
     deleteAll(): Promise<void>;
 }

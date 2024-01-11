@@ -31,9 +31,16 @@ let AdminController = class AdminController {
         const response = await this.adminService.createRole(role, res);
         return Object.assign({}, response);
     }
+    async getUsersByRoleId(roleId) {
+        const response = await this.adminService.userByRoleId(roleId);
+        return Object.assign({}, response);
+    }
     async getAllUsers(headers) {
         console.log(headers);
         return await this.adminService.findAll(headers);
+    }
+    async updateRolesForUser(userId, roleIds) {
+        return await this.adminService.updateUserRole(userId, roleIds);
     }
     async deleteUserById(id) {
         return await this.adminService.deleteUserById(id);
@@ -61,6 +68,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "createRole", null);
 __decorate([
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    (0, common_1.Post)('/user/by-role/:roleId'),
+    __param(0, (0, common_1.Param)('roleId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getUsersByRoleId", null);
+__decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all users' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.Get)('/users/list'),
@@ -69,6 +85,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getAllUsers", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Update user role' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
+    (0, common_1.Post)('/user/:userId/update-roles'),
+    __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "updateRolesForUser", null);
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Deleted specific user' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),

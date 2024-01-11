@@ -35,6 +35,9 @@ let UsersService = class UsersService {
                     userRoles: true
                 }
             });
+            if (!result) {
+                throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+            }
             res.data = result;
             res.message = "Successful retrieve user";
             res.statusCode = common_1.HttpStatus.OK;

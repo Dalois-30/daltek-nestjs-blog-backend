@@ -22,6 +22,7 @@ const shared_service_1 = require("../../../shared/services/shared.service");
 const users_service_1 = require("../../users/services/users.service");
 const role_entity_1 = require("../../role/entities/role.entity");
 const user_roles_1 = require("../../../auth/enums/user-roles");
+const console_1 = require("console");
 let AdminService = class AdminService {
     constructor(usersService, userRepository, roleRepository, sharedService) {
         this.usersService = usersService;
@@ -108,6 +109,45 @@ let AdminService = class AdminService {
             await this.userRepository.delete(id);
             res.statusCode = common_1.HttpStatus.OK;
             res.message = "User deleted successfully";
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+    async userByRoleId(roleId) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const users = await this.userRepository
+                .createQueryBuilder('user')
+                .innerJoin('user.userRoles', 'userRole')
+                .where('userRole.id = :roleId', { roleId })
+                .getMany();
+            if (!users || users.length === 0) {
+                throw new common_1.HttpException('No users found for the specified role', common_1.HttpStatus.NOT_FOUND);
+            }
+            res.data = users;
+            res.statusCode = common_1.HttpStatus.OK;
+            res.message = 'Users retrieved successfully';
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+    async updateUserRole(userId, roleIds) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const roles = await this.roleRepository.find({ where: { id: (0, typeorm_2.In)(roleIds) } });
+            const result = await this.usersService.findOneById(userId);
+            const user = result.data;
+            (0, console_1.log)(roles);
+            user.userRoles = roles;
+            await this.userRepository.save(user);
+            res.statusCode = common_1.HttpStatus.OK;
+            res.message = 'Roles updated successfully';
         }
         catch (error) {
             res.statusCode = common_1.HttpStatus.BAD_REQUEST;
