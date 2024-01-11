@@ -9,6 +9,7 @@ import {
     UseGuards,
     Put,
     Query,
+    ParseUUIDPipe,
   } from '@nestjs/common';
   import { UsersService } from '../services/users.service';
   import { ApiTags, ApiResponse } from '@nestjs/swagger';
@@ -29,15 +30,15 @@ import { ApiResponseDTO } from 'src/shared/response/api-response';
     }
   
     @ApiResponse({ status: 200, description: 'Fetched specific user' })
-    @Get('/:id')
-    async getUserById(@Param('id') id: string): Promise <ApiResponseDTO<User>> {
+    @Get('/:userId')
+    async getUserById(@Param('userId', new ParseUUIDPipe({ version: '4' })) id: string): Promise <ApiResponseDTO<User>> {
       return await this.usersService.findOneById(id);
     }
   
     @ApiResponse({ status: 200, description: 'Update specific user' })
     @ApiResponse({ status: 400, description: 'User not found' })
-    @Put(':id')
-    async updateUser(@Param('id') id: string, @Body() user: UpdateUserDto) {
+    @Put(':userId')
+    async updateUser(@Param('userId', new ParseUUIDPipe({ version: '4' })) id: string, @Body() user: UpdateUserDto) {
       return await this.usersService.update(id, user);
     }
   

@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateUserDto {
 }
+exports.CreateUserDto = CreateUserDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsEmail)(),
@@ -31,9 +32,9 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "username", void 0);
-exports.CreateUserDto = CreateUserDto;
 class ResetPassWordDto {
 }
+exports.ResetPassWordDto = ResetPassWordDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
@@ -44,5 +45,4 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ResetPassWordDto.prototype, "newPassword", void 0);
-exports.ResetPassWordDto = ResetPassWordDto;
 //# sourceMappingURL=create-user.dto.js.map

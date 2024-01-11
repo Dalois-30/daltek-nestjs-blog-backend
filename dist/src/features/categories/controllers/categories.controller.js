@@ -38,6 +38,7 @@ let CategoriesController = class CategoriesController {
         return await this.categoryService.update(id, category);
     }
 };
+exports.CategoriesController = CategoriesController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all category' }),
     (0, common_1.Get)(),
@@ -100,10 +101,9 @@ __decorate([
     __metadata("design:paramtypes", [String, category_create_dto_1.CreateCategoryDto]),
     __metadata("design:returntype", Promise)
 ], CategoriesController.prototype, "updateCategory", null);
-CategoriesController = __decorate([
+exports.CategoriesController = CategoriesController = __decorate([
     (0, swagger_1.ApiTags)('categories'),
     (0, common_1.Controller)('category'),
     __metadata("design:paramtypes", [categories_service_1.CategoriesService])
 ], CategoriesController);
-exports.CategoriesController = CategoriesController;
 //# sourceMappingURL=categories.controller.js.map

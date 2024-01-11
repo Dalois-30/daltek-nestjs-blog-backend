@@ -19,7 +19,8 @@ const shared_service_1 = require("./services/shared.service");
 const users_service_1 = require("../features/users/services/users.service");
 let SharedModule = class SharedModule {
 };
-SharedModule = __decorate([
+exports.SharedModule = SharedModule;
+exports.SharedModule = SharedModule = __decorate([
     (0, common_1.Module)({
         imports: [
             database_module_1.DatabaseModule,
@@ -53,5 +54,4 @@ SharedModule = __decorate([
         ]
     })
 ], SharedModule);
-exports.SharedModule = SharedModule;
 //# sourceMappingURL=shared.module.js.map

@@ -37,6 +37,7 @@ let PostsController = class PostsController {
         return await this.postService.update(id, post);
     }
 };
+exports.PostsController = PostsController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
     (0, common_1.Get)(),
@@ -94,11 +95,10 @@ __decorate([
     __metadata("design:paramtypes", [String, create_post_dto_1.UpdatePostDto]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "updatepost", null);
-PostsController = __decorate([
+exports.PostsController = PostsController = __decorate([
     (0, swagger_1.ApiTags)('posts'),
     (0, common_1.Controller)('posts'),
     __metadata("design:paramtypes", [posts_service_1.PostsService,
         upload_service_1.UploadService])
 ], PostsController);
-exports.PostsController = PostsController;
 //# sourceMappingURL=posts.controller.js.map

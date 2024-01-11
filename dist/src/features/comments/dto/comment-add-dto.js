@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CommentsAddDto {
 }
+exports.CommentsAddDto = CommentsAddDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
@@ -36,5 +37,4 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CommentsAddDto.prototype, "parent", void 0);
-exports.CommentsAddDto = CommentsAddDto;
 //# sourceMappingURL=comment-add-dto.js.map

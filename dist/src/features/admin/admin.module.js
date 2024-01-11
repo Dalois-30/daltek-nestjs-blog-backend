@@ -15,7 +15,8 @@ const users_service_1 = require("../users/services/users.service");
 const shared_service_1 = require("../../shared/services/shared.service");
 let AdminModule = class AdminModule {
 };
-AdminModule = __decorate([
+exports.AdminModule = AdminModule;
+exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
         imports: [
             shared_module_1.SharedModule
@@ -28,5 +29,4 @@ AdminModule = __decorate([
         ]
     })
 ], AdminModule);
-exports.AdminModule = AdminModule;
 //# sourceMappingURL=admin.module.js.map

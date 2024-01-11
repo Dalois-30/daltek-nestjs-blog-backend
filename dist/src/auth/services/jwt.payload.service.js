@@ -36,9 +36,9 @@ let JwtPayloadService = class JwtPayloadService {
         };
     }
 };
-JwtPayloadService = __decorate([
+exports.JwtPayloadService = JwtPayloadService;
+exports.JwtPayloadService = JwtPayloadService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService])
 ], JwtPayloadService);
-exports.JwtPayloadService = JwtPayloadService;
 //# sourceMappingURL=jwt.payload.service.js.map

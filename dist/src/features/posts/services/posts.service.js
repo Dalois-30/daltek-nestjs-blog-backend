@@ -192,7 +192,8 @@ let PostsService = class PostsService {
         return await this.postRepository.clear();
     }
 };
-PostsService = __decorate([
+exports.PostsService = PostsService;
+exports.PostsService = PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(posts_model_1.Posts)),
     __param(3, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
@@ -204,5 +205,4 @@ PostsService = __decorate([
         typeorm_2.Repository,
         upload_service_1.UploadService])
 ], PostsService);
-exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

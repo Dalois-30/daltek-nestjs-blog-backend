@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRoles } from 'src/auth/constant/user-roles';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
@@ -9,6 +8,8 @@ import { Request as RequestExpress, Response } from 'express';
 import { SharedService } from 'src/shared/services/shared.service';
 import { UsersService } from 'src/features/users/services/users.service';
 import { Role } from 'src/features/role/entities/role.entity';
+import { CreateRoleDto } from '../dto/create-role.dto';
+import { UserRolesEnum } from 'src/auth/enums/user-roles';
 
 @Injectable()
 export class AdminService {
@@ -17,7 +18,7 @@ export class AdminService {
         private usersService: UsersService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-        @InjectRepository(User)
+        @InjectRepository(Role)
         private readonly roleRepository: Repository<Role>,
         private readonly sharedService: SharedService
     ) { }
@@ -44,12 +45,18 @@ export class AdminService {
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
             newUser.username = createUserDto.username;
-            let roleNames: string[]
+
             // Trouver les rôles à partir des noms
-            const roles = await this.roleRepository.find({ where: { roleName: In(roleNames) } });
+            const adminRole = await this.roleRepository.findOne({
+                where: {
+                    roleName: UserRolesEnum.ADMIN
+                }
+            });
 
             // Assigner les rôles à l'utilisateur
-            newUser.userRoles = roles;
+            if (adminRole) {
+                newUser.userRoles = [adminRole];
+            }
 
             const userResponse = await this.userRepository.save(newUser);
             await this.sharedService.createEmailToken(newUser.email, response)
@@ -57,6 +64,35 @@ export class AdminService {
             res.data = userResponse;
             res.statusCode = HttpStatus.CREATED;
             res.message = "user created successfully"
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message
+        }
+        // return response
+        return response.send(res);
+    }
+    /**
+     * 
+     * @param createRoleDto create role dto
+     * @returns the role object
+     */
+    async createRole(createRoleDto: CreateRoleDto, response: Response) {
+        const res = new ApiResponseDTO<Role>();
+        try {
+
+            const role = await this.roleRepository.findOneBy({ roleName: createRoleDto.roleName })
+            if (role) {
+                throw new HttpException('role already exists', HttpStatus.CONFLICT)
+            }
+
+            const newRole = new Role();
+            newRole.roleName = createRoleDto.roleName;
+
+            const roleResponse = await this.roleRepository.save(newRole);
+            // set the response object
+            res.data = roleResponse;
+            res.statusCode = HttpStatus.CREATED;
+            res.message = "role created successfully"
         } catch (error) {
             res.statusCode = HttpStatus.BAD_REQUEST;
             res.message = error.message

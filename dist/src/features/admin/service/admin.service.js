@@ -20,6 +20,8 @@ const api_response_1 = require("../../../shared/response/api-response");
 const typeorm_2 = require("typeorm");
 const shared_service_1 = require("../../../shared/services/shared.service");
 const users_service_1 = require("../../users/services/users.service");
+const role_entity_1 = require("../../role/entities/role.entity");
+const user_roles_1 = require("../../../auth/enums/user-roles");
 let AdminService = class AdminService {
     constructor(usersService, userRepository, roleRepository, sharedService) {
         this.usersService = usersService;
@@ -42,14 +44,39 @@ let AdminService = class AdminService {
             newUser.email = createUserDto.email;
             newUser.password = createUserDto.password;
             newUser.username = createUserDto.username;
-            let roleNames;
-            const roles = await this.roleRepository.find({ where: { roleName: (0, typeorm_2.In)(roleNames) } });
-            newUser.userRoles = roles;
+            const adminRole = await this.roleRepository.findOne({
+                where: {
+                    roleName: user_roles_1.UserRolesEnum.ADMIN
+                }
+            });
+            if (adminRole) {
+                newUser.userRoles = [adminRole];
+            }
             const userResponse = await this.userRepository.save(newUser);
             await this.sharedService.createEmailToken(newUser.email, response);
             res.data = userResponse;
             res.statusCode = common_1.HttpStatus.CREATED;
             res.message = "user created successfully";
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return response.send(res);
+    }
+    async createRole(createRoleDto, response) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const role = await this.roleRepository.findOneBy({ roleName: createRoleDto.roleName });
+            if (role) {
+                throw new common_1.HttpException('role already exists', common_1.HttpStatus.CONFLICT);
+            }
+            const newRole = new role_entity_1.Role();
+            newRole.roleName = createRoleDto.roleName;
+            const roleResponse = await this.roleRepository.save(newRole);
+            res.data = roleResponse;
+            res.statusCode = common_1.HttpStatus.CREATED;
+            res.message = "role created successfully";
         }
         catch (error) {
             res.statusCode = common_1.HttpStatus.BAD_REQUEST;
@@ -92,14 +119,14 @@ let AdminService = class AdminService {
         return await this.userRepository.clear();
     }
 };
-AdminService = __decorate([
+exports.AdminService = AdminService;
+exports.AdminService = AdminService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __param(2, (0, typeorm_1.InjectRepository)(role_entity_1.Role)),
     __metadata("design:paramtypes", [users_service_1.UsersService,
         typeorm_2.Repository,
         typeorm_2.Repository,
         shared_service_1.SharedService])
 ], AdminService);
-exports.AdminService = AdminService;
 //# sourceMappingURL=admin.service.js.map

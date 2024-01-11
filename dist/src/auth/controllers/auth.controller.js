@@ -45,6 +45,7 @@ let AuthController = class AuthController {
         }
     }
 };
+exports.AuthController = AuthController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created user' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
@@ -101,11 +102,10 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
-AuthController = __decorate([
+exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         shared_service_1.SharedService])
 ], AuthController);
-exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

@@ -14,20 +14,20 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class GetFileDto {
 }
+exports.GetFileDto = GetFileDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], GetFileDto.prototype, "key", void 0);
-exports.GetFileDto = GetFileDto;
 class GetFileListDto {
 }
+exports.GetFileListDto = GetFileListDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], GetFileListDto.prototype, "prefix", void 0);
-exports.GetFileListDto = GetFileListDto;
 //# sourceMappingURL=get-file-dto.js.map

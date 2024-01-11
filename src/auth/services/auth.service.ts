@@ -8,19 +8,17 @@ import {
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { Repository } from 'typeorm';
-import { EmailVerificationEntity } from '../entities/emailverification.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import 'dotenv/config';
-import { UserRoles } from '../constant/user-roles';
 import { CreateUserDto, ResetPassWordDto } from '../dto/create-user.dto';
-import { LoginUserDto, VerifyOtpDto } from '../dto/login-user.dto';
-import { UpdateUserDto, UpdateUserDtoPassword } from '../dto/update-user.dto';
+import { LoginUserDto } from '../dto/login-user.dto';
 import { User } from '../entities/user.entity';
 import { JwtPayloadService } from './jwt.payload.service';
 import { Request as RequestExpress, Response } from 'express';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { SharedService } from 'src/shared/services/shared.service';
 import { UsersService } from 'src/features/users/services/users.service';
+import { UpdateUserDtoPassword } from '../dto/update-user-pwd.dto';
 
 const phoneRegex = /^6(?=[579])([0-9]{8})/;
 

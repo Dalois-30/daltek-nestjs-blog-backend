@@ -19,7 +19,8 @@ const userRole_entity_1 = require("../../auth/entities/userRole.entity");
 const role_entity_1 = require("../../features/role/entities/role.entity");
 let DatabaseModule = class DatabaseModule {
 };
-DatabaseModule = __decorate([
+exports.DatabaseModule = DatabaseModule;
+exports.DatabaseModule = DatabaseModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
         imports: [
@@ -42,5 +43,4 @@ DatabaseModule = __decorate([
         ]
     })
 ], DatabaseModule);
-exports.DatabaseModule = DatabaseModule;
 //# sourceMappingURL=database.module.js.map

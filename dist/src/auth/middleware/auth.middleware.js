@@ -35,9 +35,9 @@ let AuthMiddleware = class AuthMiddleware {
         return decodedJwtAccessToken;
     }
 };
-AuthMiddleware = __decorate([
+exports.AuthMiddleware = AuthMiddleware;
+exports.AuthMiddleware = AuthMiddleware = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService])
 ], AuthMiddleware);
-exports.AuthMiddleware = AuthMiddleware;
 //# sourceMappingURL=auth.middleware.js.map

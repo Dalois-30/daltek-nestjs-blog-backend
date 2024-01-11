@@ -74,9 +74,9 @@ let UploadService = class UploadService {
         }
     }
 };
-UploadService = __decorate([
+exports.UploadService = UploadService;
+exports.UploadService = UploadService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService])
 ], UploadService);
-exports.UploadService = UploadService;
 //# sourceMappingURL=upload.service.js.map

@@ -8,13 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var Category_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Category = void 0;
 const posts_model_1 = require("../../posts/models/posts.model");
 const typeorm_1 = require("typeorm");
-let Category = Category_1 = class Category {
+let Category = class Category {
 };
+exports.Category = Category;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
     __metadata("design:type", String)
@@ -34,11 +34,11 @@ __decorate([
     __metadata("design:type", String)
 ], Category.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)((type) => Category_1, (category) => category.children),
+    (0, typeorm_1.ManyToOne)((type) => Category, (category) => category.children),
     __metadata("design:type", Category)
 ], Category.prototype, "parent", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)((type) => Category_1, (category) => category.parent),
+    (0, typeorm_1.OneToMany)((type) => Category, (category) => category.parent),
     __metadata("design:type", Array)
 ], Category.prototype, "children", void 0);
 __decorate([
@@ -53,8 +53,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" }),
     __metadata("design:type", Date)
 ], Category.prototype, "updated_at", void 0);
-Category = Category_1 = __decorate([
+exports.Category = Category = __decorate([
     (0, typeorm_1.Entity)()
 ], Category);
-exports.Category = Category;
 //# sourceMappingURL=category.model.js.map

@@ -23,7 +23,8 @@ const shared_service_1 = require("../shared/services/shared.service");
 const users_module_1 = require("../features/users/users.module");
 let AuthModule = class AuthModule {
 };
-AuthModule = __decorate([
+exports.AuthModule = AuthModule;
+exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: true }),
@@ -40,5 +41,4 @@ AuthModule = __decorate([
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_payload_service_1.JwtPayloadService, shared_service_1.SharedService],
     })
 ], AuthModule);
-exports.AuthModule = AuthModule;
 //# sourceMappingURL=auth.module.js.map

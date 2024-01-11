@@ -16,7 +16,8 @@ const admin_module_1 = require("./admin/admin.module");
 const role_module_1 = require("./role/role.module");
 let FeaturesModule = class FeaturesModule {
 };
-FeaturesModule = __decorate([
+exports.FeaturesModule = FeaturesModule;
+exports.FeaturesModule = FeaturesModule = __decorate([
     (0, common_1.Module)({
         imports: [
             users_module_1.UsersModule,
@@ -28,5 +29,4 @@ FeaturesModule = __decorate([
         ]
     })
 ], FeaturesModule);
-exports.FeaturesModule = FeaturesModule;
 //# sourceMappingURL=features.module.js.map

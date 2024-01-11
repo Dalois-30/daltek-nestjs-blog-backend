@@ -30,6 +30,7 @@ let CommentsController = class CommentsController {
         return Object.assign({}, response);
     }
 };
+exports.CommentsController = CommentsController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully add comment' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
@@ -48,10 +49,9 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CommentsController.prototype, "getPostComment", null);
-CommentsController = __decorate([
+exports.CommentsController = CommentsController = __decorate([
     (0, swagger_1.ApiTags)('comments'),
     (0, common_1.Controller)('comments'),
     __metadata("design:paramtypes", [comments_service_1.CommentsService])
 ], CommentsController);
-exports.CommentsController = CommentsController;
 //# sourceMappingURL=comments.controller.js.map

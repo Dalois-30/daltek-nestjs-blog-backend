@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateCategoryDto {
 }
+exports.CreateCategoryDto = CreateCategoryDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
@@ -30,7 +31,6 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCategoryDto.prototype, "parent", void 0);
-exports.CreateCategoryDto = CreateCategoryDto;
 class CategoryWithParent {
 }
 exports.CategoryWithParent = CategoryWithParent;

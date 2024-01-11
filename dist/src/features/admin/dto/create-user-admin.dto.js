@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateAdminUserDto {
 }
+exports.CreateAdminUserDto = CreateAdminUserDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsEmail)(),
@@ -31,5 +32,4 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateAdminUserDto.prototype, "username", void 0);
-exports.CreateAdminUserDto = CreateAdminUserDto;
 //# sourceMappingURL=create-user-admin.dto.js.map

@@ -92,7 +92,8 @@ let CommentsService = class CommentsService {
         return res;
     }
 };
-CommentsService = __decorate([
+exports.CommentsService = CommentsService;
+exports.CommentsService = CommentsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(comments_model_1.Comments)),
     __param(1, (0, typeorm_1.InjectRepository)(posts_model_1.Posts)),
@@ -101,5 +102,4 @@ CommentsService = __decorate([
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], CommentsService);
-exports.CommentsService = CommentsService;
 //# sourceMappingURL=comments.service.js.map

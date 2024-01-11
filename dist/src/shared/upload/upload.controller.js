@@ -32,6 +32,7 @@ let UploadController = class UploadController {
         return await this.uploadService.getSignedImageUrls(getFile.prefix);
     }
 };
+exports.UploadController = UploadController;
 __decorate([
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
     (0, swagger_1.ApiBody)({
@@ -69,9 +70,8 @@ __decorate([
     __metadata("design:paramtypes", [get_file_dto_1.GetFileListDto]),
     __metadata("design:returntype", Promise)
 ], UploadController.prototype, "getFileList", null);
-UploadController = __decorate([
+exports.UploadController = UploadController = __decorate([
     (0, common_1.Controller)('upload'),
     __metadata("design:paramtypes", [upload_service_1.UploadService])
 ], UploadController);
-exports.UploadController = UploadController;
 //# sourceMappingURL=upload.controller.js.map

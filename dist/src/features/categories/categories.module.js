@@ -15,7 +15,8 @@ const upload_module_1 = require("../../shared/upload/upload.module");
 const upload_service_1 = require("../../shared/upload/upload.service");
 let CategoriesModule = class CategoriesModule {
 };
-CategoriesModule = __decorate([
+exports.CategoriesModule = CategoriesModule;
+exports.CategoriesModule = CategoriesModule = __decorate([
     (0, common_1.Module)({
         imports: [
             shared_module_1.SharedModule,
@@ -25,5 +26,4 @@ CategoriesModule = __decorate([
         controllers: [categories_controller_1.CategoriesController]
     })
 ], CategoriesModule);
-exports.CategoriesModule = CategoriesModule;
 //# sourceMappingURL=categories.module.js.map

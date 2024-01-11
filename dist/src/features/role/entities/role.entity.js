@@ -15,6 +15,7 @@ const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../../../auth/entities/user.entity");
 let Role = class Role {
 };
+exports.Role = Role;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
     __metadata("design:type", String)
@@ -37,8 +38,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" }),
     __metadata("design:type", Date)
 ], Role.prototype, "updated_at", void 0);
-Role = __decorate([
+exports.Role = Role = __decorate([
     (0, typeorm_1.Entity)()
 ], Role);
-exports.Role = Role;
 //# sourceMappingURL=role.entity.js.map

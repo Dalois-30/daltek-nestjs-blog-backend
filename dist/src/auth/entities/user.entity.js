@@ -32,6 +32,7 @@ let User = class User {
         }
     }
 };
+exports.User = User;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
     __metadata("design:type", String)
@@ -86,8 +87,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" }),
     __metadata("design:type", Date)
 ], User.prototype, "updated_at", void 0);
-User = __decorate([
+exports.User = User = __decorate([
     (0, typeorm_1.Entity)('user')
 ], User);
-exports.User = User;
 //# sourceMappingURL=user.entity.js.map

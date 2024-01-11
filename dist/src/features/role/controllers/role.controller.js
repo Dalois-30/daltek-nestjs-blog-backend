@@ -10,8 +10,8 @@ exports.RoleController = void 0;
 const common_1 = require("@nestjs/common");
 let RoleController = class RoleController {
 };
-RoleController = __decorate([
+exports.RoleController = RoleController;
+exports.RoleController = RoleController = __decorate([
     (0, common_1.Controller)('role')
 ], RoleController);
-exports.RoleController = RoleController;
 //# sourceMappingURL=role.controller.js.map

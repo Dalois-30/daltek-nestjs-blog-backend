@@ -13,7 +13,8 @@ const users_controller_1 = require("./controllers/users.controller");
 const shared_module_1 = require("../../shared/shared.module");
 let UsersModule = class UsersModule {
 };
-UsersModule = __decorate([
+exports.UsersModule = UsersModule;
+exports.UsersModule = UsersModule = __decorate([
     (0, common_1.Module)({
         imports: [
             shared_module_1.SharedModule
@@ -23,5 +24,4 @@ UsersModule = __decorate([
         exports: [users_service_1.UsersService]
     })
 ], UsersModule);
-exports.UsersModule = UsersModule;
 //# sourceMappingURL=users.module.js.map

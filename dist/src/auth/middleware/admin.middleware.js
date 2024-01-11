@@ -37,9 +37,9 @@ let AdminMiddleware = class AdminMiddleware {
         return decodedJwtAccessToken;
     }
 };
-AdminMiddleware = __decorate([
+exports.AdminMiddleware = AdminMiddleware;
+exports.AdminMiddleware = AdminMiddleware = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService])
 ], AdminMiddleware);
-exports.AdminMiddleware = AdminMiddleware;
 //# sourceMappingURL=admin.middleware.js.map

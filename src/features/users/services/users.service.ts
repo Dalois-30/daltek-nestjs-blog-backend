@@ -31,7 +31,8 @@ export class UsersService {
         },
         relations: {
           posts: true,
-          comments: true
+          comments: true,
+          userRoles: true
         }
       });
       res.data = result;
@@ -94,7 +95,7 @@ export class UsersService {
         throw new HttpException("User doesn't exists", HttpStatus.BAD_REQUEST);
       }
       // merge and save the modified user
-      await this.userRepository.merge(user, newUser);
+      this.userRepository.merge(user, newUser);
       const result = await this.userRepository.save(user);
       res.data = result;
       res.message = "Successfully updated"

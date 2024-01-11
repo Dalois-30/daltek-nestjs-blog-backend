@@ -18,12 +18,17 @@ const swagger_1 = require("@nestjs/swagger");
 const create_user_dto_1 = require("../../../auth/dto/create-user.dto");
 const admin_service_1 = require("../service/admin.service");
 const passport_1 = require("@nestjs/passport");
+const create_role_dto_1 = require("../dto/create-role.dto");
 let AdminController = class AdminController {
     constructor(adminService) {
         this.adminService = adminService;
     }
     async createAdmin(user, res) {
         const response = await this.adminService.createAdmin(user, res);
+        return Object.assign({}, response);
+    }
+    async createRole(role, res) {
+        const response = await this.adminService.createRole(role, res);
         return Object.assign({}, response);
     }
     async getAllUsers(headers) {
@@ -34,6 +39,7 @@ let AdminController = class AdminController {
         return await this.adminService.deleteUserById(id);
     }
 };
+exports.AdminController = AdminController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created admin' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
@@ -44,6 +50,16 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "createAdmin", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    (0, common_1.Post)('/role/create'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_role_dto_1.CreateRoleDto, Object]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "createRole", null);
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all users' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
@@ -57,16 +73,15 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Deleted specific user' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Delete)('/user/delete/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)('/user/delete/:userId'),
+    __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "deleteUserById", null);
-AdminController = __decorate([
+exports.AdminController = AdminController = __decorate([
     (0, swagger_1.ApiTags)('admin'),
     (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminService])
 ], AdminController);
-exports.AdminController = AdminController;
 //# sourceMappingURL=admin.controller.js.map

@@ -13,7 +13,8 @@ const comments_controller_1 = require("./controllers/comments.controller");
 const shared_module_1 = require("../../shared/shared.module");
 let CommentsModule = class CommentsModule {
 };
-CommentsModule = __decorate([
+exports.CommentsModule = CommentsModule;
+exports.CommentsModule = CommentsModule = __decorate([
     (0, common_1.Module)({
         imports: [
             shared_module_1.SharedModule
@@ -22,5 +23,4 @@ CommentsModule = __decorate([
         controllers: [comments_controller_1.CommentsController]
     })
 ], CommentsModule);
-exports.CommentsModule = CommentsModule;
 //# sourceMappingURL=comments.module.js.map

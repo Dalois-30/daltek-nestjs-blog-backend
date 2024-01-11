@@ -12,11 +12,11 @@ const upload_controller_1 = require("./upload.controller");
 const upload_service_1 = require("./upload.service");
 let UploadModule = class UploadModule {
 };
-UploadModule = __decorate([
+exports.UploadModule = UploadModule;
+exports.UploadModule = UploadModule = __decorate([
     (0, common_1.Module)({
         controllers: [upload_controller_1.UploadController],
         providers: [upload_service_1.UploadService],
     })
 ], UploadModule);
-exports.UploadModule = UploadModule;
 //# sourceMappingURL=upload.module.js.map

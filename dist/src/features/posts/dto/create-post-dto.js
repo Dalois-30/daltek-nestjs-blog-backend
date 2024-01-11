@@ -17,6 +17,7 @@ class CreatePostDto {
 exports.CreatePostDto = CreatePostDto;
 class UpdatePostDto {
 }
+exports.UpdatePostDto = UpdatePostDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
@@ -39,5 +40,4 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], UpdatePostDto.prototype, "tags", void 0);
-exports.UpdatePostDto = UpdatePostDto;
 //# sourceMappingURL=create-post-dto.js.map

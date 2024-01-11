@@ -6,5 +6,5 @@ var UserRoles;
     UserRoles["USER"] = "User";
     UserRoles["ADMIN"] = "Admin";
     UserRoles["BLOGGER"] = "Blogger";
-})(UserRoles = exports.UserRoles || (exports.UserRoles = {}));
+})(UserRoles || (exports.UserRoles = UserRoles = {}));
 //# sourceMappingURL=user-roles.js.map

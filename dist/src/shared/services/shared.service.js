@@ -56,9 +56,9 @@ let SharedService = class SharedService {
         });
     }
 };
-SharedService = __decorate([
+exports.SharedService = SharedService;
+exports.SharedService = SharedService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], SharedService);
-exports.SharedService = SharedService;
 //# sourceMappingURL=shared.service.js.map

@@ -12,11 +12,11 @@ const role_service_1 = require("./service/role.service");
 const role_controller_1 = require("./controllers/role.controller");
 let RoleModule = class RoleModule {
 };
-RoleModule = __decorate([
+exports.RoleModule = RoleModule;
+exports.RoleModule = RoleModule = __decorate([
     (0, common_1.Module)({
         providers: [role_service_1.RoleService],
         controllers: [role_controller_1.RoleController]
     })
 ], RoleModule);
-exports.RoleModule = RoleModule;
 //# sourceMappingURL=role.module.js.map

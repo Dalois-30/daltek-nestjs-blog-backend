@@ -189,11 +189,11 @@ let CategoriesService = class CategoriesService {
         return res;
     }
 };
-CategoriesService = __decorate([
+exports.CategoriesService = CategoriesService;
+exports.CategoriesService = CategoriesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         upload_service_1.UploadService])
 ], CategoriesService);
-exports.CategoriesService = CategoriesService;
 //# sourceMappingURL=categories.service.js.map

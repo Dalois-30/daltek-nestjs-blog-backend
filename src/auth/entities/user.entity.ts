@@ -14,7 +14,6 @@ import {
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt';
-import { UserRoles } from '../constant/user-roles';
 import { Comments } from 'src/features/comments/models/comments.model';
 import { Posts } from 'src/features/posts/models/posts.model';
 import { Role } from 'src/features/role/entities/role.entity';

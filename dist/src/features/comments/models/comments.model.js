@@ -8,14 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var Comments_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Comments = void 0;
 const user_entity_1 = require("../../../auth/entities/user.entity");
 const posts_model_1 = require("../../posts/models/posts.model");
 const typeorm_1 = require("typeorm");
-let Comments = Comments_1 = class Comments {
+let Comments = class Comments {
 };
+exports.Comments = Comments;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
     __metadata("design:type", String)
@@ -35,11 +35,11 @@ __decorate([
     __metadata("design:type", posts_model_1.Posts)
 ], Comments.prototype, "post", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)((type) => Comments_1, (comment) => comment.children),
+    (0, typeorm_1.ManyToOne)((type) => Comments, (comment) => comment.children),
     __metadata("design:type", Comments)
 ], Comments.prototype, "parent", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)((type) => Comments_1, (comment) => comment.parent),
+    (0, typeorm_1.OneToMany)((type) => Comments, (comment) => comment.parent),
     __metadata("design:type", Array)
 ], Comments.prototype, "children", void 0);
 __decorate([
@@ -50,8 +50,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" }),
     __metadata("design:type", Date)
 ], Comments.prototype, "updated_at", void 0);
-Comments = Comments_1 = __decorate([
+exports.Comments = Comments = __decorate([
     (0, typeorm_1.Entity)()
 ], Comments);
-exports.Comments = Comments;
 //# sourceMappingURL=comments.model.js.map

@@ -18,12 +18,12 @@ const bcrypt = require("bcrypt");
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
 require("dotenv/config");
-const update_user_dto_1 = require("../dto/update-user.dto");
 const user_entity_1 = require("../entities/user.entity");
 const jwt_payload_service_1 = require("./jwt.payload.service");
 const api_response_1 = require("../../shared/response/api-response");
 const shared_service_1 = require("../../shared/services/shared.service");
 const users_service_1 = require("../../features/users/services/users.service");
+const update_user_pwd_dto_1 = require("../dto/update-user-pwd.dto");
 const phoneRegex = /^6(?=[579])([0-9]{8})/;
 let AuthService = class AuthService {
     constructor(usersService, jwtPayloadService, userRepository, sharedService) {
@@ -70,7 +70,7 @@ let AuthService = class AuthService {
             }
             const state = await this.checkPassword(resetPassWord.actualPassword, user);
             if (state) {
-                const newUser = new update_user_dto_1.UpdateUserDtoPassword();
+                const newUser = new update_user_pwd_dto_1.UpdateUserDtoPassword();
                 newUser.password = resetPassWord.newPassword;
                 this.userRepository.merge(user, newUser);
                 await this.userRepository.save(user);
@@ -158,7 +158,8 @@ let AuthService = class AuthService {
         return res;
     }
 };
-AuthService = __decorate([
+exports.AuthService = AuthService;
+exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(2, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [users_service_1.UsersService,
@@ -166,5 +167,4 @@ AuthService = __decorate([
         typeorm_1.Repository,
         shared_service_1.SharedService])
 ], AuthService);
-exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

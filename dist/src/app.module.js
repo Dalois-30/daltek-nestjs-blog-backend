@@ -18,7 +18,8 @@ const core_1 = require("@nestjs/core");
 const logging_interceptor_1 = require("./shared/interceptors/logging.interceptor");
 let AppModule = class AppModule {
 };
-AppModule = __decorate([
+exports.AppModule = AppModule;
+exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             auth_module_1.AuthModule,
@@ -36,5 +37,4 @@ AppModule = __decorate([
         ],
     })
 ], AppModule);
-exports.AppModule = AppModule;
 //# sourceMappingURL=app.module.js.map

@@ -19,6 +19,7 @@ let Posts = class Posts {
         this.status = false;
     }
 };
+exports.Posts = Posts;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
     __metadata("design:type", String)
@@ -63,8 +64,7 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" }),
     __metadata("design:type", Date)
 ], Posts.prototype, "updated_at", void 0);
-Posts = __decorate([
+exports.Posts = Posts = __decorate([
     (0, typeorm_1.Entity)()
 ], Posts);
-exports.Posts = Posts;
 //# sourceMappingURL=posts.model.js.map

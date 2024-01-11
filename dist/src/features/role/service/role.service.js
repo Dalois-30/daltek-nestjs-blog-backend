@@ -10,8 +10,8 @@ exports.RoleService = void 0;
 const common_1 = require("@nestjs/common");
 let RoleService = class RoleService {
 };
-RoleService = __decorate([
+exports.RoleService = RoleService;
+exports.RoleService = RoleService = __decorate([
     (0, common_1.Injectable)()
 ], RoleService);
-exports.RoleService = RoleService;
 //# sourceMappingURL=role.service.js.map

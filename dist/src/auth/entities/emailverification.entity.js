@@ -14,6 +14,7 @@ const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 let EmailVerificationEntity = class EmailVerificationEntity {
 };
+exports.EmailVerificationEntity = EmailVerificationEntity;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
     __metadata("design:type", String)
@@ -35,8 +36,7 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Date)
 ], EmailVerificationEntity.prototype, "timestamp", void 0);
-EmailVerificationEntity = __decorate([
+exports.EmailVerificationEntity = EmailVerificationEntity = __decorate([
     (0, typeorm_1.Entity)()
 ], EmailVerificationEntity);
-exports.EmailVerificationEntity = EmailVerificationEntity;
 //# sourceMappingURL=emailverification.entity.js.map

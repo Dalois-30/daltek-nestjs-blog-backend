@@ -32,9 +32,9 @@ let EnvService = class EnvService {
         return this.vars.APP_ENV === 'production';
     }
 };
-EnvService = __decorate([
+exports.EnvService = EnvService;
+exports.EnvService = EnvService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [])
 ], EnvService);
-exports.EnvService = EnvService;
 //# sourceMappingURL=env.service.js.map
