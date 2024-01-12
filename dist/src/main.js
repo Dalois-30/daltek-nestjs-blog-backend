@@ -15,7 +15,12 @@ async function bootstrap() {
         .setTitle('Backend')
         .setDescription('Full api management system of the daltek enterprise')
         .setVersion('1.0')
-        .addBearerAuth()
+        .addBearerAuth({
+        type: 'http',
+        scheme: 'Bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+    }, 'token')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, options);
     swagger_1.SwaggerModule.setup('api', app, document);

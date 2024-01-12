@@ -13,7 +13,7 @@ import { UserRolesEnum } from 'src/auth/enums/user-roles';
 import { log } from 'console';
 
 @Injectable()
-export class AdminService {
+export class AdminUserService {
 
     constructor(
         private usersService: UsersService,
@@ -72,41 +72,12 @@ export class AdminService {
         // return response
         return response.send(res);
     }
-    /**
-     * 
-     * @param createRoleDto create role dto
-     * @returns the role object
-     */
-    async createRole(createRoleDto: CreateRoleDto, response: Response) {
-        const res = new ApiResponseDTO<Role>();
-        try {
-
-            const role = await this.roleRepository.findOneBy({ roleName: createRoleDto.roleName })
-            if (role) {
-                throw new HttpException('role already exists', HttpStatus.CONFLICT)
-            }
-
-            const newRole = new Role();
-            newRole.roleName = createRoleDto.roleName;
-
-            const roleResponse = await this.roleRepository.save(newRole);
-            // set the response object
-            res.data = roleResponse;
-            res.statusCode = HttpStatus.CREATED;
-            res.message = "role created successfully"
-        } catch (error) {
-            res.statusCode = HttpStatus.BAD_REQUEST;
-            res.message = error.message
-        }
-        // return response
-        return response.send(res);
-    }
 
     /**
     * 
     * @returns the lis of all users
     */
-    async findAll(headers: any): Promise<ApiResponseDTO<User[]>> {
+    async findAllUser(headers: any): Promise<ApiResponseDTO<User[]>> {
         const res = new ApiResponseDTO<User[]>();
         try {
             // await this.sharedService.checkIfAdmin(headers);

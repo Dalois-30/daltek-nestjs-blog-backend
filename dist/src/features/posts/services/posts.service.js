@@ -13,7 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
-const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
@@ -26,9 +25,8 @@ const get_file_dto_1 = require("../../../shared/upload/get-file-dto");
 const post_get_dto_1 = require("../dto/post-get-dto");
 const user_entity_1 = require("../../../auth/entities/user.entity");
 let PostsService = class PostsService {
-    constructor(postRepository, httpService, jwtService, categoryRepository, userRepository, uploadService) {
+    constructor(postRepository, jwtService, categoryRepository, userRepository, uploadService) {
         this.postRepository = postRepository;
-        this.httpService = httpService;
         this.jwtService = jwtService;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
@@ -196,10 +194,9 @@ exports.PostsService = PostsService;
 exports.PostsService = PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(posts_model_1.Posts)),
-    __param(3, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
-    __param(4, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __param(2, (0, typeorm_1.InjectRepository)(category_model_1.Category)),
+    __param(3, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        axios_1.HttpService,
         jwt_1.JwtService,
         typeorm_2.Repository,
         typeorm_2.Repository,

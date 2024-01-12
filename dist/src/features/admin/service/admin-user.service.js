@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminService = void 0;
+exports.AdminUserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../../auth/entities/user.entity");
@@ -23,7 +23,7 @@ const users_service_1 = require("../../users/services/users.service");
 const role_entity_1 = require("../../role/entities/role.entity");
 const user_roles_1 = require("../../../auth/enums/user-roles");
 const console_1 = require("console");
-let AdminService = class AdminService {
+let AdminUserService = class AdminUserService {
     constructor(usersService, userRepository, roleRepository, sharedService) {
         this.usersService = usersService;
         this.userRepository = userRepository;
@@ -64,48 +64,6 @@ let AdminService = class AdminService {
             res.message = error.message;
         }
         return response.send(res);
-    }
-    async createRole(createRoleDto, response) {
-        const res = new api_response_1.ApiResponseDTO();
-        try {
-            const role = await this.roleRepository.findOneBy({ roleName: createRoleDto.roleName });
-            if (role) {
-                throw new common_1.HttpException('role already exists', common_1.HttpStatus.CONFLICT);
-            }
-            const newRole = new role_entity_1.Role();
-            newRole.roleName = createRoleDto.roleName;
-            newRole.description = createRoleDto.description;
-            const roleResponse = await this.roleRepository.save(newRole);
-            res.data = roleResponse;
-            res.statusCode = common_1.HttpStatus.CREATED;
-            res.message = "role created successfully";
-        }
-        catch (error) {
-            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
-            res.message = error.message;
-        }
-        return response.send(res);
-    }
-    async updateRole(roleId, roleUpdateDto) {
-        const res = new api_response_1.ApiResponseDTO();
-        try {
-            const roleToUpdate = await this.roleRepository.findOneBy({
-                id: roleId
-            });
-            if (!roleToUpdate) {
-                throw new common_1.HttpException('Role not found', common_1.HttpStatus.NOT_FOUND);
-            }
-            roleToUpdate.roleName = roleUpdateDto.roleName;
-            roleToUpdate.description = roleUpdateDto.description;
-            const updatedRole = await this.roleRepository.save(roleToUpdate);
-            res.data = updatedRole;
-            res.statusCode = common_1.HttpStatus.CREATED;
-            res.message = "role updated successfully";
-        }
-        catch (error) {
-            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
-        }
-        return res;
     }
     async findAllUser(headers) {
         const res = new api_response_1.ApiResponseDTO();
@@ -181,8 +139,8 @@ let AdminService = class AdminService {
         return await this.userRepository.clear();
     }
 };
-exports.AdminService = AdminService;
-exports.AdminService = AdminService = __decorate([
+exports.AdminUserService = AdminUserService;
+exports.AdminUserService = AdminUserService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __param(2, (0, typeorm_1.InjectRepository)(role_entity_1.Role)),
@@ -190,5 +148,5 @@ exports.AdminService = AdminService = __decorate([
         typeorm_2.Repository,
         typeorm_2.Repository,
         shared_service_1.SharedService])
-], AdminService);
-//# sourceMappingURL=admin.service.js.map
+], AdminUserService);
+//# sourceMappingURL=admin-user.service.js.map

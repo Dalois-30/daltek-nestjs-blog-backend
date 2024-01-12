@@ -41,6 +41,8 @@ let CategoriesController = class CategoriesController {
 exports.CategoriesController = CategoriesController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all category' }),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false }),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),

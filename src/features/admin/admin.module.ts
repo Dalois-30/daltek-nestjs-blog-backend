@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AdminController } from './controller/admin.controller';
-import { AdminService } from './service/admin.service';
+import { AdminUserService } from './service/admin-user.service';
 import { SharedModule } from 'src/shared/shared.module';
 import { UsersService } from '../users/services/users.service';
 import { SharedService } from 'src/shared/services/shared.service';
+import { AdminRoleService } from './service/admin-role.service';
 
 @Module({
   imports: [
@@ -12,8 +13,9 @@ import { SharedService } from 'src/shared/services/shared.service';
   controllers: [AdminController],
   providers: [
     SharedService,
-    AdminService,
+    AdminUserService,
     UsersService,
+    AdminRoleService
   ]
 })
 export class AdminModule {}

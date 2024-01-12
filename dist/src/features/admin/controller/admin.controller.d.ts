@@ -1,14 +1,16 @@
 /// <reference types="qs" />
 /// <reference types="node" />
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { AdminService } from '../service/admin.service';
+import { AdminUserService } from '../service/admin-user.service';
 import { Response } from 'express';
 import { User } from 'src/auth/entities/user.entity';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { CreateRoleDto } from '../dto/create-role.dto';
+import { AdminRoleService } from '../service/admin-role.service';
 export declare class AdminController {
     private adminService;
-    constructor(adminService: AdminService);
+    private adminRoleService;
+    constructor(adminService: AdminUserService, adminRoleService: AdminRoleService);
     createAdmin(user: CreateUserDto, res: Response): Promise<{
         status(code: number): Response<any, Record<string, any>>;
         sendStatus(code: number): Response<any, Record<string, any>>;
@@ -81,6 +83,13 @@ export declare class AdminController {
         listenerCount(eventName: string | symbol, listener?: Function): number;
         eventNames(): (string | symbol)[];
     }>;
+    getAllUsers(headers: any): Promise<ApiResponseDTO<User[]>>;
+    getUsersByRoleId(roleId: string): Promise<{
+        data?: User[];
+        message?: any;
+        statusCode?: number;
+    }>;
+    deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
     createRole(role: CreateRoleDto, res: Response): Promise<{
         status(code: number): Response<any, Record<string, any>>;
         sendStatus(code: number): Response<any, Record<string, any>>;
@@ -153,12 +162,10 @@ export declare class AdminController {
         listenerCount(eventName: string | symbol, listener?: Function): number;
         eventNames(): (string | symbol)[];
     }>;
-    getUsersByRoleId(roleId: string): Promise<{
-        data?: User[];
+    updateRole(roleId: string, role: CreateRoleDto): Promise<{
+        data?: import("../../role/entities/role.entity").Role;
         message?: any;
         statusCode?: number;
     }>;
-    getAllUsers(headers: any): Promise<ApiResponseDTO<User[]>>;
     updateRolesForUser(userId: string, roleIds: string[]): Promise<ApiResponseDTO<User>>;
-    deleteUserById(id: string): Promise<ApiResponseDTO<User>>;
 }

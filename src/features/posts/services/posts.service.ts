@@ -1,11 +1,9 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Posts } from '../models/posts.model';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-post-dto';
-import { generateRandomString } from 'src/auth/constant/constants';
 import { Category } from '../../categories/models/category.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { UploadService } from 'src/shared/upload/upload.service';
@@ -19,7 +17,6 @@ export class PostsService {
     constructor(
         @InjectRepository(Posts)
         private readonly postRepository: Repository<Posts>,
-        private readonly httpService: HttpService,
         private readonly jwtService: JwtService,
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,

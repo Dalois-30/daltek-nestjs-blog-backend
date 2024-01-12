@@ -5,7 +5,6 @@ import { CreateUserDto, ResetPassWordDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { Request as RequestExpress, Response } from 'express';
 import { SharedService } from 'src/shared/services/shared.service';
-import { AdminService } from 'src/features/admin/service/admin.service';
 
 @ApiTags('auth')
 @Controller('auth')

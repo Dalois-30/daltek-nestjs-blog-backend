@@ -16,34 +16,40 @@ exports.AdminController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const create_user_dto_1 = require("../../../auth/dto/create-user.dto");
-const admin_service_1 = require("../service/admin.service");
+const admin_user_service_1 = require("../service/admin-user.service");
 const passport_1 = require("@nestjs/passport");
 const create_role_dto_1 = require("../dto/create-role.dto");
+const admin_role_service_1 = require("../service/admin-role.service");
 let AdminController = class AdminController {
-    constructor(adminService) {
+    constructor(adminService, adminRoleService) {
         this.adminService = adminService;
+        this.adminRoleService = adminRoleService;
     }
     async createAdmin(user, res) {
         const response = await this.adminService.createAdmin(user, res);
         return Object.assign({}, response);
     }
-    async createRole(role, res) {
-        const response = await this.adminService.createRole(role, res);
-        return Object.assign({}, response);
+    async getAllUsers(headers) {
+        console.log(headers);
+        return await this.adminService.findAllUser(headers);
     }
     async getUsersByRoleId(roleId) {
         const response = await this.adminService.userByRoleId(roleId);
         return Object.assign({}, response);
     }
-    async getAllUsers(headers) {
-        console.log(headers);
-        return await this.adminService.findAll(headers);
+    async deleteUserById(id) {
+        return await this.adminService.deleteUserById(id);
+    }
+    async createRole(role, res) {
+        const response = await this.adminRoleService.createRole(role, res);
+        return Object.assign({}, response);
+    }
+    async updateRole(roleId, role) {
+        const response = await this.adminRoleService.updateRole(roleId, role);
+        return Object.assign({}, response);
     }
     async updateRolesForUser(userId, roleIds) {
         return await this.adminService.updateUserRole(userId, roleIds);
-    }
-    async deleteUserById(id) {
-        return await this.adminService.deleteUserById(id);
     }
 };
 exports.AdminController = AdminController;
@@ -58,15 +64,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "createAdmin", null);
 __decorate([
-    (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
-    (0, common_1.Post)('/role/create'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)()),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all users' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
+    (0, common_1.Get)('/users/list'),
+    __param(0, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_role_dto_1.CreateRoleDto, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AdminController.prototype, "createRole", null);
+], AdminController.prototype, "getAllUsers", null);
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
@@ -77,25 +82,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getUsersByRoleId", null);
 __decorate([
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all users' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
-    (0, common_1.Get)('/users/list'),
-    __param(0, (0, common_1.Headers)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "getAllUsers", null);
-__decorate([
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Update user role' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
-    (0, common_1.Post)('/user/:userId/update-roles'),
-    __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Array]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "updateRolesForUser", null);
-__decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Deleted specific user' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
@@ -105,9 +91,40 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "deleteUserById", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    (0, common_1.Post)('/role/create'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_role_dto_1.CreateRoleDto, Object]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "createRole", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully update role' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    (0, common_1.Put)('/role/update/:roleId'),
+    __param(0, (0, common_1.Param)('roleId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, create_role_dto_1.CreateRoleDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "updateRole", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Update role' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
+    (0, common_1.Put)('/role/:userId/update-roles'),
+    __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "updateRolesForUser", null);
 exports.AdminController = AdminController = __decorate([
     (0, swagger_1.ApiTags)('admin'),
     (0, common_1.Controller)('admin'),
-    __metadata("design:paramtypes", [admin_service_1.AdminService])
+    __metadata("design:paramtypes", [admin_user_service_1.AdminUserService,
+        admin_role_service_1.AdminRoleService])
 ], AdminController);
 //# sourceMappingURL=admin.controller.js.map

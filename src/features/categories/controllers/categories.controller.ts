@@ -1,13 +1,9 @@
 
 import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { CreateCategoryDto } from '../dto/category-create-dto';
 import { CategoriesService } from '../services/categories.service';
-import { Category } from '../models/category.model';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Request as RequestExpress, Response } from 'express';
-import { ApiResponseDTO } from 'src/shared/response/api-response';
-import { CategoryGetDTO, CategoryGetDetailDTO } from '../dto/category-get-dto';
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('categories')
 @Controller('category')
@@ -20,6 +16,8 @@ export class CategoriesController {
    * @returns the list of Category
    */
   @ApiResponse({ status: 200, description: 'Fetched all category' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
   @Get()
   async getAllCategory(@Query('page') page: number = 0, @Query('limit') limit: number = 10) {
     return await this.categoryService.findAll(page, limit);

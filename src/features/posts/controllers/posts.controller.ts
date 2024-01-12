@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-post-dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiResponse, ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiConsumes, ApiBody, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { PostsService } from '../services/posts.service';
-import { Posts } from '../models/posts.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { PostGetDTO } from '../dto/post-get-dto';
 
@@ -22,6 +21,8 @@ export class PostsController {
    * @returns the list of post
    */
   @ApiResponse({ status: 200, description: 'Fetched all post' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
   @Get()
   async getAllpost(@Query('page') page: number = 0, @Query('limit') limit: number = 10) {
     return await this.postService.findAll(page, limit);

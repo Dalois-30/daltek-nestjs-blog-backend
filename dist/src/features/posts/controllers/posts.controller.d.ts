@@ -2,7 +2,6 @@
 import { CreatePostDto, UpdatePostDto } from '../dto/create-post-dto';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { PostsService } from '../services/posts.service';
-import { Posts } from '../models/posts.model';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { PostGetDTO } from '../dto/post-get-dto';
 export declare class PostsController {
@@ -17,7 +16,7 @@ export declare class PostsController {
         message?: any;
         statusCode?: number;
     }>;
-    createpost(file: Express.Multer.File, post: CreatePostDto): Promise<ApiResponseDTO<Posts>>;
+    createpost(file: Express.Multer.File, post: CreatePostDto): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
     getpostById(id: string): Promise<ApiResponseDTO<PostGetDTO>>;
-    updatepost(id: string, post: UpdatePostDto): Promise<ApiResponseDTO<Posts>>;
+    updatepost(id: string, post: UpdatePostDto): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
 }

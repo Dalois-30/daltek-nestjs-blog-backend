@@ -27,6 +27,12 @@ __decorate([
     __metadata("design:type", String)
 ], Role.prototype, "roleName", void 0);
 __decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEmail)(),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Role.prototype, "description", void 0);
+__decorate([
     (0, typeorm_1.ManyToMany)(() => user_entity_1.User, user => user.userRoles),
     __metadata("design:type", Array)
 ], Role.prototype, "userRoles", void 0);

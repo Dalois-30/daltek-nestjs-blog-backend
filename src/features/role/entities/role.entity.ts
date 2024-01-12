@@ -12,6 +12,11 @@ export class Role {
   @Column()
   roleName: string;
 
+  @IsString()
+  @IsEmail()
+  @Column()
+  description: string;
+
   @ManyToMany(() => User, user => user.userRoles)
   userRoles: User[];
 

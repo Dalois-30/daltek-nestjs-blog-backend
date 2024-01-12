@@ -9,10 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminModule = void 0;
 const common_1 = require("@nestjs/common");
 const admin_controller_1 = require("./controller/admin.controller");
-const admin_service_1 = require("./service/admin.service");
+const admin_user_service_1 = require("./service/admin-user.service");
 const shared_module_1 = require("../../shared/shared.module");
 const users_service_1 = require("../users/services/users.service");
 const shared_service_1 = require("../../shared/services/shared.service");
+const admin_role_service_1 = require("./service/admin-role.service");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
@@ -24,8 +25,9 @@ exports.AdminModule = AdminModule = __decorate([
         controllers: [admin_controller_1.AdminController],
         providers: [
             shared_service_1.SharedService,
-            admin_service_1.AdminService,
+            admin_user_service_1.AdminUserService,
             users_service_1.UsersService,
+            admin_role_service_1.AdminRoleService
         ]
     })
 ], AdminModule);

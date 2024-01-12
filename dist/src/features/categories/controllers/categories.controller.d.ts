@@ -1,9 +1,6 @@
 /// <reference types="multer" />
 import { CreateCategoryDto } from '../dto/category-create-dto';
 import { CategoriesService } from '../services/categories.service';
-import { Category } from '../models/category.model';
-import { ApiResponseDTO } from 'src/shared/response/api-response';
-import { CategoryGetDTO } from '../dto/category-get-dto';
 export declare class CategoriesController {
     private categoryService;
     constructor(categoryService: CategoriesService);
@@ -11,12 +8,12 @@ export declare class CategoriesController {
         totalItems: number;
         currentPage: number;
         pageCount: number;
-        data?: CategoryGetDTO[];
+        data?: import("../dto/category-get-dto").CategoryGetDTO[];
         message?: any;
         statusCode?: number;
     }>;
-    createCategory(file: Express.Multer.File, category: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
-    getCategoryById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>>;
-    deleteCategoryById(id: string): Promise<ApiResponseDTO<Category>>;
-    updateCategory(id: string, category: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
+    createCategory(file: Express.Multer.File, category: CreateCategoryDto): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
+    getCategoryById(id: string): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../dto/category-get-dto").CategoryGetDTO>>;
+    deleteCategoryById(id: string): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
+    updateCategory(id: string, category: CreateCategoryDto): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
 }

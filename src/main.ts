@@ -20,7 +20,15 @@ async function bootstrap() {
       'Full api management system of the daltek enterprise',
     )
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'Bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
