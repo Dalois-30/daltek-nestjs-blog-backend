@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthMiddleware = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+require("dotenv/config");
 let AuthMiddleware = class AuthMiddleware {
     constructor(jwtService) {
         this.jwtService = jwtService;
@@ -22,17 +23,22 @@ let AuthMiddleware = class AuthMiddleware {
     }
     logDecodedToken(headers) {
         try {
-            const decodedJwtAccessToken = this.decodeToken(headers);
+            const decodedJwtAccessToken = this.verifyToken(headers);
             console.log('Decoded JWT Access Token:', decodedJwtAccessToken);
         }
         catch (error) {
             console.error('Error decoding JWT Access Token:', error.message);
         }
     }
-    decodeToken(headers) {
-        let token = headers["authorization"].split(' ');
-        const decodedJwtAccessToken = this.jwtService.decode(token[1]);
-        return decodedJwtAccessToken;
+    async verifyToken(headers) {
+        try {
+            let token = headers["authorization"].split(' ');
+            const decodedJwtAccessToken = await this.jwtService.verify(token[1]);
+            return decodedJwtAccessToken;
+        }
+        catch (error) {
+            throw new common_1.HttpException('Unauthorized', common_1.HttpStatus.UNAUTHORIZED);
+        }
     }
 };
 exports.AuthMiddleware = AuthMiddleware;

@@ -1,5 +1,5 @@
 
-import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseFilePipe, ParseUUIDPipe, Post, Put, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { CreateCategoryDto } from '../dto/category-create-dto';
 import { CategoriesService } from '../services/categories.service';
@@ -65,7 +65,7 @@ export class CategoriesController {
    */
   @ApiResponse({ status: 200, description: 'Fetched specific category' })
   @Get('/getOne/:categoryId')
-  async getCategoryById(@Param('categoryId') id: string){
+  async getCategoryById(@Param('categoryId') id: string) {
     return await this.categoryService.findOneById(id);
   }
   /**
@@ -84,10 +84,32 @@ export class CategoriesController {
    * @param category 
    * @returns update category information
    */
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        description: { type: 'string' },
+        parent: { type: 'string' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 200, description: 'Fetched all Category' })
   @ApiResponse({ status: 400, description: 'category not found' })
   @Put('/update/:categoryId')
-  async updateCategory(@Param('categoryId') id: string, @Body() category: CreateCategoryDto) {
-    return await this.categoryService.update(id, category);
+  async updateCategory(@Param('categoryId', new ParseUUIDPipe({ version: '4' })) id: string, @UploadedFile(
+    new ParseFilePipe({
+      validators: [
+        // new MaxFileSizeValidator({ maxSize: 6000 }),
+        // new FileTypeValidator({ fileType: 'image/jpeg' })
+      ]
+    })
+  ) file: Express.Multer.File, @Body() category: CreateCategoryDto) {
+    return await this.categoryService.update(id, category, file);
   }
 }

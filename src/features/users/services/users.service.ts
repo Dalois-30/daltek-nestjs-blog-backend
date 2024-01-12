@@ -53,7 +53,14 @@ export class UsersService {
    * @returns returns the specified user by its email
    */
   async findOneByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository.findOne({ 
+      where: {
+        email 
+      }, 
+      relations: {
+        userRoles: true
+      }
+    });
   }
   /**
    * 

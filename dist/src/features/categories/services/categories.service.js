@@ -140,7 +140,7 @@ let CategoriesService = class CategoriesService {
         }
         return res;
     }
-    async update(id, newCatDto) {
+    async update(id, newCatDto, file) {
         const res = new api_response_1.ApiResponseDTO();
         try {
             const catGet = await this.categoryRepository.findOneBy({ id });
@@ -148,8 +148,8 @@ let CategoriesService = class CategoriesService {
                 throw new common_1.HttpException("category not found", common_1.HttpStatus.BAD_REQUEST);
             }
             let newCat = new category_create_dto_1.CategoryWithParent();
-            newCat.description = newCatDto.description;
-            newCat.name = newCatDto.name;
+            newCat.description = newCatDto.description || catGet.description;
+            newCat.name = newCatDto.name || catGet.name;
             if (newCatDto.parent) {
                 const parent = await this.categoryRepository.findOneBy({
                     id: newCatDto.parent
@@ -160,6 +160,10 @@ let CategoriesService = class CategoriesService {
                 newCat.parent = parent;
             }
             this.categoryRepository.merge(catGet, newCat);
+            if (file) {
+                const newImage = await this.uploadService.upload(file.originalname, file.buffer);
+                catGet.image = newImage;
+            }
             const result = await this.categoryRepository.save(catGet);
             res.data = result;
             res.message = "success";

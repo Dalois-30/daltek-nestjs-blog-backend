@@ -26,15 +26,25 @@ let AdminMiddleware = class AdminMiddleware {
         }
     }
     async checkIfAdmin(headers) {
-        const decodedJwtAccessToken = await this.decodeToken(headers);
-        if (decodedJwtAccessToken.role !== "Admin") {
-            throw new common_1.HttpException('You are not an admin', common_1.HttpStatus.UNAUTHORIZED);
+        try {
+            const decodedJwtAccessToken = await this.verifyToken(headers);
+            if (!decodedJwtAccessToken.roles || !decodedJwtAccessToken.roles.includes("Admin")) {
+                throw new common_1.HttpException('You are not an admin', common_1.HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (error) {
+            throw new common_1.HttpException('Invalid token or unauthorized', common_1.HttpStatus.UNAUTHORIZED);
         }
     }
-    async decodeToken(headers) {
-        let token = headers["authorization"].split(' ');
-        const decodedJwtAccessToken = this.jwtService.decode(token[1]);
-        return decodedJwtAccessToken;
+    async verifyToken(headers) {
+        try {
+            let token = headers["authorization"].split(' ');
+            const decodedJwtAccessToken = await this.jwtService.verify(token[1]);
+            return decodedJwtAccessToken;
+        }
+        catch (error) {
+            throw new common_1.HttpException('Unauthorized', common_1.HttpStatus.UNAUTHORIZED);
+        }
     }
 };
 exports.AdminMiddleware = AdminMiddleware;

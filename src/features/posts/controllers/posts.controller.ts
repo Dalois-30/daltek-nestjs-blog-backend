@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseFilePipe, ParseUUIDPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-post-dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiConsumes, ApiBody, ApiTags, ApiQuery } from '@nestjs/swagger';
@@ -23,9 +23,21 @@ export class PostsController {
   @ApiResponse({ status: 200, description: 'Fetched all post' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  @Get()
+  @Get("/get-all")
   async getAllpost(@Query('page') page: number = 0, @Query('limit') limit: number = 10) {
     return await this.postService.findAll(page, limit);
+  }
+
+  /**
+   * 
+   * @returns the list of post
+   */
+  @ApiResponse({ status: 200, description: 'Fetched all post' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @Get("/get-all-published")
+  async getAllpostPublished(@Query('page') page: number = 0, @Query('limit') limit: number = 10) {
+    return await this.postService.findAllPublished(page, limit);
   }
 
 
@@ -91,6 +103,50 @@ export class PostsController {
   //   async deletepostById(@Param('postId') id: string) {
   //     return await this.postService.delete(id);
   //   }
+
+
+  // /**
+  //  * 
+  //  * @param id 
+  //  * @param post 
+  //  * @returns update post information
+  //  */
+  // @ApiResponse({ status: 200, description: 'Fetched all post' })
+  // @ApiResponse({ status: 400, description: 'post not found' })
+  // @Put('/update/:postId')
+  // async updatepost(@Param('postId', new ParseUUIDPipe({ version: '4' })) id: string, @Body() post: UpdatePostDto) {
+  //   return await this.postService.update(id, post);
+  // }
+
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        content: { type: 'string' },
+        tags: { type: '[string]' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Update post' })
+  @Put('/update/:postId')
+  @UseInterceptors(FileInterceptor('file'))
+  async updatepost(@Param('postId', new ParseUUIDPipe({ version: '4' })) id: string, @UploadedFile(
+    new ParseFilePipe({
+      validators: [
+        // new MaxFileSizeValidator({ maxSize: 6000 }),
+        // new FileTypeValidator({ fileType: 'image/jpeg' })
+      ]
+    })
+  ) file: Express.Multer.File, @Body() newPost: UpdatePostDto) {
+    return await this.postService.update(id, newPost, file);
+  }
+
   /**
    * 
    * @param id 
@@ -99,8 +155,20 @@ export class PostsController {
    */
   @ApiResponse({ status: 200, description: 'Fetched all post' })
   @ApiResponse({ status: 400, description: 'post not found' })
-  @Put('/update/:postId')
-  async updatepost(@Param('postId') id: string, @Body() post: UpdatePostDto) {
-    return await this.postService.update(id, post);
+  @Put('/publish/:postId')
+  async publish(@Param('postId', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return await this.postService.publishPost(id);
+  }
+  /**
+   * 
+   * @param id 
+   * @param post 
+   * @returns update post information
+   */
+  @ApiResponse({ status: 200, description: 'Fetched all post' })
+  @ApiResponse({ status: 400, description: 'post not found' })
+  @Put('/unpublish/:postId')
+  async unpublish(@Param('postId', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return await this.postService.unPublishPost(id);
   }
 }

@@ -24,7 +24,7 @@ export class Posts {
     public image: string;
 
     @Column()
-    public status: boolean = false;
+    public publish: boolean = false;
 
     // @Column()
     // public tags?: string;

@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const upload_service_1 = require("./upload.service");
@@ -49,6 +50,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Upload image' }),
     (0, common_1.Post)(),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    openapi.ApiResponse({ status: 201, type: String }),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: []
     }))),
@@ -58,6 +60,7 @@ __decorate([
 ], UploadController.prototype, "uploadFile", null);
 __decorate([
     (0, common_1.Post)("get-file"),
+    openapi.ApiResponse({ status: 201, type: String }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_file_dto_1.GetFileDto]),
@@ -65,6 +68,7 @@ __decorate([
 ], UploadController.prototype, "getFile", null);
 __decorate([
     (0, common_1.Post)("get-file-list"),
+    openapi.ApiResponse({ status: 201, type: [String] }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_file_dto_1.GetFileListDto]),

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Res, Headers, Delete, Param, UseGuards, ParseUUIDPipe, Put } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { AdminUserService } from '../service/admin-user.service';
 import { Request as RequestExpress, Response } from 'express';
@@ -9,6 +9,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { AdminRoleService } from '../service/admin-role.service';
 
+
+@ApiBearerAuth('JWT-auth')
 @ApiTags('admin')
 @Controller('admin')
 export class AdminController {

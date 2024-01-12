@@ -16,7 +16,17 @@ export declare class PostsController {
         message?: any;
         statusCode?: number;
     }>;
+    getAllpostPublished(page?: number, limit?: number): Promise<{
+        totalItems: number;
+        currentPage: number;
+        pageCount: number;
+        data?: import("../dto/post-get-dto").PostObjectToSendWithImage[];
+        message?: any;
+        statusCode?: number;
+    }>;
     createpost(file: Express.Multer.File, post: CreatePostDto): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
     getpostById(id: string): Promise<ApiResponseDTO<PostGetDTO>>;
-    updatepost(id: string, post: UpdatePostDto): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
+    updatepost(id: string, file: Express.Multer.File, newPost: UpdatePostDto): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
+    publish(id: string): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
+    unpublish(id: string): Promise<ApiResponseDTO<import("../models/posts.model").Posts>>;
 }

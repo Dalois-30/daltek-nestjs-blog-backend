@@ -49,7 +49,14 @@ let UsersService = class UsersService {
         return res;
     }
     async findOneByEmail(email) {
-        return await this.userRepository.findOneBy({ email });
+        return await this.userRepository.findOne({
+            where: {
+                email
+            },
+            relations: {
+                userRoles: true
+            }
+        });
     }
     async update(id, newUser) {
         const res = new api_response_1.ApiResponseDTO();

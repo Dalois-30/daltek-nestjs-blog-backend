@@ -148,24 +148,24 @@ export class CategoriesService {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
             let catGet = new CategoryGetDTO();
-                let urlObj = new GetFileDto();
-                urlObj.key = category.image;
-                // get the signed link of the file
-                let img = await this.uploadService.getUploadedObject(urlObj)
-                // set the object 
-                let catDto = new CategoryDto();
-                catDto.id = category.id;
-                catDto.name = category.name;
-                catDto.parent = category.parent;
-                catDto.children = category.children;
-                catDto.created_at = category.created_at;
-                catDto.description = category.description;
-                catDto.posts = category.posts.length;
-                catDto.updated_at = category.updated_at;
+            let urlObj = new GetFileDto();
+            urlObj.key = category.image;
+            // get the signed link of the file
+            let img = await this.uploadService.getUploadedObject(urlObj)
+            // set the object 
+            let catDto = new CategoryDto();
+            catDto.id = category.id;
+            catDto.name = category.name;
+            catDto.parent = category.parent;
+            catDto.children = category.children;
+            catDto.created_at = category.created_at;
+            catDto.description = category.description;
+            catDto.posts = category.posts.length;
+            catDto.updated_at = category.updated_at;
 
-                catGet.cat = catDto;
-                catGet.image = img;
-                catGet.image = img;
+            catGet.cat = catDto;
+            catGet.image = img;
+            catGet.image = img;
             res.data = catGet
             res.message = "success";
             res.statusCode = HttpStatus.OK;
@@ -182,7 +182,7 @@ export class CategoriesService {
      * @param newType attributes of the new type
      * @returns the updated type
      */
-    async update(id: string, newCatDto: CreateCategoryDto): Promise<ApiResponseDTO<Category>> {
+    async update(id: string, newCatDto: CreateCategoryDto, file?: Express.Multer.File): Promise<ApiResponseDTO<Category>> {
         const res = new ApiResponseDTO<Category>();
         try {
             // first get the type
@@ -192,8 +192,8 @@ export class CategoriesService {
                 throw new HttpException("category not found", HttpStatus.BAD_REQUEST);
             }
             let newCat = new CategoryWithParent();
-            newCat.description = newCatDto.description;
-            newCat.name = newCatDto.name;
+            newCat.description = newCatDto.description || catGet.description;
+            newCat.name = newCatDto.name || catGet.name;
             // check if the parent category is present
             if (newCatDto.parent) {
                 const parent = await this.categoryRepository.findOneBy({
@@ -208,6 +208,12 @@ export class CategoriesService {
             }
             // then update the type
             this.categoryRepository.merge(catGet, newCat);
+
+            if (file) {
+                // Si une nouvelle image est fournie, mettez à jour l'image
+                const newImage = await this.uploadService.upload(file.originalname, file.buffer);
+                catGet.image = newImage;
+            }
             const result = await this.categoryRepository.save(catGet);
             res.data = result
             res.message = "success";

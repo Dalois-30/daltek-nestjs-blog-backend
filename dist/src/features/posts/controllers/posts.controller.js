@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const create_post_dto_1 = require("../dto/create-post-dto");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -27,14 +28,23 @@ let PostsController = class PostsController {
     async getAllpost(page = 0, limit = 10) {
         return await this.postService.findAll(page, limit);
     }
+    async getAllpostPublished(page = 0, limit = 10) {
+        return await this.postService.findAllPublished(page, limit);
+    }
     async createpost(file, post) {
         return await this.postService.create(post, file);
     }
     async getpostById(id) {
         return await this.postService.findOneById(id);
     }
-    async updatepost(id, post) {
-        return await this.postService.update(id, post);
+    async updatepost(id, file, newPost) {
+        return await this.postService.update(id, newPost, file);
+    }
+    async publish(id) {
+        return await this.postService.publishPost(id);
+    }
+    async unpublish(id) {
+        return await this.postService.unPublishPost(id);
     }
 };
 exports.PostsController = PostsController;
@@ -42,13 +52,26 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
     (0, swagger_1.ApiQuery)({ name: 'page', required: false }),
     (0, swagger_1.ApiQuery)({ name: 'limit', required: false }),
-    (0, common_1.Get)(),
+    (0, common_1.Get)("/get-all"),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getAllpost", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false }),
+    (0, common_1.Get)("/get-all-published"),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "getAllpostPublished", null);
 __decorate([
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
     (0, swagger_1.ApiBody)({
@@ -71,6 +94,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Create new post' }),
     (0, common_1.Post)('/create'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: []
     }))),
@@ -82,21 +106,61 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched specific post' }),
     (0, common_1.Get)('/getOne/:postId'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('postId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getpostById", null);
 __decorate([
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'post not found' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                title: { type: 'string' },
+                content: { type: 'string' },
+                tags: { type: '[string]' },
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Update post' }),
     (0, common_1.Put)('/update/:postId'),
-    __param(0, (0, common_1.Param)('postId')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('postId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __param(1, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
+        validators: []
+    }))),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, create_post_dto_1.UpdatePostDto]),
+    __metadata("design:paramtypes", [String, Object, create_post_dto_1.UpdatePostDto]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "updatepost", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'post not found' }),
+    (0, common_1.Put)('/publish/:postId'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('postId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "publish", null);
+__decorate([
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'post not found' }),
+    (0, common_1.Put)('/unpublish/:postId'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('postId', new common_1.ParseUUIDPipe({ version: '4' }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "unpublish", null);
 exports.PostsController = PostsController = __decorate([
     (0, swagger_1.ApiTags)('posts'),
     (0, common_1.Controller)('posts'),

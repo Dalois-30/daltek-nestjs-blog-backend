@@ -1,7 +1,6 @@
 export declare class CreatePostDto {
     title: string;
     content: string;
-    status: boolean;
     tags?: string;
     category: string;
     author: string;
@@ -9,6 +8,5 @@ export declare class CreatePostDto {
 export declare class UpdatePostDto {
     title?: string;
     content?: string;
-    status?: boolean;
     tags?: string;
 }

@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("../services/users.service");
 const swagger_1 = require("@nestjs/swagger");
@@ -39,6 +40,7 @@ exports.UsersController = UsersController;
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched specific user' }),
     (0, common_1.Get)('email'),
+    openapi.ApiResponse({ status: 200, type: require("../../../auth/entities/user.entity").User }),
     __param(0, (0, common_1.Query)('email')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -47,6 +49,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched specific user' }),
     (0, common_1.Get)('/:userId'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -56,6 +59,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Update specific user' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'User not found' }),
     (0, common_1.Put)(':userId'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -66,6 +70,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Successfully authenticated user' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.Get)('/test/authstate'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Headers)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

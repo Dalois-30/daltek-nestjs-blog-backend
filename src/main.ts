@@ -20,14 +20,17 @@ async function bootstrap() {
       'Full api management system of the daltek enterprise',
     )
     .setVersion('1.0')
+    
     .addBearerAuth(
       {
         type: 'http',
-        scheme: 'Bearer',
+        scheme: 'bearer',
         bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
         in: 'header',
       },
-      'token',
+      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
     .build();
 

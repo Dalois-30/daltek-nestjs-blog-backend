@@ -52,7 +52,7 @@ export class PostsService {
                 title: post.title,
                 content: post.content,
                 image: image,
-                status: post.status,
+                publish: false,
                 user: author,
                 category: category
             });
@@ -107,7 +107,70 @@ export class PostsService {
                 postDto.category = post.category;
                 postDto.content = post.content;
                 postDto.user = post.user.username;
-                postDto.status = post.status;
+                postDto.publish = post.publish;
+                postDto.comments = post.comments.length;
+                postDto.created_at = post.created_at;
+                postDto.updated_at = post.updated_at;
+                // set the post value of the data to retrieve
+                postGet.post = postDto;
+                postGet.image = img;
+                // updatte the table of cat with the signed link
+                postsGet.push(postGet);
+            }
+
+            res.data = postsGet
+            res.message = "success";
+            res.statusCode = HttpStatus.OK;
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message
+        }
+        return {
+            ...res,
+            totalItems: totalGet,
+            currentPage: page,
+            pageCount: Math.ceil(totalGet / limit),
+        }
+    }
+
+    /**
+    * 
+    * @returns the lis of all posts
+    */
+    async findAllPublished(page?: number, limit?: number) {
+        const res = new ApiResponseDTO<PostObjectToSendWithImage[]>();
+        let totalGet = 0;
+        try {
+            let [result, total] = await this.postRepository.createQueryBuilder('post')
+                .leftJoinAndSelect('post.user', 'user')
+                .leftJoinAndSelect('post.comments', 'comments')
+                .where('post.publish = :publish', { publish: true })
+                // .leftJoinAndSelect('post.children', 'children')
+                .skip(page * limit)
+                .take(limit)
+                .getManyAndCount();
+            totalGet = total;
+            // create an object of the type catget to retria
+            let postsGet: PostObjectToSendWithImage[] = [];
+
+            for (let index = 0; index < result.length; index++) {
+                const post = result[index];
+                //post objects with signed url
+                let postGet = new PostObjectToSendWithImage();
+                let urlObj = new GetFileDto();
+                urlObj.key = post.image;
+                // get the signed link of the file
+                let img = await this.uploadService.getUploadedObject(urlObj)
+                // set the object 
+                // catDto: object with the comments number not the comments object
+                let postDto = new PostObjectToSendDTO();
+                // set the value of this object with the post get to the database
+                postDto.id = post.id;
+                postDto.title = post.title;
+                postDto.category = post.category;
+                postDto.content = post.content;
+                postDto.user = post.user.username;
+                postDto.publish = post.publish;
                 postDto.comments = post.comments.length;
                 postDto.created_at = post.created_at;
                 postDto.updated_at = post.updated_at;
@@ -174,13 +237,60 @@ export class PostsService {
         }
         return res;
     }
+
     /**
      * 
      * @param id 
      * @param newpost 
      * @returns updates post information
      */
-    async update(id: string, newpost: UpdatePostDto) {
+    async update(id: string, newPost: UpdatePostDto, file?: Express.Multer.File) {
+        const res = new ApiResponseDTO<Posts>();
+        try {
+            const post = await this.postRepository.findOneBy({
+                id
+            });
+
+            if (!post) {
+                throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
+            }
+
+            if (file) {
+                // Si une nouvelle image est fournie, mettez à jour l'image
+                const newImage = await this.uploadService.upload(file.originalname, file.buffer);
+                post.image = newImage;
+            }
+
+            // Mettez à jour les autres champs du post
+            post.title = newPost.title || post.title;
+            post.content = newPost.content || post.content;
+            post.publish = false;
+
+            // Si vous souhaitez également mettre à jour la catégorie, décommentez la ligne suivante
+            // post.category = newPost.category || post.category;
+
+            // Enregistrez les modifications dans la base de données
+            const result = await this.postRepository.save(post);
+
+            res.data = result;
+            res.message = "Post updated successfully";
+            res.statusCode = HttpStatus.OK;
+
+        } catch (error) {
+            res.message = error.message;
+            res.statusCode = HttpStatus.BAD_REQUEST;
+        }
+
+        return res;
+    }
+
+    /**
+     * 
+     * @param id 
+     * @param newpost 
+     * @returns updates post information
+     */
+    async publishPost(id: string) {
         const res = new ApiResponseDTO<Posts>();
         try {
             const post = await this.postRepository.findOneBy({
@@ -190,8 +300,42 @@ export class PostsService {
             if (post === undefined || post === null) {
                 throw new HttpException("post doesn't exists", HttpStatus.BAD_REQUEST);
             }
-            // merge and save the modified post
-            await this.postRepository.merge(post, newpost);
+            // check if the post has already been published
+            if (post.publish) {
+                throw new HttpException("post has already been published", HttpStatus.CONFLICT);
+            }
+            post.publish = true;
+            const result = await this.postRepository.save(post);
+            res.data = result
+            res.message = "success";
+            res.statusCode = HttpStatus.OK;
+        } catch (error) {
+            res.statusCode = HttpStatus.BAD_REQUEST;
+            res.message = error.message
+        }
+        return res;
+    }
+    /**
+     * 
+     * @param id 
+     * @param newpost 
+     * @returns updates post information
+     */
+    async unPublishPost(id: string) {
+        const res = new ApiResponseDTO<Posts>();
+        try {
+            const post = await this.postRepository.findOneBy({
+                id: id,
+            });
+            // check if post doesn't exist or have already an email
+            if (post === undefined || post === null) {
+                throw new HttpException("post doesn't exists", HttpStatus.BAD_REQUEST);
+            }
+            // check if the post has already been unpublished
+            if (!post.publish) {
+                throw new HttpException("this post is not published", HttpStatus.CONFLICT);
+            }
+            post.publish = false;
             const result = await this.postRepository.save(post);
             res.data = result
             res.message = "success";

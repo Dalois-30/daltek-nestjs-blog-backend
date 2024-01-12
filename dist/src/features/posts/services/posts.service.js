@@ -52,7 +52,7 @@ let PostsService = class PostsService {
                 title: post.title,
                 content: post.content,
                 image: image,
-                status: post.status,
+                publish: false,
                 user: author,
                 category: category
             });
@@ -91,7 +91,50 @@ let PostsService = class PostsService {
                 postDto.category = post.category;
                 postDto.content = post.content;
                 postDto.user = post.user.username;
-                postDto.status = post.status;
+                postDto.publish = post.publish;
+                postDto.comments = post.comments.length;
+                postDto.created_at = post.created_at;
+                postDto.updated_at = post.updated_at;
+                postGet.post = postDto;
+                postGet.image = img;
+                postsGet.push(postGet);
+            }
+            res.data = postsGet;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return Object.assign(Object.assign({}, res), { totalItems: totalGet, currentPage: page, pageCount: Math.ceil(totalGet / limit) });
+    }
+    async findAllPublished(page, limit) {
+        const res = new api_response_1.ApiResponseDTO();
+        let totalGet = 0;
+        try {
+            let [result, total] = await this.postRepository.createQueryBuilder('post')
+                .leftJoinAndSelect('post.user', 'user')
+                .leftJoinAndSelect('post.comments', 'comments')
+                .where('post.publish = :publish', { publish: true })
+                .skip(page * limit)
+                .take(limit)
+                .getManyAndCount();
+            totalGet = total;
+            let postsGet = [];
+            for (let index = 0; index < result.length; index++) {
+                const post = result[index];
+                let postGet = new post_get_dto_1.PostObjectToSendWithImage();
+                let urlObj = new get_file_dto_1.GetFileDto();
+                urlObj.key = post.image;
+                let img = await this.uploadService.getUploadedObject(urlObj);
+                let postDto = new post_get_dto_1.PostObjectToSendDTO();
+                postDto.id = post.id;
+                postDto.title = post.title;
+                postDto.category = post.category;
+                postDto.content = post.content;
+                postDto.user = post.user.username;
+                postDto.publish = post.publish;
                 postDto.comments = post.comments.length;
                 postDto.created_at = post.created_at;
                 postDto.updated_at = post.updated_at;
@@ -141,7 +184,34 @@ let PostsService = class PostsService {
         }
         return res;
     }
-    async update(id, newpost) {
+    async update(id, newPost, file) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const post = await this.postRepository.findOneBy({
+                id
+            });
+            if (!post) {
+                throw new common_1.HttpException("Post not found", common_1.HttpStatus.NOT_FOUND);
+            }
+            if (file) {
+                const newImage = await this.uploadService.upload(file.originalname, file.buffer);
+                post.image = newImage;
+            }
+            post.title = newPost.title || post.title;
+            post.content = newPost.content || post.content;
+            post.publish = false;
+            const result = await this.postRepository.save(post);
+            res.data = result;
+            res.message = "Post updated successfully";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.message = error.message;
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+        }
+        return res;
+    }
+    async publishPost(id) {
         const res = new api_response_1.ApiResponseDTO();
         try {
             const post = await this.postRepository.findOneBy({
@@ -150,7 +220,34 @@ let PostsService = class PostsService {
             if (post === undefined || post === null) {
                 throw new common_1.HttpException("post doesn't exists", common_1.HttpStatus.BAD_REQUEST);
             }
-            await this.postRepository.merge(post, newpost);
+            if (post.publish) {
+                throw new common_1.HttpException("post has already been published", common_1.HttpStatus.CONFLICT);
+            }
+            post.publish = true;
+            const result = await this.postRepository.save(post);
+            res.data = result;
+            res.message = "success";
+            res.statusCode = common_1.HttpStatus.OK;
+        }
+        catch (error) {
+            res.statusCode = common_1.HttpStatus.BAD_REQUEST;
+            res.message = error.message;
+        }
+        return res;
+    }
+    async unPublishPost(id) {
+        const res = new api_response_1.ApiResponseDTO();
+        try {
+            const post = await this.postRepository.findOneBy({
+                id: id,
+            });
+            if (post === undefined || post === null) {
+                throw new common_1.HttpException("post doesn't exists", common_1.HttpStatus.BAD_REQUEST);
+            }
+            if (!post.publish) {
+                throw new common_1.HttpException("this post is not published", common_1.HttpStatus.CONFLICT);
+            }
+            post.publish = false;
             const result = await this.postRepository.save(post);
             res.data = result;
             res.message = "success";

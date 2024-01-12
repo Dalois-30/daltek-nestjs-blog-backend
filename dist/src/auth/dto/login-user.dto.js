@@ -10,9 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifyOtpDto = exports.LoginUserDto = void 0;
+const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class LoginUserDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { email: { required: true, type: () => String }, password: { required: true, type: () => String } };
+    }
 }
 exports.LoginUserDto = LoginUserDto;
 __decorate([
@@ -27,6 +31,9 @@ __decorate([
     __metadata("design:type", String)
 ], LoginUserDto.prototype, "password", void 0);
 class VerifyOtpDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { otp: { required: true, type: () => String } };
+    }
 }
 exports.VerifyOtpDto = VerifyOtpDto;
 __decorate([

@@ -2,17 +2,19 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EXPIRES_IN } from '../constant/constants';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class JwtPayloadService {
   constructor(private readonly jwtService: JwtService) {}
 
-  createJwtPayload(user) {
+  createJwtPayload(user: User) {
     const data: JwtPayload = {
       email: user.email,
       id: user.id,
-      role: user.role,
+      roles: user.userRoles.map(role => role.roleName),
     };
+    
 
     let jwt;
     try {

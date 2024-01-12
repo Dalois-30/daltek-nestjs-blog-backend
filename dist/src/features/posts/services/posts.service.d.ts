@@ -24,8 +24,18 @@ export declare class PostsService {
         message?: any;
         statusCode?: number;
     }>;
+    findAllPublished(page?: number, limit?: number): Promise<{
+        totalItems: number;
+        currentPage: number;
+        pageCount: number;
+        data?: PostObjectToSendWithImage[];
+        message?: any;
+        statusCode?: number;
+    }>;
     findOneById(id: string): Promise<ApiResponseDTO<PostGetDTO>>;
-    update(id: string, newpost: UpdatePostDto): Promise<ApiResponseDTO<Posts>>;
+    update(id: string, newPost: UpdatePostDto, file?: Express.Multer.File): Promise<ApiResponseDTO<Posts>>;
+    publishPost(id: string): Promise<ApiResponseDTO<Posts>>;
+    unPublishPost(id: string): Promise<ApiResponseDTO<Posts>>;
     deletepostById(id: string): Promise<ApiResponseDTO<Category>>;
     deleteAll(headers: string): Promise<void>;
 }

@@ -21,7 +21,7 @@ let JwtPayloadService = class JwtPayloadService {
         const data = {
             email: user.email,
             id: user.id,
-            role: user.role,
+            roles: user.userRoles.map(role => role.roleName),
         };
         let jwt;
         try {

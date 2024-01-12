@@ -6,7 +6,7 @@ export declare class Posts {
     title: string;
     content: string;
     image: string;
-    status: boolean;
+    publish: boolean;
     category: Category;
     user: User;
     comments: Comments[];

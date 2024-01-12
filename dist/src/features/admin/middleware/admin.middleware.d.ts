@@ -6,5 +6,5 @@ export declare class AdminMiddleware implements NestMiddleware {
     constructor(jwtService: JwtService);
     use(req: Request, res: Response, next: NextFunction): Promise<void>;
     checkIfAdmin(headers: any): Promise<void>;
-    decodeToken(headers: any): Promise<any>;
+    verifyToken(headers: any): Promise<any>;
 }

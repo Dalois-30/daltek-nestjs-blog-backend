@@ -12,7 +12,7 @@ export declare class PostObjectToSendDTO {
     id: string;
     title: string;
     content: string;
-    status: boolean;
+    publish: boolean;
     tags?: string;
     category: Category;
     user: string;

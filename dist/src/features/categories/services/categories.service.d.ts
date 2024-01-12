@@ -19,6 +19,6 @@ export declare class CategoriesService {
         statusCode?: number;
     }>;
     findOneById(id: string): Promise<ApiResponseDTO<CategoryGetDTO>>;
-    update(id: string, newCatDto: CreateCategoryDto): Promise<ApiResponseDTO<Category>>;
+    update(id: string, newCatDto: CreateCategoryDto, file?: Express.Multer.File): Promise<ApiResponseDTO<Category>>;
     delete(id: string): Promise<ApiResponseDTO<Category>>;
 }

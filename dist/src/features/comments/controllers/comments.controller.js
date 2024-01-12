@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const comments_service_1 = require("../services/comments.service");
 const comment_add_dto_1 = require("../dto/comment-add-dto");
@@ -35,6 +36,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully add comment' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Post)('/add-comment'),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [comment_add_dto_1.CommentsAddDto]),
@@ -44,6 +46,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully add comment' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Get)('/'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Query)('postId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

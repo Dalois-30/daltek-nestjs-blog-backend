@@ -15,5 +15,5 @@ export declare class CategoriesController {
     createCategory(file: Express.Multer.File, category: CreateCategoryDto): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
     getCategoryById(id: string): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../dto/category-get-dto").CategoryGetDTO>>;
     deleteCategoryById(id: string): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
-    updateCategory(id: string, category: CreateCategoryDto): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
+    updateCategory(id: string, file: Express.Multer.File, category: CreateCategoryDto): Promise<import("../../../shared/response/api-response").ApiResponseDTO<import("../models/category.model").Category>>;
 }

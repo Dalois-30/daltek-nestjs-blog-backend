@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Param, Get, Query, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Query, Req, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto, ResetPassWordDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { Request as RequestExpress, Response } from 'express';
 import { SharedService } from 'src/shared/services/shared.service';
+import { Public } from '../decorators/public.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -14,6 +15,9 @@ export class AuthController {
     private sharedService: SharedService,
   ) {}
 
+  
+  @Public()
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 201, description: 'Successfully created user' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @Post('/register')
@@ -23,7 +27,8 @@ export class AuthController {
       ...response,
     };
   }
-
+  @Public()
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'Successfully logged in' })
   @ApiResponse({ status: 401, description: 'Wrong credentials' })
   @Post('/login')

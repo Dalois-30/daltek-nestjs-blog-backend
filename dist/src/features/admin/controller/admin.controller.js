@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const create_user_dto_1 = require("../../../auth/dto/create-user.dto");
@@ -57,6 +58,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created admin' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Post)('/user/create'),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
@@ -67,6 +69,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all users' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.Get)('/users/list'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Headers)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -76,6 +79,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Post)('/user/by-role/:roleId'),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Param)('roleId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -86,6 +90,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Delete)('/user/delete/:userId'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -95,6 +100,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully created role' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Post)('/role/create'),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
@@ -105,6 +111,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully update role' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Put)('/role/update/:roleId'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('roleId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -115,6 +122,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Update role' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized access' }),
     (0, common_1.Put)('/role/:userId/update-roles'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('userId', new common_1.ParseUUIDPipe({ version: '4' }))),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -122,6 +130,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "updateRolesForUser", null);
 exports.AdminController = AdminController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, swagger_1.ApiTags)('admin'),
     (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [admin_user_service_1.AdminUserService,
