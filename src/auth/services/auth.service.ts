@@ -19,6 +19,7 @@ import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { SharedService } from 'src/shared/services/shared.service';
 import { UsersService } from 'src/features/users/services/users.service';
 import { UpdateUserDtoPassword } from '../dto/update-user-pwd.dto';
+import { log } from 'console';
 
 const phoneRegex = /^6(?=[579])([0-9]{8})/;
 
@@ -120,6 +121,7 @@ export class AuthService {
     const res = new ApiResponseDTO<any>();
     try {
       const user = await this.usersService.findOneByEmail(loginUserDto.email);
+      // log(user)
       if (!user) {
         throw new UnauthorizedException('User does not exist');
       }
@@ -171,7 +173,8 @@ export class AuthService {
    */
   async validateUserByJwt(payload: JwtPayload) {
     const user = await this.usersService.findOneByEmail(payload.email);
-
+    // console.log(user);
+    
     if (user) {
       return this.jwtPayloadService.createJwtPayload(user);
     } else {

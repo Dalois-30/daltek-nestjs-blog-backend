@@ -14,7 +14,13 @@ const shared_module_1 = require("../../shared/shared.module");
 const users_service_1 = require("../users/services/users.service");
 const shared_service_1 = require("../../shared/services/shared.service");
 const admin_role_service_1 = require("./service/admin-role.service");
+const admin_middleware_1 = require("./middleware/admin.middleware");
 let AdminModule = class AdminModule {
+    configure(consumer) {
+        consumer
+            .apply(admin_middleware_1.AdminMiddleware)
+            .forRoutes('admin');
+    }
 };
 exports.AdminModule = AdminModule;
 exports.AdminModule = AdminModule = __decorate([

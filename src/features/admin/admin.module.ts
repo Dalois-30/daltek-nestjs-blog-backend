@@ -20,9 +20,9 @@ import { AdminMiddleware } from './middleware/admin.middleware';
   ]
 })
 export class AdminModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer
-  //     .apply(AdminMiddleware)
-  //     .forRoutes('admin');
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AdminMiddleware)
+      .forRoutes('admin');
+  }
 }
