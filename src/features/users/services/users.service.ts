@@ -28,7 +28,6 @@ export class UsersService {
         },
         relations: {
           posts: true,
-          comments: true,
           userRoles: true
         }
       });

@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminMiddleware = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const console_1 = require("console");
 let AdminMiddleware = class AdminMiddleware {
     constructor(jwtService) {
         this.jwtService = jwtService;
@@ -30,13 +29,12 @@ let AdminMiddleware = class AdminMiddleware {
         try {
             let token = headers["authorization"].split(' ');
             const decodedJwtAccessToken = await this.jwtService.verify(token[1]);
-            (0, console_1.log)(headers);
             if (!decodedJwtAccessToken.roles || !decodedJwtAccessToken.roles.includes("Admin")) {
                 throw new common_1.HttpException('You are not an admin', common_1.HttpStatus.UNAUTHORIZED);
             }
         }
         catch (error) {
-            throw new common_1.HttpException('Invalid token or unauthorized', common_1.HttpStatus.UNAUTHORIZED);
+            throw new common_1.HttpException('You are not an admin', common_1.HttpStatus.UNAUTHORIZED);
         }
     }
 };

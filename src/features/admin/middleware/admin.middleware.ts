@@ -24,13 +24,13 @@ export class AdminMiddleware implements NestMiddleware {
             // Get the token from headers
             let token = headers["authorization"].split(' ');
             const decodedJwtAccessToken = await this.jwtService.verify(token[1]);
-            log(headers)
+            // log(headers)
             // Check if the user has admin rights
             if (!decodedJwtAccessToken.roles || !decodedJwtAccessToken.roles.includes("Admin")) {
                 throw new HttpException('You are not an admin', HttpStatus.UNAUTHORIZED);
             }
         } catch (error) {
-            throw new HttpException('Invalid token or unauthorized', HttpStatus.UNAUTHORIZED);
+            throw new HttpException('You are not an admin', HttpStatus.UNAUTHORIZED);
         }
     }
 
