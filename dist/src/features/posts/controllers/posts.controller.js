@@ -162,6 +162,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "unpublish", null);
 exports.PostsController = PostsController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, swagger_1.ApiTags)('posts'),
     (0, common_1.Controller)('posts'),
     __metadata("design:paramtypes", [posts_service_1.PostsService,

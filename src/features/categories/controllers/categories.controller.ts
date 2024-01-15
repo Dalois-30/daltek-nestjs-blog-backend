@@ -1,10 +1,11 @@
 
 import { Body, Controller, Delete, Get, Param, ParseFilePipe, ParseUUIDPipe, Post, Put, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateCategoryDto } from '../dto/category-create-dto';
 import { CategoriesService } from '../services/categories.service';
 import { FileInterceptor } from '@nestjs/platform-express'
 
+@ApiBearerAuth('JWT-auth')
 @ApiTags('categories')
 @Controller('category')
 export class CategoriesController {

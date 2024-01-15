@@ -114,6 +114,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,

@@ -38,6 +38,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoleController.prototype, "getAllUsers", null);
 exports.RoleController = RoleController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, swagger_1.ApiTags)('role'),
     (0, common_1.Controller)('role'),
     __metadata("design:paramtypes", [role_service_1.RoleService])

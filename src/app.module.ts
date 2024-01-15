@@ -23,10 +23,10 @@ import { AuthGuard } from './auth/guards/auth.guard';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

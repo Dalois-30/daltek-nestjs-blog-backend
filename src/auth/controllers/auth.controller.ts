@@ -1,21 +1,22 @@
 import { Controller, Post, Body, Param, Get, Query, Req, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserDto, ResetPassWordDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { Request as RequestExpress, Response } from 'express';
 import { SharedService } from 'src/shared/services/shared.service';
 import { Public } from '../decorators/public.decorator';
 
+@ApiBearerAuth('JWT-auth')
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private sharedService: SharedService,
-  ) {}
+  ) { }
 
-  
+
   @Public()
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 201, description: 'Successfully created user' })
@@ -66,7 +67,7 @@ export class AuthController {
   ) {
     const verified = await this.authService.verifyEmail(token, email, req);
     if (verified) {
-      return {message: 'Verified email'};
+      return { message: 'Verified email' };
     }
   }
 

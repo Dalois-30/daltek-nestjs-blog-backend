@@ -1,12 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { HttpService } from '@nestjs/axios';
-import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
-import { SharedService } from 'src/shared/services/shared.service';
 
 @Injectable()
 export class UsersService {

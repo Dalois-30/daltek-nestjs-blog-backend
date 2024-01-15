@@ -128,6 +128,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CategoriesController.prototype, "updateCategory", null);
 exports.CategoriesController = CategoriesController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, swagger_1.ApiTags)('categories'),
     (0, common_1.Controller)('category'),
     __metadata("design:paramtypes", [categories_service_1.CategoriesService])

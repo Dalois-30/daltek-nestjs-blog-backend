@@ -1,12 +1,13 @@
 import { Body, Controller, Delete, Get, Param, ParseFilePipe, ParseUUIDPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-post-dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiResponse, ApiConsumes, ApiBody, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiResponse, ApiConsumes, ApiBody, ApiTags, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UploadService } from 'src/shared/upload/upload.service';
 import { PostsService } from '../services/posts.service';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { PostGetDTO } from '../dto/post-get-dto';
 
+@ApiBearerAuth('JWT-auth')
 @ApiTags('posts')
 @Controller('posts')
 export class PostsController {

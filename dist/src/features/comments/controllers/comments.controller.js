@@ -53,6 +53,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CommentsController.prototype, "getPostComment", null);
 exports.CommentsController = CommentsController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, swagger_1.ApiTags)('comments'),
     (0, common_1.Controller)('comments'),
     __metadata("design:paramtypes", [comments_service_1.CommentsService])
