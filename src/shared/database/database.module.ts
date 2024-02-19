@@ -73,14 +73,17 @@ export class DatabaseModule {
 
       await this.userRepository.save(newUser);
       this.logger.verbose("Admin user created with Admin role");
-    } else if (adminUser && adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === UserRolesEnum.ADMIN)) {
-      // Trouver le rôle admin
-      const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
-      if (adminRole) {
-        // Ajouter le rôle admin à adminUser
-        adminUser.userRoles.push(adminRole);
-        await this.userRepository.save(adminUser);
-        this.logger.verbose("Admin role assigned to existing user");
+    } else {
+      // Vérifier si adminUser existe et n'a pas le rôle admin
+      if (adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === UserRolesEnum.ADMIN)) {
+        // Trouver le rôle admin
+        const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
+        if (adminRole) {
+          // Ajouter le rôle admin à adminUser
+          adminUser.userRoles.push(adminRole);
+          await this.userRepository.save(adminUser);
+          this.logger.verbose("Admin role assigned to existing user");
+        }
       }
     }
   }

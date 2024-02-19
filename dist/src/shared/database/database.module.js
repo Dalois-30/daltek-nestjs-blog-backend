@@ -57,12 +57,14 @@ let DatabaseModule = DatabaseModule_1 = class DatabaseModule {
             await this.userRepository.save(newUser);
             this.logger.verbose("Admin user created with Admin role");
         }
-        else if (adminUser && adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === user_roles_1.UserRolesEnum.ADMIN)) {
-            const adminRole = await this.roleRepository.findOne({ where: { roleName: user_roles_1.UserRolesEnum.ADMIN } });
-            if (adminRole) {
-                adminUser.userRoles.push(adminRole);
-                await this.userRepository.save(adminUser);
-                this.logger.verbose("Admin role assigned to existing user");
+        else {
+            if (adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === user_roles_1.UserRolesEnum.ADMIN)) {
+                const adminRole = await this.roleRepository.findOne({ where: { roleName: user_roles_1.UserRolesEnum.ADMIN } });
+                if (adminRole) {
+                    adminUser.userRoles.push(adminRole);
+                    await this.userRepository.save(adminUser);
+                    this.logger.verbose("Admin role assigned to existing user");
+                }
             }
         }
     }
