@@ -30,6 +30,6 @@ jobs:
         with:
             SOURCE: "./"
             TARGET: /home/ubuntu/repos
-            REMOTE_HOST: 172.208.125.120
+            REMOTE_HOST: 44.215.77.201
             REMOTE_USER: ubuntu
             SSH_PRIVATE_KEY: "${{ secrets.SERVER_KEY }}"
