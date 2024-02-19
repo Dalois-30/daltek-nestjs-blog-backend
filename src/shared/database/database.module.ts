@@ -42,6 +42,7 @@ export class DatabaseModule {
     private readonly roleRepository: Repository<Role>,
   ) { }
   private readonly logger = new Logger(DatabaseModule.name);
+
   async onModuleInit() {
     const roles = ["Admin", "Blogger"];
 
@@ -59,31 +60,40 @@ export class DatabaseModule {
     }
 
     // Trouver ou créer l'utilisateur admin et lui attribuer le rôle admin
-    const adminUser = await this.userRepository.findOneBy({ username: "admin" });
+    let adminUser = await this.userRepository.findOneBy({ username: "admin" });
     if (!adminUser) {
       const newUser = new User();
       newUser.email = "admin@admin.com";
       newUser.password = "Admin1234";
       newUser.username = "admin";
 
+      await this.userRepository.save(newUser);
+      this.logger.verbose("Admin user created");
+
+      adminUser = newUser; // Affecter le nouvel utilisateur à adminUser
+    }
+
+    // Vérifier si adminUser n'a aucun rôle
+    if (adminUser && (!adminUser.userRoles || adminUser.userRoles.length === 0)) {
+      // Trouver le rôle admin
       const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
       if (adminRole) {
-        newUser.userRoles = [adminRole];
+        // Ajouter le rôle admin à adminUser
+        adminUser.userRoles = [adminRole];
+        await this.userRepository.save(adminUser);
+        this.logger.verbose("Admin role assigned to existing user");
       }
+    }
 
-      await this.userRepository.save(newUser);
-      this.logger.verbose("Admin user created with Admin role");
-    } else {
-      // Vérifier si adminUser existe et n'a pas le rôle admin
-      if (adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === UserRolesEnum.ADMIN)) {
-        // Trouver le rôle admin
-        const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
-        if (adminRole) {
-          // Ajouter le rôle admin à adminUser
-          adminUser.userRoles.push(adminRole);
-          await this.userRepository.save(adminUser);
-          this.logger.verbose("Admin role assigned to existing user");
-        }
+    // Vérifier si adminUser existe et n'a pas le rôle admin
+    if (adminUser && adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === UserRolesEnum.ADMIN)) {
+      // Trouver le rôle admin
+      const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
+      if (adminRole) {
+        // Ajouter le rôle admin à adminUser
+        adminUser.userRoles.push(adminRole);
+        await this.userRepository.save(adminUser);
+        this.logger.verbose("Admin role assigned to existing user");
       }
     }
   }
