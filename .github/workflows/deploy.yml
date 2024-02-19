@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [deploy]
+  pull_request:
+    branches: [deploy]
+
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: User Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: Npm Install
+        run: npm install --legacy-peer-deps
+
+      - name: rsync deployments
+        run: ls -la
+      - uses: easingthemes/ssh-deploy@v2.1.5
+        with:
+            SOURCE: "./"
+            TARGET: /home/ubuntu/repos
+            REMOTE_HOST: 172.208.125.120
+            REMOTE_USER: ubuntu
+            SSH_PRIVATE_KEY: "${{ secrets.SERVER_KEY }}"
