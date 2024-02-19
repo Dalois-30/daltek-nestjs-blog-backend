@@ -4,6 +4,7 @@ import { ApiTags, ApiResponse, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } f
 import { CreateCategoryDto } from '../dto/category-create-dto';
 import { CategoriesService } from '../services/categories.service';
 import { FileInterceptor } from '@nestjs/platform-express'
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiBearerAuth('JWT-auth')
 @ApiTags('categories')
@@ -16,10 +17,11 @@ export class CategoriesController {
    * 
    * @returns the list of Category
    */
+  @Public()
   @ApiResponse({ status: 200, description: 'Fetched all category' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  @Get()
+  @Get('/get-all')
   async getAllCategory(@Query('page') page: number = 0, @Query('limit') limit: number = 10) {
     return await this.categoryService.findAll(page, limit);
   }
@@ -64,6 +66,7 @@ export class CategoriesController {
    * @param id 
    * @returns one or more category
    */
+  @Public()
   @ApiResponse({ status: 200, description: 'Fetched specific category' })
   @Get('/getOne/:categoryId')
   async getCategoryById(@Param('categoryId') id: string) {

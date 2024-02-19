@@ -14,22 +14,43 @@ const common_1 = require("@nestjs/common");
 const client_s3_1 = require("@aws-sdk/client-s3");
 const config_1 = require("@nestjs/config");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
+const sharp = require("sharp");
+const axios_1 = require("@nestjs/axios");
+const console_1 = require("console");
+const tinify_1 = require("tinify");
 let UploadService = class UploadService {
-    constructor(configService) {
+    constructor(configService, httpService) {
         this.configService = configService;
+        this.httpService = httpService;
         this.s3Client = new client_s3_1.S3Client({
             region: this.configService.getOrThrow('AWS_S3_REGION'),
         });
+        tinify_1.default.key = this.configService.getOrThrow('TINY_API_KEY');
     }
     async upload(fileName, file) {
+        (0, console_1.log)("in the upload function");
+        const compressedImageBuffer = await this.compressImage(file);
         const result = await this.s3Client.send(new client_s3_1.PutObjectCommand({
             Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
             Key: `users/${fileName}`,
-            Body: file,
+            Body: compressedImageBuffer,
         }));
         const uploadedObjectUrl = `https://${this.configService.getOrThrow('AWS_BUCKET_NAME')}.s3.amazonaws.com/users/${fileName}`;
         console.log(uploadedObjectUrl);
         return `users/${fileName}`;
+    }
+    async compressImage(imageBuffer) {
+        const targetWidth = 800;
+        const targetHeight = 600;
+        const quality = 80;
+        return await sharp(imageBuffer)
+            .resize(targetWidth, targetHeight)
+            .jpeg({ quality: quality })
+            .toBuffer();
+    }
+    async downloadImage(url) {
+        const response = await this.httpService.get(url, { responseType: 'arraybuffer' }).toPromise();
+        return Buffer.from(response.data, 'binary');
     }
     async getUploadedObject(key) {
         try {
@@ -77,6 +98,7 @@ let UploadService = class UploadService {
 exports.UploadService = UploadService;
 exports.UploadService = UploadService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
+    __metadata("design:paramtypes", [config_1.ConfigService,
+        axios_1.HttpService])
 ], UploadService);
 //# sourceMappingURL=upload.service.js.map

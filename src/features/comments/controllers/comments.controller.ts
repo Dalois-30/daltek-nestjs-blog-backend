@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CommentsService } from '../services/comments.service';
 import { CommentsAddDto } from '../dto/comment-add-dto';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 
 @ApiBearerAuth('JWT-auth')
@@ -22,6 +23,7 @@ export class CommentsController {
     };
   }
 
+  @Public()
   @ApiResponse({ status: 201, description: 'Successfully add comment' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @Get('/')

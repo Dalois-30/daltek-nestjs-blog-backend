@@ -75,6 +75,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UploadController.prototype, "getFileList", null);
 exports.UploadController = UploadController = __decorate([
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, common_1.Controller)('upload'),
     __metadata("design:paramtypes", [upload_service_1.UploadService])
 ], UploadController);

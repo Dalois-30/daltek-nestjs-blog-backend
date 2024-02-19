@@ -6,6 +6,8 @@ import { UploadService } from 'src/shared/upload/upload.service';
 import { PostsService } from '../services/posts.service';
 import { ApiResponseDTO } from 'src/shared/response/api-response';
 import { PostGetDTO } from '../dto/post-get-dto';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { log } from 'console';
 
 @ApiBearerAuth('JWT-auth')
 @ApiTags('posts')
@@ -21,6 +23,7 @@ export class PostsController {
    * 
    * @returns the list of post
    */
+  @Public()
   @ApiResponse({ status: 200, description: 'Fetched all post' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -33,6 +36,7 @@ export class PostsController {
    * 
    * @returns the list of post
    */
+  @Public()
   @ApiResponse({ status: 200, description: 'Fetched all post' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -77,6 +81,7 @@ export class PostsController {
     })
   ) file: Express.Multer.File, @Body() post: CreatePostDto) {
     // const link = await this.uploadService.upload(file.originalname, file.buffer);
+    log("in the post controller");
     return await this.postService.create(post, file);
   }
 
@@ -86,6 +91,7 @@ export class PostsController {
    * @param id 
    * @returns one or more post
    */
+  @Public()
   @ApiResponse({ status: 200, description: 'Fetched specific post' })
   @Get('/getOne/:postId')
   async getpostById(@Param('postId') id: string): Promise<ApiResponseDTO<PostGetDTO>> {

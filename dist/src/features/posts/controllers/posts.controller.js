@@ -20,6 +20,8 @@ const platform_express_1 = require("@nestjs/platform-express");
 const swagger_1 = require("@nestjs/swagger");
 const upload_service_1 = require("../../../shared/upload/upload.service");
 const posts_service_1 = require("../services/posts.service");
+const public_decorator_1 = require("../../../auth/decorators/public.decorator");
+const console_1 = require("console");
 let PostsController = class PostsController {
     constructor(postService, uploadService) {
         this.postService = postService;
@@ -32,6 +34,7 @@ let PostsController = class PostsController {
         return await this.postService.findAllPublished(page, limit);
     }
     async createpost(file, post) {
+        (0, console_1.log)("in the post controller");
         return await this.postService.create(post, file);
     }
     async getpostById(id) {
@@ -49,6 +52,7 @@ let PostsController = class PostsController {
 };
 exports.PostsController = PostsController;
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
     (0, swagger_1.ApiQuery)({ name: 'page', required: false }),
     (0, swagger_1.ApiQuery)({ name: 'limit', required: false }),
@@ -61,6 +65,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getAllpost", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all post' }),
     (0, swagger_1.ApiQuery)({ name: 'page', required: false }),
     (0, swagger_1.ApiQuery)({ name: 'limit', required: false }),
@@ -104,6 +109,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "createpost", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched specific post' }),
     (0, common_1.Get)('/getOne/:postId'),
     openapi.ApiResponse({ status: 200 }),

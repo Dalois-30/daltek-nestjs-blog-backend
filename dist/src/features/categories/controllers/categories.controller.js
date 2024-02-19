@@ -19,6 +19,7 @@ const swagger_1 = require("@nestjs/swagger");
 const category_create_dto_1 = require("../dto/category-create-dto");
 const categories_service_1 = require("../services/categories.service");
 const platform_express_1 = require("@nestjs/platform-express");
+const public_decorator_1 = require("../../../auth/decorators/public.decorator");
 let CategoriesController = class CategoriesController {
     constructor(categoryService) {
         this.categoryService = categoryService;
@@ -41,10 +42,11 @@ let CategoriesController = class CategoriesController {
 };
 exports.CategoriesController = CategoriesController;
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched all category' }),
     (0, swagger_1.ApiQuery)({ name: 'page', required: false }),
     (0, swagger_1.ApiQuery)({ name: 'limit', required: false }),
-    (0, common_1.Get)(),
+    (0, common_1.Get)('/get-all'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
@@ -81,6 +83,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CategoriesController.prototype, "createCategory", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Fetched specific category' }),
     (0, common_1.Get)('/getOne/:categoryId'),
     openapi.ApiResponse({ status: 200 }),

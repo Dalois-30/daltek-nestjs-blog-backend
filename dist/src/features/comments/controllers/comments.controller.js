@@ -18,6 +18,7 @@ const common_1 = require("@nestjs/common");
 const comments_service_1 = require("../services/comments.service");
 const comment_add_dto_1 = require("../dto/comment-add-dto");
 const swagger_1 = require("@nestjs/swagger");
+const public_decorator_1 = require("../../../auth/decorators/public.decorator");
 let CommentsController = class CommentsController {
     constructor(commentsService) {
         this.commentsService = commentsService;
@@ -43,6 +44,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CommentsController.prototype, "createUser", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Successfully add comment' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
     (0, common_1.Get)('/'),

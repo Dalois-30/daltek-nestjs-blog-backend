@@ -1,9 +1,10 @@
 import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
-import { ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiConsumes, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { GetFileDto, GetFileListDto } from './get-file-dto';
 
+@ApiBearerAuth('JWT-auth')
 @Controller('upload')
 export class UploadController {
 

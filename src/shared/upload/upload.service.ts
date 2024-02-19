@@ -2,14 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { GetObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { GetFileDto } from './get-file-dto';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import axios from 'axios';
+import * as sharp from 'sharp'; // Import de la bibliothèque Sharp
+import { HttpService } from '@nestjs/axios';
+import { log } from 'console';
+import tinify from 'tinify';
+
 
 @Injectable()
 export class UploadService {
     private readonly s3Client = new S3Client({
         region: this.configService.getOrThrow('AWS_S3_REGION'),
     });
-    constructor(private readonly configService: ConfigService) { }
+    constructor(
+        private readonly configService: ConfigService,
+        private httpService: HttpService,
+    ) {
+        tinify.key = this.configService.getOrThrow('TINY_API_KEY');
+    }
 
     /**
      * 
@@ -18,11 +29,13 @@ export class UploadService {
      * @returns the key of the file newly uploaded
      */
     async upload(fileName: string, file: Buffer) {
+        log("in the upload function");
+        const compressedImageBuffer = await this.compressImage(file);
         const result = await this.s3Client.send(
             new PutObjectCommand({
                 Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
                 Key: `users/${fileName}`,
-                Body: file,
+                Body: compressedImageBuffer,
             })
         )
         // console.log(result);
@@ -31,6 +44,41 @@ export class UploadService {
 
         return `users/${fileName}`;
 
+    }
+
+    // async compressImage(imageBuffer: Buffer): Promise<Buffer> {
+    //     log("compressing image")
+    //     const response = await this.httpService.post('https://api.tinify.com/shrink', imageBuffer, {
+    //         headers: {
+    //             Authorization: `Basic ${Buffer.from(`api:${this.configService.getOrThrow('TINY_API_KEY')}`).toString('base64')}`
+    //         },
+    //     }).toPromise();
+
+    //     const tinypngFile = await this.downloadImage(response.data.output.url);
+
+    //     // Redimensionnement de l'image avec Sharp
+    //     const thumbnail = await sharp(tinypngFile)
+    //         .resize(680, 383) // Remplacez par les dimensions souhaitées pour le thumbnail
+    //         .toBuffer();
+    //     log("compressing image done");
+    //     return thumbnail;
+    // }
+    async compressImage(imageBuffer: Buffer): Promise<Buffer> {
+        // Définir la taille cible et la qualité
+        const targetWidth = 800; // Largeur cible
+        const targetHeight = 600; // Hauteur cible
+        const quality = 80; // Qualité de compression (de 1 à 100)
+
+        // Compresser et redimensionner l'image avec Sharp
+        return await sharp(imageBuffer)
+            .resize(targetWidth, targetHeight)
+            .jpeg({ quality: quality })
+            .toBuffer();
+    }
+
+    private async downloadImage(url: string): Promise<Buffer> {
+        const response = await this.httpService.get(url, { responseType: 'arraybuffer' }).toPromise();
+        return Buffer.from(response.data, 'binary');
     }
 
     /**
