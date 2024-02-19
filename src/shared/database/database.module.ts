@@ -40,43 +40,48 @@ export class DatabaseModule {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-  ){ }
+  ) { }
   private readonly logger = new Logger(DatabaseModule.name);
   async onModuleInit() {
     const roles = ["Admin", "Blogger"];
-    roles.forEach(async (roleName) => {
-        const newRole =await this.roleRepository.findOneBy({ roleName: roleName });
-        if(!newRole){
-          const savedRole = new Role();
-          savedRole.roleName = roleName;
-          savedRole.description = roleName;
-      
-          const roleResponse = await this.roleRepository.save(savedRole);
-          this.logger.verbose("Roles created");
-        }
-    })
-    const user = await this.userRepository.findOneBy({ username: "admin" })
-    if (!user) {
-        const newUser = new User();
-        newUser.email = "admin@admin.com";
-        newUser.password = "Admin1234";
-        newUser.username = "admin";
 
-        // Trouver les rôles à partir des noms
-        const adminRole = await this.roleRepository.findOne({
-            where: {
-                roleName: UserRolesEnum.ADMIN
-            }
-        });
+    // Créer les rôles s'ils n'existent pas encore
+    for (const roleName of roles) {
+      const existingRole = await this.roleRepository.findOneBy({ roleName });
+      if (!existingRole) {
+        const newRole = new Role();
+        newRole.roleName = roleName;
+        newRole.description = roleName;
 
-        // Assigner les rôles à l'utilisateur
-        if (adminRole) {
-            newUser.userRoles = [adminRole];
-        }
-
-        const userResponse = await this.userRepository.save(newUser);
-        this.logger.verbose("Database module initialized");
+        await this.roleRepository.save(newRole);
+        this.logger.verbose(`Role "${roleName}" created`);
+      }
     }
 
+    // Trouver ou créer l'utilisateur admin et lui attribuer le rôle admin
+    const adminUser = await this.userRepository.findOneBy({ username: "admin" });
+    if (!adminUser) {
+      const newUser = new User();
+      newUser.email = "admin@admin.com";
+      newUser.password = "Admin1234";
+      newUser.username = "admin";
+
+      const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
+      if (adminRole) {
+        newUser.userRoles = [adminRole];
+      }
+
+      await this.userRepository.save(newUser);
+      this.logger.verbose("Admin user created with Admin role");
+    } else if (adminUser && adminUser.userRoles && !adminUser.userRoles.some(role => role.roleName === UserRolesEnum.ADMIN)) {
+      // Trouver le rôle admin
+      const adminRole = await this.roleRepository.findOne({ where: { roleName: UserRolesEnum.ADMIN } });
+      if (adminRole) {
+        // Ajouter le rôle admin à adminUser
+        adminUser.userRoles.push(adminRole);
+        await this.userRepository.save(adminUser);
+        this.logger.verbose("Admin role assigned to existing user");
+      }
+    }
   }
- }
+}
